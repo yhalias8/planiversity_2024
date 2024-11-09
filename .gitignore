@@ -96,6 +96,7 @@ config.ini.curl.php
 # sitemap.xml
 
 # !/assets/css/app-style.css
+config.app.php
 
 /admin/admin_2023_02.zip
 /affiliate/images/planiversity_video.mp4
