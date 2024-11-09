@@ -1,0 +1,57 @@
+<?php
+include '../config.ini.php';
+
+//set api key
+$stripe = array(
+    "secret_key"      => STRIPE_SECRET_KEY,
+    "publishable_key" => STRIPE_PUBLISHABLE_KEY
+);
+
+\Stripe\Stripe::setApiKey($stripe['secret_key']);
+
+    $body = file_get_contents('php://input');
+    $event_response = json_decode($body);
+
+//$event_id = "evt_1Kt6YAEPyegpSqsgA6DyF72F"; // invoice.payment_succeeded
+//$event_id = "evt_1Kt6YAEPyegpSqsgjk2CmKor"; // 
+$event = \Stripe\Event::retrieve($event_response->id);
+
+// echo $event->type;
+// echo "<br/>";
+
+if (!empty($event)) {
+
+
+    switch ($event->type) {
+        case "invoice.payment_succeeded": // success
+
+
+            $query = "INSERT INTO coupon (title, coupon_code, percent, start_date, end_date, status, demo) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $dbh->prepare($query);                  
+            $stmt->bindValue(1, "webhook title", PDO::PARAM_STR);
+            $stmt->bindValue(2, "30OFF", PDO::PARAM_STR);
+            $stmt->bindValue(3, "30", PDO::PARAM_INT);
+            $stmt->bindValue(4, "2022-04-27", PDO::PARAM_STR);
+            $stmt->bindValue(5, "2022-04-30", PDO::PARAM_STR);
+            $stmt->bindValue(6, "active", PDO::PARAM_STR);
+            $stmt->bindValue(7, $event->data->object->customer_email, PDO::PARAM_STR);
+            $stmt->execute();
+
+
+            $query = "INSERT INTO webhook (response) VALUES (?)";
+            $stmt2 = $dbh->prepare($query);                  
+            $stmt2->bindValue(1, $event->type, PDO::PARAM_STR);
+            $stmt2->execute();
+            
+            http_response_code(200);
+            
+            // echo $event->data->object->customer_email;
+            // echo "<br/>";
+            // echo "<pre/>";
+            // print_r($event);
+            break;
+        case "invoice.payment_failed":
+            echo $event->data->object->customer_email;
+            break;
+    }
+}
