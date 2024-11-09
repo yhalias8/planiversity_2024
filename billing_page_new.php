@@ -4,7 +4,8 @@ include_once("include_login_php.php");
 include('include_doctype.php');
 include('include_new_header.php');
 ?>
-<link href="<?= SITE ?>assets/billing/css/mystyle.css?v=20230621" rel="stylesheet">
+
+<link href="<?= SITE ?>assets/billing/css/mystyle.css?v=20230615" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet">
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
@@ -24,6 +25,7 @@ include('include_new_header.php');
             </div>
         </div>
         
+
         <div class="what_is_cost_custom_price">
 
             <h3>Flexible Pricing Plans for Business Users</h3>
@@ -40,8 +42,8 @@ include('include_new_header.php');
 
             <div class="team-member-block">
                 <div class="price-contact">
-                    <h5 class="price-info" data-toggle="modal" data-target="#businessModal"> <i class="fa fa-info-circle" aria-hidden="true"></i> Learn More </h5>
-                    <h5 class="price-info contact-agent" data-toggle="modal" data-target="#contactAgentModal"> <i class="fa fa-info-circle" aria-hidden="true"></i> Contact Sales </h5>
+                <h5 class="price-info" data-toggle="modal" data-target="#businessModal"> <i class="fa fa-info-circle" aria-hidden="true"></i> Learn More </h5>
+                <h5 class="price-info contact-agent" data-toggle="modal" data-target="#contactAgentModal"> <i class="fa fa-info-circle" aria-hidden="true"></i> Contact Agent </h5>
                 </div>
                 <h5>Team Member : <span id="member_count">0</span></h5>
             </div>
@@ -145,12 +147,14 @@ include('include_new_header.php');
     </div>
 </section>
 
-<!-- Contact Sales Modal Start-->
+
+<!-- Contact Agent Modal Start-->
+
 <div class="modal fade modal-blur" id="contactAgentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content agent-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Contact Sales</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Contact Agent</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -2464,7 +2468,7 @@ include('include_new_header.php');
 
                         <div class="form-group">
                             <label>Your Message *</label>
-                            <textarea class="form-control" name="message" placeholder="Your Message" rows="3"></textarea>
+                            <textarea class="form-control" name="message" placeholder="Your Message" rows="4"></textarea>
                         </div>
 
                         <input type="hidden" name="country_code" id="country_code" value="<?= "+1"; ?>" readonly>
@@ -2481,7 +2485,8 @@ include('include_new_header.php');
         </div>
     </div>
 </div>
-<!-- Contact Sales Modal End-->
+
+<!-- Contact Agent Modal End-->
 
 <!-- Business Modal Start-->
 <div class="modal" id="businessModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -2536,12 +2541,14 @@ include('include_new_header.php');
 </div>
 <!-- Business Modal End-->
 
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.6.16/sweetalert2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script src="<?= SITE ?>assets/billing/js/country-states.js"></script>
+
 
 <script type="text/javascript">
     let teamMembers = 0;
@@ -2583,7 +2590,7 @@ include('include_new_header.php');
             option += '<select id="state">';
             option += '<option value="">select a state</option>';
             for (let i = 0; i < state_names.length; i++) {
-                option += '<option value="' + state_names[i].name + '">' + state_names[i].name + '</option>';
+                option += '<option value="' + state_names[i].code + '">' + state_names[i].name + '</option>';
             }
             option += '</select>';
             id_state_option.innerHTML = option;

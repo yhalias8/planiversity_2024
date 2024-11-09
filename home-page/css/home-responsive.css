@@ -1150,7 +1150,7 @@ margin-top: 5px;
         padding-bottom: 0px !important;
   }
   .hide-for-web{
-    display: none;
+    display: initial;
   }
   .hide-for-mob{
     display: none;

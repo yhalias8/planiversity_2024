@@ -19,7 +19,6 @@ if ($_POST['notes_text'] && $_POST['notes_idtrip']) {
 
         $notes_text = filter_var($_POST["notes_text"], FILTER_SANITIZE_STRING);
         $id = filter_var($_POST["notes_idtrip"], FILTER_SANITIZE_STRING);
-        
         $trip_generated = $_POST["trip_generated"];
         $trip_u_id = $_POST["trip_u_id"];
         $trip_title = $_POST["trip_title"];        

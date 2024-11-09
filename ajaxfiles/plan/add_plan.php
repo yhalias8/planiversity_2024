@@ -26,6 +26,7 @@ if ($_POST['plan_title'] && $_POST['plan_type'] && $_POST['plan_address'] && $_P
     $plan_lng = filter_var($_POST["location_to_lng"], FILTER_SANITIZE_STRING);
     $schedule_flag = filter_var($_POST["schedule_flag"], FILTER_SANITIZE_STRING);
 
+
     $id = filter_var($_POST["plans_idtrip"], FILTER_SANITIZE_STRING);
     $flag = 0;
 
@@ -38,12 +39,16 @@ if ($_POST['plan_title'] && $_POST['plan_type'] && $_POST['plan_address'] && $_P
 
     $checkin_flag = filter_var($_POST["event_checkin"], FILTER_SANITIZE_STRING);
 
+    $reservation_flag = filter_var($_POST["reservation"], FILTER_SANITIZE_STRING);
+    $transportation_flag = filter_var($_POST["transportation"], FILTER_SANITIZE_STRING);
+
+
     $action = null;
     $id_place = null;
     $schedule_id = null;
 
     if (!empty($id_plan)) {
-        $plantrip->edit_data($id_plan, $plan_title, $plan_type, $plan_address, $checkin_flag, $date_time, $plan_lat, $plan_lng);
+        $plantrip->edit_data($id_plan, $plan_title, $plan_type, $plan_address, $checkin_flag, $date_time, $plan_lat, $plan_lng, $reservation_flag, $transportation_flag);
         $action = 'Update';
         $id_place = $id_plan;
     } else {
@@ -57,7 +62,7 @@ if ($_POST['plan_title'] && $_POST['plan_type'] && $_POST['plan_address'] && $_P
         //     $schedule_id =  $timeline->put_data($id, $plan_title, $date_time, 0, 0);
         // }
 
-        $plantrip->put_data($id, $plan_title, $plan_type, $plan_address, $checkin_flag, $date_time, $plan_lat, $plan_lng, $flag, $schedule_id);
+        $plantrip->put_data($id, $plan_title, $plan_type, $plan_address, $checkin_flag, $date_time, $plan_lat, $plan_lng, $flag, $schedule_id, 0, $reservation_flag, $transportation_flag);
         $action = 'Added';
         $id_place = $plantrip->lastid;
     }

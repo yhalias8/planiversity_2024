@@ -14,17 +14,16 @@ if (!$auth->isLogged()) {
 
 
 if ($_POST['notes_text'] && $_POST['note_id']) {
-        
+       
         $note = new Note();    
 
         $notes_text = filter_var($_POST["notes_text"], FILTER_SANITIZE_STRING);
-        $id = filter_var($_POST["note_id"], FILTER_SANITIZE_STRING);      
+        $id = filter_var($_POST["note_id"], FILTER_SANITIZE_STRING);        
+        $note->edit_data($id,$notes_text);
         
         $trip_generated = $_POST["trip_generated"];
         $trip_u_id = $_POST["trip_u_id"];
         $trip_title = $_POST["trip_title"];        
-        
-        $note->edit_data($id,$notes_text);
         
         if ($trip_generated == 1) {
 

@@ -22,14 +22,14 @@ if (isset($_POST['page_id']) && isset($_POST['payerID']) && isset($_POST['paymen
         new \PayPal\Auth\OAuthTokenCredential(PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET)
     );
     
-    $apiContext->setConfig(
+        $apiContext->setConfig(
         array(
             'log.LogEnabled' => true,
             'log.FileName' => 'PayPal.log',
             'log.LogLevel' => 'DEBUG',
             'mode' => 'live'
         )
-    );    
+    );
 
     $paymentId = $_POST['paymentID'];
     $payerID = $_POST['payerID'];
@@ -37,7 +37,8 @@ if (isset($_POST['page_id']) && isset($_POST['payerID']) && isset($_POST['paymen
     $coupon_id = $_POST['coupon_id'];
     $coupon_flag = $_POST['coupon_flag'];
     $coupon_context = $_POST['coupon_context'];
-    $team_member = $_POST['teamMembers'];
+    $team_member = $_POST['teamMembers'];    
+    // $paymentId = $request->paymentID;
     $payment = Payment::get($paymentId, $apiContext);
 
     $execution = new PaymentExecution();
@@ -75,9 +76,9 @@ if (isset($_POST['page_id']) && isset($_POST['payerID']) && isset($_POST['paymen
         $status = "succeeded";
         $date = date("Y-m-d H:i:s");
         $fname = $userdata['name'];
-        $uid = $userdata['id'];
+        $uid=$userdata['id'];
 
-        $query = "INSERT INTO payments (id_user,transaction_id, fname, lname, country, address, city, state, zipcode, plan_type, payment_type, date_paid, date_expire, amount, ip_address, status,action_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO payments (id_user,transaction_id, fname, lname, country, address, city, state, zipcode, plan_type, payment_type, date_paid, date_expire, amount, ip_address, status,action_type) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $dbh->prepare($query);
         $stmt->bindValue(1, $uid, PDO::PARAM_INT);
         $stmt->bindValue(2, $paymentId, PDO::PARAM_INT);
@@ -113,7 +114,6 @@ if (isset($_POST['page_id']) && isset($_POST['payerID']) && isset($_POST['paymen
             "transition_id" => $paymentId
         );
         http_response_code(200);
-        
     } else {
 
         $response = array(

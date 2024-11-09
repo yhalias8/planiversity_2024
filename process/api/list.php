@@ -1,7 +1,7 @@
 <?php
 
 $API_PATH = "https://api.duffel.com/";
-$TOKEN = "duffel_live_la8Qjw8g22tOWBPQ1kRg36VW3zA9sC7fTsxF1CvJr7t";
+$TOKEN = "duffel_test_ZgNwOQ6vA1oMHPy7r1UY5j5VI4xItZuwRKxOcpcsjMj";
 
 
 function curlRequestPost($url, $TOKEN, $fields)

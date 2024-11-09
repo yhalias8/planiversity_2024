@@ -22,7 +22,7 @@ height: 424px;
     .banner_header_heading p span {display: inline; padding-left: 10px; padding-right: 21px;}
     .banner_header_heading .pragraph { width: 72%; margin-left: auto; margin-right: auto;}
     .footer_sec .footer_item1 {padding-left: 0;}
-    .footer_sec .footer_item2 {padding-left: 0px;width: 100%;}
+    .footer_sec .footer_item2 {padding-left: 0px;}
     .footer_sec .footer_item3 {padding-left: 0px;}
     .footer_sec::after{display: none;}
     .copywrite_sec{width: 100%;}

@@ -21,13 +21,7 @@ if (isset($_GET['eid'])) {
     $stmt->bindValue(1, $eid, PDO::PARAM_INT);
     $stmt->bindValue(2, $eid, PDO::PARAM_INT);
 
-    // $stmt = $dbh->prepare("SELECT timeline.date, timeline.title,timeline.checked_in_date,users.name,users.picture
-    // FROM timeline
-    // LEFT JOIN users ON timeline.checked_in_user = users.id WHERE id_trip=? and is_checked=? and checked_in=? ORDER BY date
-    // ");
-    // $stmt->bindValue(1, $id_trip, PDO::PARAM_INT);
-    // $stmt->bindValue(2, 1, PDO::PARAM_INT);
-    // $stmt->bindValue(3, 1, PDO::PARAM_INT);
+   
     $tmp = $stmt->execute();
     $aux = '';
     $timelines = [];

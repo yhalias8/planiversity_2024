@@ -118,9 +118,8 @@ if (isset($_POST['myprofile_submit'])) {
     <script>
         var SITE = '<?= SITE; ?>';
     </script>
-
-
-<!-- Global site tag (gtag.js) - Google Analytics -->
+    
+    <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146873572-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -150,6 +149,7 @@ if (isset($_POST['myprofile_submit'])) {
       f.parentNode.insertBefore(j, f);
     })(window, document, 'script', 'dataLayer', 'GTM-PBF3Z2D');
   </script>
+
 
 
     <!--Facebook Pixel Code-->

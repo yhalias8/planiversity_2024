@@ -43,7 +43,7 @@ if ($_GET['slug']) {
 
                     <div class="marketplace_subheading">
                         <div class="search_result">
-                            <!--<p>245 Services Found</p>-->
+                            <p>245 Services Found</p>
                         </div>
 
                     </div>

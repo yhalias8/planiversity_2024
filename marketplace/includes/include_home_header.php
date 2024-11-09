@@ -49,7 +49,6 @@
                                 </div>
                                 
                                 <div class="outside-div">
-                                    
                                     <div class="advanced_search_section" style="display: none;">
 
                                         <div class="input-group">
@@ -72,11 +71,9 @@
                                 
                             </form>
                         </div>
-                        
                         <div class="advanced_search">
                             <p class="advanced_link"> Advanced search </p>
-                        </div>                         
-                        
+                        </div>                        
                     </div>
 
                 </div>

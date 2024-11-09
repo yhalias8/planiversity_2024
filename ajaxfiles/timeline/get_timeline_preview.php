@@ -3,7 +3,6 @@
 include '../../config.ini.php';
 include '../../config.ini.curl.php';
 
-
 if (!$auth->isLogged()) {
     header('location: ../../');
 }

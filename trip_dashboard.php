@@ -85,7 +85,7 @@ if (isset($_POST['myprofile_submit'])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.js"></script>
 
     <script>
-        var SITE = '<?= 'https://' . $_SERVER['HTTP_HOST'] . '/'; ?>'
+        var SITE = '<?= 'https://' . $_SERVER['HTTP_HOST'] . '/staging/'; ?>'
     </script>
 
     <!--Facebook Pixel Code-->
@@ -259,11 +259,20 @@ $tmp_meeting = $stmt_meeting->execute();
                                     <?php } ?>
 
                                     <li>
-                                        <a href="<?= SITE; ?>" class="dropdown-item drop-menu-item" target="_blank">
-                                            Home
+                                        <a href="<?= SITE; ?>about-us" class="dropdown-item drop-menu-item" target="_blank">
+                                            About Us
                                         </a>
                                     </li>
-                                    
+                                    <li>
+                                        <a href="<?= SITE; ?>select-your-payment" class="dropdown-item drop-menu-item" target="_blank">
+                                            What It Costs
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= SITE; ?>faq" class="dropdown-item drop-menu-item" target="_blank">
+                                            FAQs
+                                        </a>
+                                    </li>
                                     <li>
                                         <a href="<?= SITE; ?>data-security" class="dropdown-item drop-menu-item" target="_blank">
                                             Data Security
@@ -421,7 +430,7 @@ $tmp_meeting = $stmt_meeting->execute();
                                             <div class="dashboard_user_sec">
                                                 <div class="user_header">
                                                     <div class="row align-self-center">
-                                                        <div class="col-xl-6 col-9">
+                                                        <div class="col-xl-6 col-10">
                                                             <div class="user_header_left_item">
                                                                 <div class="user_header_list">
                                                                     <div class="user_header_img only-mob uploaded_image">
@@ -434,7 +443,7 @@ $tmp_meeting = $stmt_meeting->execute();
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-xl-6 col-3">
+                                                        <div class="col-xl-6 col-2">
                                                             <div class="start_a_plan_btn">
                                                                 <a href="<?= SITE; ?>trip/how-are-you-traveling"><span>Start a new plan</span>
                                                                     <div class="plus-icon"><img src="<?= SITE; ?>/dashboard/images/plus-circle.svg"></div>
@@ -502,6 +511,8 @@ $tmp_meeting = $stmt_meeting->execute();
                                                                     <div class="trips_left_items_scrolling">
                                                                         <div class="tab">
                                                                             <ul class="list-unstyled trip_event">
+
+
 
 
 
@@ -629,7 +640,6 @@ $tmp_meeting = $stmt_meeting->execute();
                                                                                 <?php }
                                                                                 } ?>
 
-
                                                                                 <li id="not-found" style="display: none;">
                                                                                     <div class="tablinks not-found-body">
                                                                                         <div class="events_items_box_trips ">
@@ -639,6 +649,8 @@ $tmp_meeting = $stmt_meeting->execute();
                                                                                         </div>
                                                                                     </div>
                                                                                 </li>
+
+
 
 
 
@@ -792,7 +804,6 @@ $tmp_meeting = $stmt_meeting->execute();
         </div>
     </div>
 
-
     <?php
     include('dashboard/include/mobile-message.php');
     ?>
@@ -800,13 +811,15 @@ $tmp_meeting = $stmt_meeting->execute();
     <script src="<?php echo SITE; ?>assets/js/bootstrap.min.js"></script>
     <script src="<?php echo SITE; ?>assets/js/popper.min.js"></script>
     <script src="<?= SITE ?>dashboard/js/main.js"></script>
-    <script src="<?= SITE ?>dashboard/js/jquery-ui.js"></script>
-    <script src="<?php echo SITE; ?>js/trip_dashboard_next.js?v=212"></script>
+    <script src="<?php echo SITE; ?>js/trip_dashboard_next.js"></script>
 
 
 
     <script>
-    
+        var timezone_offset_minutes = new Date().getTimezoneOffset();
+        timezone_offset_minutes = timezone_offset_minutes == 0 ? 0 : -timezone_offset_minutes;
+        
+        
         $(document).on('click', '.file_download', function(event) {
 
             var filePath = $(this).data("file-path");
@@ -841,7 +854,8 @@ $tmp_meeting = $stmt_meeting->execute();
             }
         }
 
-    
+        
+
         $(document).ready(function() {
             $(".trips").click(function() {
                 $(".fc-trips-button").click();

@@ -4,7 +4,150 @@ include_once("include_login_php.php");
 include_once("process/email_process.php");
 include_once("include_new_header.php");
 ?>
-<link href="<?php echo SITE; ?>assets/css/register.css?2022.2" rel="stylesheet">
+<style>
+    a:active {
+        color: #004eff63;
+    }
+
+    .background-e1f2ff {
+        background-color: #e1f2ff;
+    }
+
+    .color-1f74b7 {
+        color: #1f74b7;
+    }
+
+    .color-0886E3 {
+        color: #0886E3 !important;
+    }
+
+    .background-fafafa {
+        background-color: #fafafa;
+    }
+
+    .mb-90 {
+        margin-bottom: 90px !important;
+    }
+
+    .mt--40 {
+        margin-top: -40px !important;
+    }
+
+    .form-item-1 {
+        border-radius: 5px;
+        background-color: rgba(224, 231, 255, 0.2);
+    }
+    
+   label.error {
+        font-size: 12px;
+        color: red !important;
+        position: relative;
+        bottom: 15px;
+        font-weight: 500;
+    }
+    
+#pr-box {
+        font: 13px/16px sans-serif;
+        position: absolute;
+        z-index: 9999999;
+        display: none;
+        width: 300px;
+        max-width: 100%;
+    }
+
+    #pr-box i {
+        width: 0;
+        height: 0;
+        margin-left: 20px;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-bottom: 7px solid #23a86d;
+    }
+
+    #pr-box-inner {
+        margin-top: 6px;
+        -webkit-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        -moz-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+    }
+
+    #pr-box p {
+        padding: 20px;
+        -webkit-border-radius: 2px 2px 0 0;
+        -moz-border-radius: 2px 2px 0 0;
+        border-radius: 2px 2px 0 0;
+        margin-bottom: 0;
+    }
+
+    #pr-box ul {
+        padding: 7px;
+        -webkit-border-radius: 0 0 2px 2px;
+        -moz-border-radius: 0 0 2px 2px;
+        border-radius: 0 0 2px 2px;
+    }
+
+    #pr-box ul li {
+        list-style: none;
+        padding: 7px;
+    }
+
+    #pr-box ul li span {
+        width: 15px;
+        height: 15px;
+        display: block;
+        float: left;
+        border-radius: 100%;
+        margin-right: 15px;
+    }
+
+    #pr-box.light {
+        color: #2d2f31;
+    }
+
+    #pr-box.light p {
+        background-color: #0661BE;
+        color: #f1f1f1;
+    }
+
+    #pr-box.light ul {
+        background-color: #f1f1f1;
+    }
+
+    #pr-box.light ul li span {
+        background-color: #f1f1f1;
+        border: 3px solid #23a86d;
+    }
+
+    #pr-box.light ul li span.pr-ok {
+        background-color: #23a86d;
+        border: 3px solid #23a86d;
+    }
+
+    #pr-box.dark {
+        color: #f1f1f1;
+    }
+
+    #pr-box.dark p {
+        background-color: #23a86d;
+    }
+
+    #pr-box.dark ul {
+        background-color: #2d2f31;
+    }
+
+    #pr-box.dark ul li span {
+        background-color: #2d2f31;
+        border: 3px solid #23a86d;
+    }
+
+    #pr-box.dark ul li span.pr-ok {
+        background-color: #23a86d;
+        border: 3px solid #23a86d;
+    }    
+</style>
 <script src='https://www.google.com/recaptcha/api.js'></script>
 <script type="text/javascript">
     $(document).ready(function() {
@@ -14,28 +157,25 @@ include_once("include_new_header.php");
             if (x.type === "password") {
                 x.type = "text";
                 xx.type = "text";
-                document.getElementById("showhidepassword1").attr("src", "<?php echo SITE; ?>images/if_misc-_eye_vision_1276868.png");
+                document.getElementById("showhidepassword1").attr("src", "<?= SITE; ?>images/if_misc-_eye_vision_1276868.png");
             } else {
                 x.type = "password";
                 xx.type = "password";
-                document.getElementById("showhidepassword1").attr("src", "<?php echo SITE; ?>images/if_misc-_eye_vision_1276868.png");
+                document.getElementById("showhidepassword1").attr("src", "<?= SITE; ?>images/if_misc-_eye_vision_1276868.png");
             }
 
         });
-
-
     });
 
     function resendOTP(event) {
         event.preventDefault();
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', '<?php echo SITE; ?>/submit_otp.php');
+        xhr.open('POST', '<?= SITE; ?>/submit_otp.php');
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 theResp = JSON.parse(this.responseText);
                 console.log(theResp)
-
             }
         };
         xhr.send('resendOTP=resendOTP');
@@ -53,7 +193,6 @@ $output = '';
 $otpOutput = '';
 $name = '';
 $email = '';
-$disply = "";
 $uid = '';
 
 function generate_customerid()
@@ -72,28 +211,17 @@ if (isset($_POST['register_accounttype']) && isset($_POST['register_name']) && i
     $country_code = null;
     $password = filter_var($_POST["register_password"], FILTER_SANITIZE_STRING);
     $passwordconform = filter_var($_POST["register_password2"], FILTER_SANITIZE_STRING);
+    $grecaptcha = filter_var($_POST["grecaptcha"], FILTER_SANITIZE_STRING);
+
     $clientID = generate_customerid();
 
     $params = array("name" => $name, "account_type" => $_POST["register_accounttype"], "customer_number" => $clientID);
-    $result = $auth->register($email, $password, $mobile_no, $country_code, $passwordconform, $params, $_POST['g-recaptcha-response'], $sendmail = false);
-
-    $_SESSION['result'] = $result;
-
+    $result = $auth->register($email, $password, $mobile_no, $country_code, $passwordconform, $params, $grecaptcha, $sendmail = false);
     if ($result['error']) {
         $output = $result['message'];
     } else {
         
         registrationEmailSend($auth,$email,$name);
-        
-        ?>
-        
-        <script>
-        
-        gr("track", "conversion", { email: "<?= $email ?>" });
-        
-        </script>
-        
-        <?php
         
         $data = array(
             "site_key" => "18a58770-0d86-497e-a136-5b439bf4ed8a",
@@ -154,38 +282,41 @@ if (isset($_POST['register_accounttype']) && isset($_POST['register_name']) && i
             CURLOPT_POSTFIELDS => json_encode($postData)
         ));
 
-        $response = curl_exec($ch);
-        
+        curl_exec($ch);
+        // echo $response;
         unset($_SESSION["result"]);
-        
+        //header("Location:" . SITE . 'thankyou');
         
         echo "<script>window.location.href='thankyou';</script>";
         exit;
-
-        // send clientID number by email
-        // $mail = new PHPMailer;
-        // $mail->CharSet = 'UTF-8';
-        // $mail->From = $auth->config->site_email;
-        // $mail->FromName = $auth->config->site_name;
-        // $mail->addAddress($email);
-        // $mail->isHTML(true);
-        // $mail->Subject = 'Planiversity.com - Account created';
-        // $mail->Body = 'Hello,<br/><br/> Your clientID is <b>' . $clientID . '</b>, you can use this number to login here <a href="' . SITE . '">Planiversity.com</a>';
-        // $mail->send();
-        // send clientID number by email
-        // $output = $result['message'];
-        // $output .= 'Your account has been created, the activation link has been sent to your email. Depending on your email settings it may go to your spam folder, rather than the inbox. We\'re happy to have you!';
+        
 
         // $uid = $result['uid'];
-        // $disply = "display: block;";
+        // $_SESSION["result"] = $result;
         // $output .= 'Your account has been created';
         // $name = '';
         // $email = '';
+        
     }
 }
 
+//if (isset($_POST['otp'])) {
+//    $otp = filter_var($_POST["otp"], FILTER_SANITIZE_STRING);
+//    $otpResult = $auth->validateOTP($otp, $_SESSION["result"]["uid"]);
+//    if ($otpResult['error']) {
+//        $otpOutput = $otpResult['message'];
+//    } else {
+////        unset($_SESSION["result"]);
+////        header("Location:" . SITE . "login");
+//    }
+//}
+
+$disply = "";
+if (isset($_SESSION["result"])) {
+    $disply = "display:block;";
+}
+
 if (isset($_SESSION['message'])) {
-    $disply = "display: block;";
     $otpOutput = $_SESSION['message'];
     unset($_SESSION['message']);
 }
@@ -202,7 +333,7 @@ if (isset($_SESSION['message'])) {
         <div class="container">
             <div class="row">
                 <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12">
-                    <div class="<?php echo (!empty($result['message'])) ? "alert alert-success" : "" ?> <?php echo (!empty($result['error'])) ? "alert alert-danger" : "" ?> error_style"><?php echo $output; ?></div>
+                    <div class="<?= (!empty($result['message'])) ? "alert alert-success" : "" ?> <?= (!empty($result['error'])) ? "alert alert-danger" : "" ?> error_style"><?= $output; ?></div>
                     <div class="account-wrapper mt--40">
                         <h2 class="color-1f74b7 mt-4" style="font-size:24px">Registration</h2>
                         <div class="form-wrap">
@@ -234,7 +365,7 @@ if (isset($_SESSION['message'])) {
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <input type="password" class="form-control pr-password input-lg inp1 form-item-1" name="register_password" id="register_password" placeholder="Password" required="">
-                                                <div class="showhidepassword"><img title="toggle password visibility" id="showhidepassword1" src="<?php echo SITE; ?>images/if_misc-_eye_vision_1276868.png" alt="showorhidepassword1"></div>
+                                                <div class="showhidepassword"><img title="toggle password visibility" id="showhidepassword1" src="<?= SITE; ?>images/if_misc-_eye_vision_1276868.png" alt="showorhidepassword1"></div>
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
@@ -248,12 +379,26 @@ if (isset($_SESSION['message'])) {
                                                 <input id="grecaptcha" name="grecaptcha" type="text" readonly style="opacity: 0; position: absolute; top: 0; left: 0; height: 1px; width: 1px;">
                                             </div>
                                         </div>
-                                        
+                                        <style>
+                                            .get-started-buttn,
+                                            .get-started-buttn:hover {
+                                                background-image: linear-gradient(180deg, #FACD61 0%, #F39F32 100%);
+                                                border-radius: 5.4px;
+                                                color: #333333;
+                                                border: none;
+                                                font-weight: bold;
+                                                font-size: 14px !important;
+                                            }
+
+                                            .google-btn {
+                                                background-image: linear-gradient(135deg, #0C81D7 0.69%, #0191FD 100%), linear-gradient(180deg, #FACD61 0%, #F39F32 100%) !important;
+                                                border-radius: 5.4px !important;
+                                            }
+                                        </style>
                                         <div class="col-sm-12">
                                             <div class="form-group">
-                                                
-                                                <button type="submit" class="btn-block get-started-btn get-started-buttn mb-4">Get Started</button>
-
+                                                <button type="submit" class="btn-block get-started-btn get-started-buttn mb-4">Get Started
+                                                </button>
                                                 <!--<p style="margin:5px;text-align:center;">OR</p>-->
                                                 <!--<div data-width="200" data-longtitle="true" id="my-signin2" class="g-signin2" data-onsuccess="onSignIn"></div>-->
                                                 <div style="cursor:pointer;" onclick="login()">
@@ -270,16 +415,14 @@ if (isset($_SESSION['message'])) {
                                                         <span class="google-button__text">Register with Google Account</span>
                                                     </button>
                                                 </div>
-                                                
-                                                <button type="reset" style="background-image: unset !important; background-color: hsl(210deg 94% 40%); color: white !important;" class="btn-block get-started-btn get-started-buttn mb-4 mt-4">Reset Data</button>
-                                                
+                                                <!--<input name="register_submit" id="register_submit" type="submit" class="btn-block get-started-btn" value="GET STARTED">--->
                                             </div>
                                         </div>
                                     </div>
                                 </fieldset>
                             </form>
                             <article class="criteria-wrapper">
-                                <h4 class="color-67758D">Recommended Secure Password Criteria</h4>
+                                <h4 class="color-67758D">Secure Password Criteria</h4>
                                 <div class="row">
                                     <ul class="row">
                                         <li class="col-lg-5 col-md-12 color-67758D"><i class="fa fa-circle bullet-icon"></i>Eight letters minimum</li>
@@ -292,7 +435,23 @@ if (isset($_SESSION['message'])) {
                         </div>
                     </div>
                 </div>
-                
+                <style>
+                    .font-1 {
+                        font-size: 1rem !important;
+                    }
+
+                    .color-2e3a59 {
+                        color: #2E3A59 !important;
+                    }
+
+                    .color-67758D {
+                        color: #67758D !important;
+                    }
+
+                    .checkmark {
+                        border: 2px solid #dddddd !important;
+                    }
+                </style>
                 <div class="col-md-12 col-lg-6 col-sm-12 col-xs-12">
                     <div class="account-benefits-wrapper">
                         <h3 class="color-0886E3">Why Consider Us</h3>
@@ -331,6 +490,8 @@ if (isset($_SESSION['message'])) {
 
 
 <script>
+
+
     $(document).ready(function() {
         $(".pr-password").passwordRequirements({});
     });
@@ -345,26 +506,26 @@ if (isset($_SESSION['message'])) {
     }
     
     $.validator.addMethod("strong_password", function(value, element) {
-        let password = value;
-        if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%&])(.{8,20}$)/.test(password))) {
+            let password = value;
+            if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%&])(.{8,20}$)/.test(password))) {
+                return false;
+            }
+            return true;
+        }, function(value, element) {
+            let password = $(element).val();
+            if (!(/^(.{8,20}$)/.test(password))) {
+                return 'Password must be between 8 to 20 characters long.';
+            } else if (!(/^(?=.*[A-Z])/.test(password))) {
+                return 'Password must contain at least one uppercase.';
+            } else if (!(/^(?=.*[a-z])/.test(password))) {
+                return 'Password must contain at least one lowercase.';
+            } else if (!(/^(?=.*[0-9])/.test(password))) {
+                return 'Password must contain at least one digit.';
+            } else if (!(/^(?=.*[@#$%&])/.test(password))) {
+                return "Password must contain special characters from @#$%&.";
+            }
             return false;
-        }
-        return true;
-    }, function(value, element) {
-        let password = $(element).val();
-        if (!(/^(.{8,20}$)/.test(password))) {
-            return 'Password must be between 8 to 20 characters long.';
-        } else if (!(/^(?=.*[A-Z])/.test(password))) {
-            return 'Password must contain at least one uppercase.';
-        } else if (!(/^(?=.*[a-z])/.test(password))) {
-            return 'Password must contain at least one lowercase.';
-        } else if (!(/^(?=.*[0-9])/.test(password))) {
-            return 'Password must contain at least one digit.';
-        } else if (!(/^(?=.*[@#$%&])/.test(password))) {
-            return "Password must contain special characters from @#$%&.";
-        }
-        return false;
-    });    
+        });    
 
 
     $("#register_form").validate({
@@ -426,7 +587,8 @@ if (isset($_SESSION['message'])) {
     });
 </script>
 
-<?php include_once("include_new_footer_other.php"); ?>
+
+<?php include_once("include_new_footer.php"); ?>
 <script>
     $(document).ready(function() {
         $('.close').click(function() {

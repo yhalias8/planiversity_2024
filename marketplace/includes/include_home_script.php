@@ -1,16 +1,15 @@
 <?php include_once("include_script.php"); ?>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y&libraries=places&callback=initMap" async defer></script>
-
 <script>
     let wish_clause = "<?= $wish_clause ?>";
     let category_parms = "<?= $category_parms ?>";
-    let search_parms = "<?= $search_parms ?>";      
+    let search_parms = "<?= $search_parms ?>";    
     
     let container = $(".advanced_search_section");
-    let searchForm = $("#search-form");   
+    let searchForm = $("#search-form");    
     
-function initMap() {
+    function initMap() {
         var locationInput = document.getElementById('location');
         var spinner = document.getElementById('spinner_section');
 
@@ -74,8 +73,7 @@ function initMap() {
 
     $(document).on("click", ".advanced_link", function(event) {
         container.show();
-    });    
-
+    });
 
     function initialServiceLoad() {
         let uuid = localStorageValueGet();
@@ -94,7 +92,7 @@ function initMap() {
         var dataSet = 'category=' + category_parms + '&search=' + search_parms + '&page=' + 1 + '&uuid=' + uuid;
         serviceListProcess(dataSet, true, "", true);
 
-    }     
+    }    
 
 
     function initialProcess() {
@@ -169,6 +167,7 @@ function initMap() {
 
                 //console.log('response', response.data.list);
                 $('#category_content').html(response.data.list);
+                //$('.service_count').html(response.data.total_count);
                 carouselLoad();
 
             },

@@ -42,7 +42,7 @@ if (isset($_POST['flag']) && in_array($_POST['flag'], array('0', '1'))) {
 
                 $clientId = PAYPAL_CLIENT_ID;
                 $clientSecret = PAYPAL_CLIENT_SECRET;
-                $apiEndpoint = 'https://api.paypal.com';
+                $apiEndpoint = 'https://api.sandbox.paypal.com';
 
                 // Set up the subscription ID
                 $subscriptionId = $data_line->subscription_id;
@@ -86,7 +86,7 @@ if (isset($_POST['flag']) && in_array($_POST['flag'], array('0', '1'))) {
     $stmt->bindValue(4, $uid, PDO::PARAM_INT);
     $tmp = $stmt->execute();
     $aux = '';
-    $data = $flag == 1 ? 'Enabled ' : 'Disabled';
+    $data = $flag == 1 ? 'Enabled' : 'Disabled';
     if ($tmp) {
 
         $response = array(

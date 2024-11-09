@@ -1,5 +1,4 @@
 <?php
-
 use PayPal\Api\Agreement;
 use PayPal\Api\Payer;
 use PayPal\Api\ShippingAddress;
@@ -35,7 +34,7 @@ $agreement->setShippingAddress($shippingAddress);
 try {
     // Create agreement
     $agreement = $agreement->create($apiContext);
-
+    
     // Extract approval URL to redirect user
     $approvalUrl = $agreement->getApprovalLink();
     header("Location: " . $approvalUrl);
@@ -47,3 +46,4 @@ try {
 } catch (Exception $ex) {
     die($ex);
 }
+?>

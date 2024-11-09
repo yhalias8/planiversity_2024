@@ -39,7 +39,7 @@ if (isset($_POST['login_usernamep'])) {
         if (isset($_SESSION['redirect']) && !empty($_SESSION['redirect'])) {
             $tmp = $_SESSION['redirect'];
             $_SESSION['redirect'] = '';
-            header("Location:" . SITE . $tmp);
+            header("Location:" . SITE . "welcome");
         } else {
             header("Location:" . SITE . "welcome"); // header("Location:".SITE."dashboard"); 
         }
@@ -63,6 +63,7 @@ include('include_doctype.php');
 
     });
 </script>
+
 <style>
     .form-control {
         border-radius: 5px;
@@ -142,4 +143,4 @@ include('include_doctype.php');
         </div>
     </div>
 </div>
-<?php include_once("include_new_footer_other.php") ?>
+<?php include_once("include_new_footer.php") ?>

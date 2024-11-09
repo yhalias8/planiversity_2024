@@ -32,7 +32,7 @@ $trip = new TripPlan();
 $idtrip = filter_var($idtrip, FILTER_SANITIZE_STRING);
 if (empty($idtrip))
     header("Location:" . WEB_HOSTING_URL . "trip/how-are-you-traveling");
-echo $idtrip . ",";
+echo $idtrip.",";
 $trip->get_data($idtrip);
 $trip->setProgressing($idtrip, 0);
 echo "0,";
@@ -130,21 +130,21 @@ $mpdf = new \Mpdf\Mpdf([
         __DIR__ . '/font',
     ]),
     'fontdata' => $fontData + [
-        'Montserrat-Light' => [
-            'R' => 'Montserrat-Light.ttf',
-        ],
-        'Montserrat-Regular' => [
-            'R' => 'Montserrat-Regular.ttf',
-        ],
-        'Montserrat-Medium' => [
-            'R' => 'Montserrat-Medium.ttf',
-        ],
-        'MyriadProBold' => [
-            'R' => 'MyriadPro-Bold_1.ttf',
-        ]
+'Montserrat-Light' => [
+    'R' => 'Montserrat-Light.ttf',
+],
+ 'Montserrat-Regular' => [
+    'R' => 'Montserrat-Regular.ttf',
+],
+ 'Montserrat-Medium' => [
+    'R' => 'Montserrat-Medium.ttf',
+],
+ 'MyriadProBold' => [
+    'R' => 'MyriadPro-Bold_1.ttf',
+]
     ],
     'default_font' => 'MyriadProBold'
-]);
+        ]);
 
 $_to = explode(',', $trip->trip_location_to);
 
@@ -197,8 +197,8 @@ $mpdf->SetHTMLFooter('<table width="100%">
 
 
 $mpdf->AddPage();
-$latLng_timezone = trim($trip->trip_location_from_latlng, '()');
-$from_timestamp = implode('', explode(':', $trip->trip_location_datel_deptime));
+$latLng_timezone = trim($trip->trip_location_from_latlng,'()');
+$from_timestamp = implode('',explode(':',$trip->trip_location_datel_deptime));
 $key = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
 $url = "https://maps.googleapis.com/maps/api/timezone/json?location=" . $latLng_timezone . "&timestamp=" . $from_timestamp . "&key=" . $key;
 $url = preg_replace("/ /", "%20", $url);
@@ -210,17 +210,17 @@ $test_timezone_from = ($googleDirection['timeZoneName']);
 // print_r($test);	
 
 $words = explode(" ", $test_timezone_from);
-$acronym_from = "";
+    $acronym_from = "";
 
-foreach ($words as $w) {
-    $acronym_from .= $w[0];
-}
+    foreach ($words as $w) {
+      $acronym_from .= $w[0];
+    }
 // print_r('acronym_from_timezone=',$acronym_from);
 $trip->setProgressing($idtrip, 10);
 echo "10,";
 
-$latLng_timezone_to = trim($trip->trip_location_to_latlng, '()');
-$from_timestamp_to = implode('', explode(':', $trip->trip_location_datel_arrtime));
+$latLng_timezone_to = trim($trip->trip_location_to_latlng,'()');
+$from_timestamp_to = implode('',explode(':',$trip->trip_location_datel_arrtime));
 $key = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
 $url = "https://maps.googleapis.com/maps/api/timezone/json?location=" . $latLng_timezone_to . "&timestamp=" . $from_timestamp_to . "&key=" . $key;
 $url = preg_replace("/ /", "%20", $url);
@@ -232,17 +232,18 @@ $test_timezone_to = ($googleDirection['timeZoneName']);
 // print_r($test);	
 
 $words = explode(" ", $test_timezone_to);
-$acronym_to = "";
+    $acronym_to = "";
 
-foreach ($words as $w) {
-    $acronym_to .= $w[0];
+    foreach ($words as $w) {
+      $acronym_to .= $w[0];
+      
 }
 
 $hotel = '';
 $rental = '';
 $hotel_oneway = '';
 $rental_oneway = '';
-if (!$trip->trip_hotel_name == NULL || !$trip->trip_hotel_name == '') {
+if(!$trip->trip_hotel_name == NULL || !$trip->trip_hotel_name == ''){
     $hotel .= '<div style="display: flex;">
     <div style="height: 50px;width: 50px;   background-color: #f3a02e;position: absolute;
     border-color: #ffffff;
@@ -265,7 +266,7 @@ if (!$trip->trip_hotel_name == NULL || !$trip->trip_hotel_name == '') {
 </div>
 ';
 
-    $hotel_oneway .= '<div style="display: flex;">
+$hotel_oneway .= '<div style="display: flex;">
 <div style="height: 50px;width: 50px;   background-color: #f3a02e;position: absolute;
 border-color: #ffffff;
 border-width: 5px;
@@ -287,7 +288,7 @@ border-radius: 50%;margin-bottom:5px"><img style="position:absolute;margin-left:
 </div>
 ';
 }
-if (!$trip->trip_rental_agency == NULL || !$trip->trip_rental_agency == '') {
+if(!$trip->trip_rental_agency == NULL || !$trip->trip_rental_agency == ''){
     $rental .= '<div style="display: flex;">
                     
     <div style="height: 50px;width: 50px;   background-color: #f3a02e;position: absolute;
@@ -310,12 +311,13 @@ if (!$trip->trip_rental_agency == NULL || !$trip->trip_rental_agency == '') {
     <div style="margin: 2px;"><b>Pick-up: </b>' . $trip->trip_rental_date_pick . '<div align="right" style="margin-top:-16px;font-weight: bolder;"><b>Drop-off: </b>' . $trip->trip_rental_date_drop . '</div></div>
 </div>
 </div>';
+
 }
 
 $trip->setProgressing($idtrip, 15);
 echo "15,";
 
-if ($trip->trip_location_triptype == 'r') {
+if($trip->trip_location_triptype == 'r'){
 
     $html = '<div style="display: flex;">
                         <div style="height: 50px;width: 50px;   background-color: #f3a02e;position: absolute;
@@ -337,14 +339,14 @@ if ($trip->trip_location_triptype == 'r') {
 
                         <div style="border-bottom: medium solid gray;margin: 2px;"><b>Flight: </b>' . $trip->trip_dep_flight_no . '/Seat ' . $trip->trip_dep_seat_no . '
                         <div align="right" style="margin-top:-16px;text-align:right;">Date:' . $trip->trip_location_datel . '</div></div>
-                        <div style="margin: 2px;"><b>Departure: </b>' . $trip->trip_location_from . '<div align="right" style="margin-top:-16px;font-weight: bolder;">' . $trip->trip_location_datel_deptime . '(' . $acronym_from . ')</div></div>
-                        <div style="margin: 2px;"><b>Arrival: </b>' . $trip->trip_location_to . '<div align="right" style="margin-top:-16px;font-weight: bolder;">' . $trip->trip_location_datel_arrtime . '(' . $acronym_to . ')</div></div>
+                        <div style="margin: 2px;"><b>Departure: </b>' . $trip->trip_location_from . '<div align="right" style="margin-top:-16px;font-weight: bolder;">' . $trip->trip_location_datel_deptime . '('.$acronym_from.')</div></div>
+                        <div style="margin: 2px;"><b>Arrival: </b>' . $trip->trip_location_to . '<div align="right" style="margin-top:-16px;font-weight: bolder;">' . $trip->trip_location_datel_arrtime . '('.$acronym_to.')</div></div>
                         
                     </div>
     </div>
-                ' . $rental . ' 
+                '.$rental.' 
                     
-                ' . $hotel . '
+                '.$hotel.'
 
                 
                     <div style="display: flex;">
@@ -363,17 +365,21 @@ if ($trip->trip_location_triptype == 'r') {
                     <div style="margin-left:7%;margin-right:5%;font-family:Montserrat-Regular;" >
                         <div  style="white-space: nowrap;display:inline-block;text-align:left;border-bottom: medium solid gray;margin: 2px;"><b>Flight: </b>AA765/Seat 15A<div align="right" style="margin-top:-16px;text-align:right;font-weight: bolder;">Date:' . $trip->trip_location_dater . '</div></div>
 
-                        <div style="margin: 2px;"><b>Departure: </b>' . $trip->trip_location_to . '<div align="right" style="margin-top:-16px;font-size:14px">' . $trip->trip_location_dater_deptime . ' (' . $acronym_to . ')</div></div>
-                        <div style="margin: 2px;"><b>Arrival: </b>' . $trip->trip_location_from . '<div align="right" style="margin-top:-16px;font-size:14px">' . $trip->trip_location_dater_arrtime . ' (' . $acronym_from . ')</div></div>
+                        <div style="margin: 2px;"><b>Departure: </b>' . $trip->trip_location_to . '<div align="right" style="margin-top:-16px;font-size:14px">' . $trip->trip_location_dater_deptime . ' ('.$acronym_to.')</div></div>
+                        <div style="margin: 2px;"><b>Arrival: </b>' . $trip->trip_location_from . '<div align="right" style="margin-top:-16px;font-size:14px">' . $trip->trip_location_dater_arrtime . ' ('.$acronym_from.')</div></div>
                     </div> 
                     </div>  ';
-} else {
-    if ($rental || $hotel_oneway) {
+    }
+
+
+else{
+    if($rental || $hotel_oneway){
         $one_way = 'border-left: 6px solid #f3a02e;height: 80px;';
-    } else {
+    }
+    else{
         $one_way = '';
     }
-    if ($rental && !$hotel_oneway) {
+    if($rental && !$hotel_oneway){
         $rental = '<div style="display: flex;">
                     
         <div style="height: 50px;width: 50px;   background-color: #f3a02e;position: absolute;
@@ -412,19 +418,19 @@ if ($trip->trip_location_triptype == 'r') {
                         <p style="font-size:18px;color:white;margin:0px;padding:5px;font-family:Montserrat-Medium;text-align:center;"><b>Flight Information</b></p>
                     </div>
                  
-                  <div style="' . $one_way . 'margin-left:45px">
+                  <div style="'.$one_way.'margin-left:45px">
                 <div  style="margin-left:5%;margin-right:5%;font-family:Montserrat-Regular;">
 
                     <div style="border-bottom: medium solid gray;margin: 2px;"><b>Flight: </b>' . $trip->trip_dep_flight_no . '/Seat ' . $trip->trip_dep_seat_no . '
                     <div align="right" style="margin-top:-16px;text-align:right;">Date:' . $trip->trip_location_datel . '</div></div>
-                    <div style="margin: 2px;"><b>Departure: </b>' . $trip->trip_location_from . '<div align="right" style="margin-top:-16px;font-weight: bolder;">' . $trip->trip_location_datel_deptime . '(' . $acronym_from . ')</div></div>
-                    <div style="margin: 2px;"><b>Arrival: </b>' . $trip->trip_location_to . '<div align="right" style="margin-top:-16px;font-weight: bolder;">' . $trip->trip_location_datel_arrtime . '(' . $acronym_to . ')</div></div>
+                    <div style="margin: 2px;"><b>Departure: </b>' . $trip->trip_location_from . '<div align="right" style="margin-top:-16px;font-weight: bolder;">' . $trip->trip_location_datel_deptime . '('.$acronym_from.')</div></div>
+                    <div style="margin: 2px;"><b>Arrival: </b>' . $trip->trip_location_to . '<div align="right" style="margin-top:-16px;font-weight: bolder;">' . $trip->trip_location_datel_arrtime . '('.$acronym_to.')</div></div>
                     
                 </div>
                 </div>
                 
-                ' . $rental . '
-                ' . $hotel_oneway . '
+                '.$rental.'
+                '.$hotel_oneway.'
 
                
                  ';
@@ -540,13 +546,13 @@ if ($xml->status == 'OK') {
                 } else {
                     $html .= $val->title;
                 }
-                $html .= '<br><br>';
-                //                $html.=$val->title . '</b><br><br>';
-                $html .= $val->pubDate . '<br><br>';
-                $html .= '<a href="' . $val->link . '">' . $val->link . '</a><br><br>';
+                $html.='<br><br>';
+//                $html.=$val->title . '</b><br><br>';
+                $html.=$val->pubDate . '<br><br>';
+                $html.='<a href="' . $val->link . '">' . $val->link . '</a><br><br>';
                 $desc = strip_tags($val->description);
                 $desc = substr($desc, 0, 1400);
-                $html .= trim($desc);
+                $html.=trim($desc);
                 $have_advice = 1;
             }
         }
@@ -646,14 +652,14 @@ if ($tmp && $stmt->rowCount() > 0) { // add new page
                 if ($i < $pagecount)
                     $mpdf->AddPage($document->orientation);
             }
-        } else {
+        }else {
             //$html = '<div align="center"><img src="'.WEB_HOSTING_URL.'ajaxfiles/uploads/'.$document->name.'" width="100%" style="max-height:530px" /></div>';   
             $html = '<div align="center" style="margin-top: 3%;"><img src="' . WEB_HOSTING_URL . 'ajaxfiles/uploads/' . $document->name . '" width="100%" style="max-height:420px" /></div>';
             $mpdf->WriteHTML($html);
             $html = '';
         }
     }
-    //    $mpdf->WriteHTML($html); 
+//    $mpdf->WriteHTML($html); 
 }
 
 // Hotel Itinerary 
@@ -697,7 +703,7 @@ if ($tmp && $stmt->rowCount() > 0) { // add new page
                 if ($i < $pagecount)
                     $mpdf->AddPage();
             }
-        } else { //$html .= '<div align="center"><img src="'.WEB_HOSTING_URL.'ajaxfiles/uploads/'.$document->name.'" width="100%" style="max-height:530px" /></div>';
+        }else { //$html .= '<div align="center"><img src="'.WEB_HOSTING_URL.'ajaxfiles/uploads/'.$document->name.'" width="100%" style="max-height:530px" /></div>';
             $html .= '<div align="center" style="margin-top: 3%;"><img src="' . WEB_HOSTING_URL . 'ajaxfiles/uploads/' . $document->name . '" width="100%" style="max-height:520px" /></div>';
             $mpdf->WriteHTML($html);
             $html = '';
@@ -746,7 +752,7 @@ if ($tmp && $stmt->rowCount() > 0) { // add new page
                 if ($i < $pagecount)
                     $mpdf->AddPage($document->orientation);
             }
-        } else {
+        }else {
             //$html = '<div align="center"><img src="'.WEB_HOSTING_URL.'ajaxfiles/uploads/'.$document->name.'" width="100%" style="max-height:530px" /></div>';   
             $html = '<div align="center" style="margin-top: 3%;"><img src="' . WEB_HOSTING_URL . 'ajaxfiles/uploads/' . $document->name . '" width="100%" style="max-height:420px" /></div>';
             $mpdf->WriteHTML($html);
@@ -765,7 +771,7 @@ if ($tmp && $stmt->rowCount() > 0) { //$mpdf->WriteHTML($html);
     $mpdf->AddPage();
     $html = '';
     // $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>REMINDERS</b></p>';
-    $html .= '<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
+    $html .='<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>SCHEDULE</b></p>
                 <div style=" width:50px;height: 3px;background: #f3a02e;margin: 0 auto;margin-bottom: 10px;"></div>
             </div>
@@ -813,14 +819,14 @@ if ($tmp && $stmt->rowCount() > 0) { //$mpdf->WriteHTML($html);
                 <div style=" width:50px;height: 3px;background: #f3a02e;margin: 0 auto;margin-bottom: 10px;"></div>
             </div>';
     $notes = $stmt->fetchAll(PDO::FETCH_OBJ);
-
+    
     //$html .= '<table width="65%" align="center" cellspacing="10">';
     $html .= '<div style="font-family: Montserrat-Regular;border:1px solid #0f6fc6; padding-top: 30px;padding-bottom: 30px;margin-bottom: 30px;color: inherit;background-color: #ffffff;margin-left:25px;margin-right:25px;margin-top: 3%;">';
     foreach ($notes as $note) {
-        //        $html .= '<tr>
-        //                   <td width="10%" align="center" valign="top"><img src="' . WEB_HOSTING_URL . 'images/pdf_icon2.png" /></td>
-        //                   <td width="90%" align="left" valign="top" style="color:#444444; font-family: OpenSans; font-size:20px">' . $i . '. ' . $note->text . '</td>
-        //                   </tr>';
+//        $html .= '<tr>
+//                   <td width="10%" align="center" valign="top"><img src="' . WEB_HOSTING_URL . 'images/pdf_icon2.png" /></td>
+//                   <td width="90%" align="left" valign="top" style="color:#444444; font-family: OpenSans; font-size:20px">' . $i . '. ' . $note->text . '</td>
+//                   </tr>';
         $html .= '
 	<div style="margin-top:5px;margin-left: 25px;margin-right: 25px;"> 
     <div style="float: right; width: 95%;padding-top:15px">' . $note->text . '</div>
@@ -835,7 +841,7 @@ if ($tmp && $stmt->rowCount() > 0) { //$mpdf->WriteHTML($html);
         $i++;
     }
     $html .= '</div>';
-    //    $html .= '</tabl  e>';
+//    $html .= '</tabl  e>';
     $mpdf->WriteHTML($html);
 }
 
@@ -843,7 +849,7 @@ if ($tmp && $stmt->rowCount() > 0) { //$mpdf->WriteHTML($html);
 // Route 
 $mpdf->AddPage();
 $html = '';
-$html .= '<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
+$html .='<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>ROUTE</b></p>
                 <div style=" width:50px;height: 3px;background: #f3a02e;margin: 0 auto;margin-bottom: 10px;"></div>
             </div>
@@ -903,12 +909,12 @@ if ($trip->trip_option_directions) {
     }
     $key = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
     $key2 = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
-    $map_data = $trip->getStaticGmapForDirections(str_replace(' ', '', $origin_D), str_replace(' ', '', $destination_D), $key, $key2, '640x430');
+    $map_data = $trip->getStaticGmapForDirections(str_replace(' ', '', $origin_D), str_replace(' ', '', $destination_D), $key, $key2,'640x430');
     // print_r($map_data);
-    $html .= '<div style="background-image:url(\'' . $map_data['url'] . '\');background-repeat: no-repeat;background-color:white;background-position: center;height: 700px;background-size:contain;">' .
-        '<p style="margin-top: 300px; margin-left: 500px;width: 120px;background-color: white;color: black;font-size: 16px;padding: 8px 10px;">' .
-        '<img src="' . WEB_HOSTING_URL . 'images/car_icon.png" style="height:16px;width: auto;"> ' . $map_data['distance'] . '<br>' . $map_data['estimateTime'] .
-        '</p></div>';
+    $html .= '<div style="background-image:url(\''.$map_data['url'].'\');background-repeat: no-repeat;background-color:white;background-position: center;height: 700px;background-size:contain;">' .
+                '<p style="margin-top: 300px; margin-left: 500px;width: 120px;background-color: white;color: black;font-size: 16px;padding: 8px 10px;">' .
+                    '<img src="'.WEB_HOSTING_URL.'images/car_icon.png" style="height:16px;width: auto;"> '.$map_data['distance'].'<br>'.$map_data['estimateTime'] .
+                '</p></div>';
     $mpdf->WriteHTML($html);
     $html = '';
 } elseif ($trip->trip_location_from_latlng_drivingportion) {
@@ -926,7 +932,7 @@ if ($trip->trip_option_directions) {
     $destinationd = str_replace('(', '', $trip->trip_location_to_latlng_drivingportion);
     $destinationd = str_replace(')', '', $destinationd);
     $key = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
-    $map_url = $trip->getStaticGmapURLForDirection(str_replace(' ', '', $origind), str_replace(' ', '', $destinationd), $key, 'vehicle', '440x200');
+    $map_url = $trip->getStaticGmapURLForDirection(str_replace(' ', '', $origind), str_replace(' ', '', $destinationd), $key,'vehicle', '440x200');
     $html .= '<img style="margin-top: 3%;margin-left:25px;margin-right:25px;"  width="440" height="200"  src="' . $map_url . '" width="100%" />';
     $mpdf->WriteHTML($html);
 }
@@ -934,41 +940,41 @@ $trip->setProgressing($idtrip, 45);
 echo "45,";
 
 if ($trip->trip_location_from_latlng_trainportion) {
-    // portion Route by train
+// portion Route by train
     $mpdf->AddPage();
     $html = '';
-    $html .= '<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
+     $html .='<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>ROUTE by TRAIN</b></p>
                 <div style=" width:50px;height: 3px;background: #f3a02e;margin: 0 auto;margin-bottom: 10px;"></div>
             </div>
         ';
-    // $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>ROUTE by TRAIN</b></p>';
+   // $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>ROUTE by TRAIN</b></p>';
     $origint = str_replace('(', '', $trip->trip_location_from_latlng_trainportion);
     $origint = str_replace(')', '', $origint);
     $destinationt = str_replace('(', '', $trip->trip_location_to_latlng_trainportion);
     $destinationt = str_replace(')', '', $destinationt);
     $key = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
-    $map_url = $trip->getStaticGmapURLForDirection(str_replace(' ', '', $origint), str_replace(' ', '', $destinationt), $key, 'train', '440x200');
+    $map_url = $trip->getStaticGmapURLForDirection(str_replace(' ', '', $origint), str_replace(' ', '', $destinationt), $key, 'train','440x200');
     $html .= '<img style="margin-top: 3%;margin-left:25px;margin-right:25px;"  width="440" height="200"  src="' . $map_url . '" width="100%" />';
     $mpdf->WriteHTML($html);
 }
 
 if ($trip->trip_location_from_latlng_flightportion) {
-    // portion Route flight
+// portion Route flight
     $mpdf->AddPage();
     $html = '';
-    $html .= '<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
+    $html .='<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>FLIGHT ROUTE</b></p>
                 <div style=" width:50px;height: 3px;background: #f3a02e;margin: 0 auto;margin-bottom: 10px;"></div>
             </div>
         ';
-    // $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>FLIGHT ROUTE</b></p>';
+   // $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>FLIGHT ROUTE</b></p>';
     $originf = str_replace('(', '', $trip->trip_location_from_latlng_flightportion);
     $originf = str_replace(')', '', $originf);
     $destinationf = str_replace('(', '', $trip->trip_location_to_latlng_flightportion);
     $destinationf = str_replace(')', '', $destinationf);
     $key = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
-    $map_url = $trip->getStaticGmapURLForDirection(str_replace(' ', '', $originf), str_replace(' ', '', $destinationf), $key, 'plane', '440x200');
+    $map_url = $trip->getStaticGmapURLForDirection(str_replace(' ', '', $originf), str_replace(' ', '', $destinationf), $key, 'plane','440x200');
     $html .= '<img style="margin-top: 3%;margin-left:25px;margin-right:25px;"   src="' . $map_url . '" width="100%" />';
     $mpdf->WriteHTML($html);
 }
@@ -976,7 +982,7 @@ if ($trip->trip_location_from_latlng_flightportion) {
 // Route Destination  
 $mpdf->AddPage();
 $html = '';
-$html .= '<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
+$html .='<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>ROUTE DESTINATION</b></p>
                 <div style=" width:50px;height: 3px;background: #f3a02e;margin: 0 auto;margin-bottom: 10px;"></div>
             </div>
@@ -992,7 +998,7 @@ $mpdf->WriteHTML($html);
 // Detailed Route Destination  
 $mpdf->AddPage();
 $html = '';
-$html .= '<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
+$html .='<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>DETAILED ROUTE DESTINATION</b></p>
                 <div style=" width:50px;height: 3px;background: #f3a02e;margin: 0 auto;margin-bottom: 10px;"></div>
             </div>
@@ -1008,8 +1014,8 @@ $trip->setProgressing($idtrip, 50);
 echo "50,";
 
 if ($trip->trip_option_busmap || $trip->trip_option_weather) {
-    //echo "https://maps.googleapis.com/maps/api/geocode/xml?latlng=".$destination."&sensor=false&key=".$key.'<br><br>';
-    //$xml=simplexml_load_file("https://maps.googleapis.com/maps/api/geocode/xml?latlng=".$destination."&sensor=false&key=".$key) or die("Error: Cannot create object xml");
+//echo "https://maps.googleapis.com/maps/api/geocode/xml?latlng=".$destination."&sensor=false&key=".$key.'<br><br>';
+//$xml=simplexml_load_file("https://maps.googleapis.com/maps/api/geocode/xml?latlng=".$destination."&sensor=false&key=".$key) or die("Error: Cannot create object xml");
     $url = "https://maps.googleapis.com/maps/api/geocode/xml?latlng=" . $destination . "&sensor=false&key=" . $key;
     $xml = TripPlan::getXmlFromUrl($url);
     if ($xml->status == 'OK') {
@@ -1030,20 +1036,21 @@ if ($trip->trip_option_busmap || $trip->trip_option_weather) {
 //embassies
 $html = '';
 if ($trip->trip_option_embassis) {
-    // $mpdf->AddPage();
+   // $mpdf->AddPage();
     $html = $trip->getMapEmbassis($destination, $key, $trip->trip_list_embassis);
-    // $mpdf->WriteHTML($html);
-    if ($html != NULL) {
+   // $mpdf->WriteHTML($html);
+   if($html!=NULL){
         $mpdf->AddPage();
         $mpdf->WriteHTML($html);
     }
+    
 }
 
 $html = '';
 // weather  
 if ($trip->trip_option_weather) {
     $mpdf->AddPage();
-    //    $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>WEATHER AT ' . $locality_long_name . '</b><p>';
+//    $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>WEATHER AT ' . $locality_long_name . '</b><p>';
     //$html .= $trip->getWeatherFilters($locality_long_name,1);
     $html .= '<div style="margin-left: 25px;margin-right: 25px;">
             <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
@@ -1114,7 +1121,7 @@ if ($tmp && $stmt->rowCount() > 0) { // add new page
                 if ($i < $pagecount)
                     $mpdf->AddPage();
             }
-        } else { //$html .= '<div align="center"><img src="'.WEB_HOSTING_URL.'ajaxfiles/uploads/'.$document->name.'" width="100%" style="max-height:530px" /></div>';
+        }else { //$html .= '<div align="center"><img src="'.WEB_HOSTING_URL.'ajaxfiles/uploads/'.$document->name.'" width="100%" style="max-height:530px" /></div>';
             $html .= '<div align="center" style="margin-top: 3%;"><img src="' . WEB_HOSTING_URL . 'ajaxfiles/uploads/' . $document->name . '" width="100%" style="max-height:420px" /></div>';
             $mpdf->WriteHTML($html);
             $html = '';
@@ -1134,7 +1141,7 @@ if ($tmp && $stmt->rowCount() > 0) { // add new page
     //$mpdf->AddPage();
     $documents = $stmt->fetchAll(PDO::FETCH_OBJ);
     //$html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>DRIVER\'S LICENSE</b></p>';
-    $html .= '<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
+    $html .='<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>DRIVER\'S LICENSE</b></p>
                 <div style=" width:50px;height: 3px;background: #f3a02e;margin: 0 auto;margin-bottom: 10px;"></div>
             </div>
@@ -1159,7 +1166,7 @@ if ($tmp && $stmt->rowCount() > 0) { // add new page
                 if ($i < $pagecount)
                     $mpdf->AddPage();
             }
-        } else { //$html .= '<div align="center"><img src="'.WEB_HOSTING_URL.'ajaxfiles/uploads/'.$document->name.'" width="100%" style="max-height:530px" /></div>';
+        }else { //$html .= '<div align="center"><img src="'.WEB_HOSTING_URL.'ajaxfiles/uploads/'.$document->name.'" width="100%" style="max-height:530px" /></div>';
             $html .= '<div align="center" style="margin-top: 3%;"><img src="' . WEB_HOSTING_URL . 'ajaxfiles/uploads/' . $document->name . '" width="100%" style="max-height:420px" /></div>';
             $mpdf->WriteHTML($html);
             $html = '';
@@ -1179,7 +1186,7 @@ $html = '';
 if ($trip->trip_option_subway) {
     $mpdf->AddPage();
     //$html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>SUBWAY MAP</b></p>';
-    $html .= '<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
+    $html .='<div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>SUBWAY MAP</b></p>
                 <div style=" width:50px;height: 3px;background: #f3a02e;margin: 0 auto;margin-bottom: 10px;"></div>
             </div>
@@ -1205,7 +1212,7 @@ if ($trip->trip_option_subway) {
     }
     if (!$indir)
         $html .= '<img style="margin-top: 3%;margin-left:25px;margin-right:25px" src="https://maps.googleapis.com/maps/api/staticmap?center=' . $trip->trip_location_to . '&style=feature:transit.line|element:all|visibility:simplified|color:0xFF6319&zoom=13&size=440x200&scale=2&key=AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y" width="100%" />';
-    $mpdf->WriteHTML($html);
+        $mpdf->WriteHTML($html);
 }
 $trip->setProgressing($idtrip, 60);
 echo "60,";
@@ -1258,7 +1265,7 @@ if ($trip->trip_option_hotels) {
     $data = $trip->getMapFilters($destination, 'lodging', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //		  $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>HOTELS/MOTELS</b></p>';
+//		  $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>HOTELS/MOTELS</b></p>';
         $html = '<div>
             <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>HOTELS/MOTELS</b></p>
@@ -1277,7 +1284,7 @@ if ($trip->trip_option_hotels) {
                     ' . $data . '
                 </table>
         </div>';
-        //        $html .= $data; //$trip->getMapFilters($destination, 'lodging' , $key);
+//        $html .= $data; //$trip->getMapFilters($destination, 'lodging' , $key);
         $mpdf->WriteHTML($html);
     }
 }
@@ -1286,8 +1293,8 @@ if ($trip->trip_option_police) {
     $data = $trip->getMapFilters($destination, 'police', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>POLICE STATIONS</b></p>';
-        //        $html .= $data; //$trip->getMapFilters($destination, 'police' , $key);
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>POLICE STATIONS</b></p>';
+//        $html .= $data; //$trip->getMapFilters($destination, 'police' , $key);
         $html = '<div>
                 <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                     <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>POLICE STATIONS</b></p>
@@ -1317,8 +1324,8 @@ if ($trip->trip_option_hospitals) {
     $data = $trip->getMapFilters($destination, 'hospital', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>HOSPITALS</b></p>';
-        //        $html .= $data; //$trip->getMapFilters($destination, 'hospital' , $key);
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>HOSPITALS</b></p>';
+//        $html .= $data; //$trip->getMapFilters($destination, 'hospital' , $key);
         $html = '<div>
              <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>HOSPITALS</b></p>
@@ -1346,8 +1353,8 @@ if ($trip->trip_option_gas) {
     $data = $trip->getMapFilters($destination, 'gas_station', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>SERVICE STATIONS (GAS/PETROL/DIESEL)</b></p>';
-        //        $html .= $data; //$trip->getMapFilters($destination, 'gas_station' , $key);
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>SERVICE STATIONS (GAS/PETROL/DIESEL)</b></p>';
+//        $html .= $data; //$trip->getMapFilters($destination, 'gas_station' , $key);
         $html = '<div>
              <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>SERVICE STATIONS (GAS/PETROL/DIESEL)</b></p>
@@ -1375,8 +1382,8 @@ if ($trip->trip_option_taxi) {
     $data = $trip->getMapFilters($destination, 'taxi_stand', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>TAXI SERVICES</b></p>';
-        //        $html .= $data;
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>TAXI SERVICES</b></p>';
+//        $html .= $data;
         $html = '<div>
             <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>TAXI SERVICES</b></p>
@@ -1404,8 +1411,8 @@ if ($trip->trip_option_airfields) {
     $data = $trip->getMapFilters($destination, 'airport', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>AIRFIELDS</b></p>';
-        //        $html .= $data;
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>AIRFIELDS</b></p>';
+//        $html .= $data;
         $html = '<div>
             <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>AIRFIELDS</b></p>
@@ -1435,8 +1442,8 @@ if ($trip->trip_option_parking) {
     $data = $trip->getMapFilters($destination, 'parking', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>PARKING</b></p>';
-        //        $html .= $data;
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>PARKING</b></p>';
+//        $html .= $data;
         $html = '<div>
             <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>PARKING</b></p>
@@ -1464,8 +1471,8 @@ if ($trip->trip_option_university) {
     $data = $trip->getMapFilters($destination, 'school', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>UNIVERSITIES</b></p>';
-        //        $html .= $data;
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>UNIVERSITIES</b></p>';
+//        $html .= $data;
         $html = '<div>
            <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>UNIVERSITIES</b></p>
@@ -1493,8 +1500,8 @@ if ($trip->trip_option_atm) {
     $data = $trip->getMapFilters($destination, 'atm', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>ATM</b></p>';
-        //        $html .= $data;
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>ATM</b></p>';
+//        $html .= $data;
         $html = '<div>
             <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>ATM</b></p>
@@ -1524,8 +1531,8 @@ if ($trip->trip_option_subway_station) {
     $data = $trip->getMapFilters($destination, 'subway_station', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>Subway Stations</b></p>';
-        //        $html .= $data;
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>Subway Stations</b></p>';
+//        $html .= $data;
         $html = '<div>
            <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>SUBWAY STATIONS</b></p>
@@ -1553,8 +1560,8 @@ if ($trip->trip_option_metro) {
     $data = $trip->getMapFilters($destination, 'train_station', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>Metro Stations</b></p>';
-        //        $html .= $data;
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>Metro Stations</b></p>';
+//        $html .= $data;
         $html = '<div>
             <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>METRO STATIONS</b></p>
@@ -1582,8 +1589,8 @@ if ($trip->trip_option_playground) {
     $data = $trip->getMapFilters($destination, 'park', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>Parks</b></p>';
-        //        $html .= $data;
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>Parks</b></p>';
+//        $html .= $data;
         $html = '<div>
             <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>PARKS</b></p>
@@ -1613,8 +1620,8 @@ if ($trip->trip_option_museum) {
     $data = $trip->getMapFilters($destination, 'museum', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>MUSEUMS</b></p>';
-        //        $html .= $data;
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>MUSEUMS</b></p>';
+//        $html .= $data;
         $html = '<div>
            <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>MUSEUMS</b></p>
@@ -1644,8 +1651,8 @@ if ($trip->trip_option_library) {
     $data = $trip->getMapFilters($destination, 'library', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>LIBRARIES</b></p>';
-        //        $html .= $data;
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>LIBRARIES</b></p>';
+//        $html .= $data;
         $html = '<div>
             <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>LIBRARIES</b></p>
@@ -1673,8 +1680,8 @@ if ($trip->trip_option_pharmacy) {
     $data = $trip->getMapFilters($destination, 'pharmacy', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>PHARMACIES</b></p>';
-        //        $html .= $data;
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>PHARMACIES</b></p>';
+//        $html .= $data;
         $html = '<div>
             <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>PHARMACIES</b></p>
@@ -1704,8 +1711,8 @@ if ($trip->trip_option_church) {
     $data = $trip->getMapFilters($destination, 'church', $key);
     if (!empty($data)) {
         $mpdf->AddPage();
-        //        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>RELIGIOUS INSTITUTIONS</b></p>';
-        //        $html .= $data;
+//        $html .= '<p align="center" style="color:#F1A033; font-size: 18px; font-family: OpenSansBold; letter-spacing:1px"><b>RELIGIOUS INSTITUTIONS</b></p>';
+//        $html .= $data;
         $html = '<div>
             <div style="position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;">
                 <p style="margin-bottom:5px;font-family: Montserrat-Medium;color: #343b4a; font-size: 26px;color: #111;text-transform: uppercase;text-align: center;"><b>RELIGIOUS INSTITUTIONS</b></p>
@@ -1771,8 +1778,9 @@ $pdfpath = 'pdf/' . $pdfname . '.pdf';
 if (file_exists($pdfpath))
     unlink($pdfpath);
 try {
-    $mpdf->Output(WEB_HOSTING_URL . 'pdf/' . $pdfname . '.pdf', \Mpdf\Output\Destination::FILE);
-} catch (\Mpdf\MpdfException $e) { // Note: safer fully qualified exception name used for catch
+    $mpdf->Output(WEB_HOSTING_URL.'pdf/' . $pdfname . '.pdf', \Mpdf\Output\Destination::FILE);
+}
+catch (\Mpdf\MpdfException $e) { // Note: safer fully qualified exception name used for catch
     // Process the exception, log, print etc.
     echo $e->getMessage();
 }
@@ -1785,3 +1793,4 @@ $trip->setProgressing($idtrip, 100);
 print_r($trip->error);
 echo "100,";
 echo "OK";
+?>

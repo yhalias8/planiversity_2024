@@ -33,6 +33,10 @@ if (isset($_POST['filter_submit'])) {
         $filter[50] = $_POST['lat_click'] . '::' . $_POST['lng_click'] . '::' . $_POST['radius'];
     else
         $filter[50] = '0';
+        
+        // echo "<pre>";
+        // print_r($_POST);
+        // die();
 
     $trip->edit_data_filter($id_trip, $filter, $embassis, $directions_text);
     if (!$trip->error)
@@ -277,11 +281,11 @@ include('include_doctype.php');
                         </a>
                     </li>
                     <li>
-				            	<a href="<?php echo SITE; ?>trip/plans/<?php echo $_GET['idtrip']; ?>" class="left-nav-button">
-				                	<!--<img src="<?php echo SITE; ?>assets/images/step_filters.png" alt="Filters">-->
-				                 	<p class="main-color"><img class="mr-2" src="<?php echo SITE; ?>images/plans.png" alt="Plans">Plans</p>
-				              	</a>
-				    </li>
+                        <a href="<?= SITE; ?>trip/plans/<?= $_GET['idtrip']; ?>" class="left-nav-button">
+                            <!--<img src="<?= SITE; ?>assets/images/step_filters.png" alt="Filters">-->
+                            <p class="main-color"><img class="mr-2" src="<?= SITE; ?>images/plans.png" alt="Schedule">Plans</p>
+                        </a>
+                    </li>
                     <li>
                         <a href="<?= SITE; ?>trip/travel-documents/<?= $_GET['idtrip']; ?>" class="left-nav-button">
                             <!--<img src="<?= SITE; ?>assets/images/step_documents.png" alt="Documents">-->
@@ -430,17 +434,14 @@ include('include_doctype.php');
                                             </div>
                                             <div class="border-grey rounded">
                                                 <div class="d-flex py-3 px-2 flex-row-reverse filter_button justify-content-between">
-                                                    
                                                     <div>
-                                                    <a href="<?= SITE; ?>trip/plans/<?= $_GET['idtrip']; ?>" class="skip-note-btn mobile_skip">Skip This Section</a>
+                                                    <a href="<?= SITE; ?>trip/plans/<?= $_GET['idtrip']; ?>" class="skip-note-btn mobile_skip">Skip This Section</a>                                                        
                                                     <?php if ($showclear) { ?>
                                                         <input name="filter_clear" id="filter_clear" type="submit" class="refresh-btn text-dark mr-2" value="Clear Filter">
-                                                    <?php } ?>                                                    
-                                                    <input name="filter_submit" id="filter_submit" type="submit" class="refresh-btn mt-3 mt-xs-0 mt-sm-0" value="Finished, Next Step">
+                                                    <?php } ?>                                                        
+                                                    <input name="filter_submit" id="filter_submit" type="submit" class="create-trip-btn text-dark" value="Finished, Next Step">
                                                     </div>
-                                                    
-                                                    <a href="<?php echo SITE; ?>trip/plan-notes/<?php echo $_GET['idtrip']; ?>" class="skip-note-btn mb mobile_skip">Back</a>
-                                                    
+                                                    <a href="<?php echo SITE; ?>trip/plan-notes/<?php echo $_GET['idtrip']; ?>" class="skip-note-btn mb mobile_skip">Back</a>                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -554,10 +555,6 @@ include('include_doctype.php');
             $end_marker =  $markerAlpaArr[count(json_decode($trip->location_multi_waypoint_latlng)) + 1];
             $filter_end_marker =  $markerAlpaArr[count(json_decode($trip->location_multi_waypoint_latlng)) + 1];
         }
-        
-        //var_dump($end_marker);
-        
-        
         ?>
         var location_multi_waypoint = <?= $location_multi_waypoint_latlng; ?>;
 
@@ -951,6 +948,9 @@ include('include_doctype.php');
 
 
         <?php if (!$radius) $radius = $factor * 10; ?>
+        
+        console.log('$radius',<?=$radius?>);
+        
         var marker_hotels = [];
         var marker_police = [];
         var marker_hospital = [];
@@ -1121,6 +1121,9 @@ include('include_doctype.php');
                             radius: <?= $radius; ?>, // 10 miles in meters
                             keyword: filter,
                         };
+                        
+
+                        
                     } else {
                         var request = {
                             location: myLocation,
@@ -1128,6 +1131,9 @@ include('include_doctype.php');
                             types: [filter],
                         };
                     }
+                    
+                        console.log('2nd Radious',<?= $radius; ?>);
+                        console.log('filter',filter);
 
                     infowindow = new google.maps.InfoWindow();
                     var service = new google.maps.places.PlacesService(map_filters);

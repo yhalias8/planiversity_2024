@@ -40,11 +40,11 @@ $(document).ready(function() {
 	var docname6 = $('#job_docname6').val();
 	var docname7 = $('#job_docname7').val();
 	var docname8 = $('#job_docname8').val();
-    
-    var emp_map = $('.emp_map').map(function() {
+	
+	var emp_map = $('.emp_map').map(function() {
     return this.value;
     }).get();
-	
+  
 	$.post(SITE+"ajaxfiles/add_jobs.php", {name : $('#job_name').val(), category : $('#job_category').val(), details : $('#job_details').val(), cnumbers : $('#job_cnumbers').val(), address : $('#job_address').val(), employees : emp_map, city : $('#job_city').val(), state : $('#job_state').val(), zcode : $('#job_zcode').val(), doc1 : docname1, doc2 : docname2, doc3 : docname3, doc4 : docname4, doc5 : docname5, doc6 : docname6, doc7 : docname7, doc8 : docname8 },
     function(data)
        { if(data['error'])
@@ -57,7 +57,7 @@ $(document).ready(function() {
              $('#data_list').append(data['txt']);      
              $('#data_list').fadeIn(1000);
              //clear the form
-			$("#job_form").trigger("reset");
+            $("#job_form").trigger("reset");
             $('#added-emp-group').html('');
            }
        }, "json");

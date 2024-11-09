@@ -61,9 +61,21 @@ function getPlansList() {
 					checkin_flag = `<span class="schedule_linked"><i class="fa fa-check" aria-hidden="true" title="Checked In"></i></span>`
 				}
 
+				let reservation_flag = ''
+
+				if (item.reservation_flag == 1) {
+					reservation_flag = `<span class="schedule_linked"><i class="fa fa-building" aria-hidden="true" title="Checked In"></i></span>`
+				}
+
+				let transportation_flag = ''
+
+				if (item.transportation_flag == 1) {
+					transportation_flag = `<span class="schedule_linked"><i class="fa fa-car" aria-hidden="true" title="Transportation"></i></span>`
+				}
+
 				items += `<div class="itinerary-field" id="plan_${item.id_plan}">
 				<div class="itinerary-field__content">
-				<p class="itinerary-field__icons" style="display:block">${schedule_linked} ${date_icon} ${checkin_flag}</p>				
+				<p class="itinerary-field__icons" style="display:block">${schedule_linked} ${date_icon} ${checkin_flag} ${reservation_flag} ${transportation_flag}</p>				
 				<h4 id="plan_name"> ${item.plan_name}</h4>
 				<p> <i class="fa fa-map-marker" aria-hidden="true"></i>  ${item.plan_address}</p>
 				<p id="plan_address">${item.plan_type}</p>
@@ -83,6 +95,209 @@ function getPlansList() {
 		}
 	)
 }
+
+function fillReservationData()
+{
+
+	var service = new google.maps.places.PlacesService(map);
+
+	var location = {
+		lat: parseFloat($("#location_to_lat").val()),
+		lng: parseFloat($("#location_to_lng").val())
+	};
+
+
+	var request = {
+		location: location,
+		radius: '50',
+		types: ['point_of_interest']
+	};
+
+	service.nearbySearch(request, function(results, status) {
+		if (status === google.maps.places.PlacesServiceStatus.OK) {
+			var place = results[0];
+			service.getDetails({
+				placeId: place.place_id,
+				fields: ['name', 'rating', 'formatted_phone_number', 'opening_hours', 'opening_hours.weekday_text', 'website']
+			}, function(placeDetails, status) {
+
+				let detailsContent = `
+
+                                 ${place.name ?? ''} <span> ${place.vicinity ?? ''} </span><br>
+                                `;
+				if (placeDetails.formatted_phone_number) {
+					if (placeDetails.formatted_phone_number !== 'N/A') {
+						// Sprawdzanie, czy użytkownik jest na urządzeniu mobilnym
+						const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
+						// Wybór odpowiedniego linku w zależności od urządzenia
+						const phoneLink = isMobile
+							? 'tel:' + placeDetails.formatted_phone_number
+							: 'skype:' + placeDetails.formatted_phone_number + '?call';
+
+						detailsContent += '<b>Phone: </b><a href="' + phoneLink + '">' + placeDetails.formatted_phone_number + '</a><br>';
+					} else {
+						detailsContent += '<b>Phone: </b> N/A<br>';
+					}
+				}
+
+				if (placeDetails.opening_hours) {
+					var openingHours = placeDetails.opening_hours;
+
+					if (openingHours.weekday_text) {
+						detailsContent += '<b>Opening Hours:</b><br><ul>';
+						for (var i = 0; i < openingHours.weekday_text.length; i++) {
+							detailsContent += '<li>' + openingHours.weekday_text[i] + '</li>';
+						}
+						detailsContent += '</ul>';
+					}
+				} else {
+					detailsContent += '<b>Status: </b> Closed<br>';
+				}
+
+				if (placeDetails.website) {
+					detailsContent += '<b>Website: </b> <a href="' + placeDetails.website + '" target="_blank">' + placeDetails.website + '</a><br>';
+				}
+
+				detailsContent += "<br><br>You can come back after and confirm your reservations are set.";
+
+
+				// Update the content of the info window with the details
+				document.getElementById('info-content-reservation').innerHTML = detailsContent;
+
+
+
+			});
+
+		} else {
+
+		}
+	});
+}
+
+function fillTransportationData()
+{
+
+	var service = new google.maps.places.PlacesService(map);
+
+	var location = {
+		lat: parseFloat($("#location_to_lat").val()),
+		lng: parseFloat($("#location_to_lng").val())
+	};
+
+
+	const requestCarRental = {
+		location: location,
+		radius: 32000,
+		type: 'car_rental'
+	};
+
+	const requestTaxiStand = {
+		location: location,
+		radius: 32000,
+		type: 'taxi_stand'
+	};
+
+	// Funkcja do przetwarzania wyników i aktualizacji zawartości
+	function processResults(results) {
+		results.forEach(function(result) {
+			service.getDetails({
+				placeId: result.place_id,
+				fields: ['name', 'formatted_phone_number', 'website']
+			}, function(placeDetails, status) {
+				if (status === google.maps.places.PlacesServiceStatus.OK) {
+					let phoneDisplay;
+					if (placeDetails.formatted_phone_number && placeDetails.formatted_phone_number !== 'N/A') {
+						const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+						const phoneLink = isMobile
+							? 'tel:' + placeDetails.formatted_phone_number
+							: 'skype:' + placeDetails.formatted_phone_number + '?call';
+
+						phoneDisplay = `<a href="${phoneLink}">${placeDetails.formatted_phone_number}</a>`;
+					} else {
+						phoneDisplay = 'N/A';
+					}
+
+					let companyDetails = `
+						<b>Name:</b> ${placeDetails.name ?? 'N/A'}<br>
+						<b>Phone:</b> ${phoneDisplay}<br>
+						<b>Website:</b> ${placeDetails.website ? `<a href="${placeDetails.website}" target="_blank">${placeDetails.website}</a>` : 'N/A'}<br>
+						<br><br>
+					`;
+
+					document.getElementById('info-content-transportation').innerHTML += companyDetails;
+				}
+			});
+		});
+	}
+
+	// Wykonanie zapytań równolegle
+	service.nearbySearch(requestCarRental, function(results, status) {
+		if (status === google.maps.places.PlacesServiceStatus.OK) {
+			processResults(results);
+		} else {
+			console.error('Error with car rental search: ' + status);
+		}
+	});
+
+	service.nearbySearch(requestTaxiStand, function(results, status) {
+		if (status === google.maps.places.PlacesServiceStatus.OK) {
+			processResults(results);
+		} else {
+			console.error('Error with taxi stand search: ' + status);
+		}
+	});
+
+	/*
+	var request = {
+		location: location,
+		radius: 32000,
+		type: 'car_rental'
+	};
+
+	service.nearbySearch(request, function(results, status) {
+		if (status === google.maps.places.PlacesServiceStatus.OK) {
+			document.getElementById('info-content-transportation').innerHTML = '';
+			results.forEach(function(result) {
+				service.getDetails({
+					placeId: result.place_id,
+					fields: ['name', 'formatted_phone_number', 'website']
+				}, function(placeDetails, status) {
+					if (status === google.maps.places.PlacesServiceStatus.OK) {
+						// Sprawdzanie, czy numer telefonu jest dostępny i nie jest "N/A"
+						let phoneDisplay;
+						if (placeDetails.formatted_phone_number && placeDetails.formatted_phone_number !== 'N/A') {
+							const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+							const phoneLink = isMobile
+								? 'tel:' + placeDetails.formatted_phone_number
+								: 'skype:' + placeDetails.formatted_phone_number + '?call';
+
+							phoneDisplay = `<a href="${phoneLink}">${placeDetails.formatted_phone_number}</a>`;
+						} else {
+							phoneDisplay = 'N/A';
+						}
+
+						// Składanie szczegółów firmy z dynamicznym numerem telefonu
+						let companyDetails = `
+                <b>Name:</b> ${placeDetails.name ?? 'N/A'}<br>
+                <b>Phone:</b> ${phoneDisplay}<br>
+                <b>Website:</b> ${placeDetails.website ? `<a href="${placeDetails.website}" target="_blank">${placeDetails.website}</a>` : 'N/A'}<br>
+                <br><br>
+            `;
+
+						document.getElementById('info-content-transportation').innerHTML += companyDetails;
+					}
+				});
+			});
+		} else {
+			console.error('Error occurred: ' + status);
+		}
+	});
+
+	 */
+
+}
+
 
 function edit_plan(id) {
 	var dataSet = 'id=' + id
@@ -123,10 +338,34 @@ function edit_plan(id) {
 
 				let checkinVal = response['plan_checked_in'] == 1
 				let dateAddedVal = !!response['plan_date']
+				let reservation = response['reservation_flag']
+				let transportation = response['transportation_flag']
+
+
+				if (reservation == 1) {
+					reservationField = '#plan_reservation_yes';
+				} else if (reservation == 0) {
+					reservationField = '#plan_reservation_not_required';
+				} else if (reservation == -1) {
+					reservationField = '#plan_reservation_no';
+					fillReservationData();
+				}
+
+
+				if (transportation == 1) {
+					transportationField = '#plan_transportation_yes';
+				} else if (transportation == 0) {
+					transportationField = '#plan_transportation_not_required';
+				} else if (transportation == -1) {
+					transportationField = '#plan_transportation_no';
+					fillTransportationData();
+				}
 
 				let stepperPrefill = {
 					[checkinVal ? '#plan_checkin_yes' : '#plan_checkin_no']: true,
 					[dateAddedVal ? '#plan_date_yes' : '#plan_date_no']: true,
+					[reservationField]:true,
+					[transportationField]:true,
 				}
 
 				if (dateAddedVal) {
@@ -210,6 +449,17 @@ $('#form-plan').validate({
 
 			var checkIn = $('#plan_checkin_yes').is(':checked')
 
+			var reservation = $('#plan_reservation_yes').is(':checked') ? 1 : -1;
+			if (reservation == -1) {
+				reservation = $('#plan_reservation_not_required').is(':checked') ? 0 : -1;
+			}
+
+			var transportation = $('#plan_transportation_yes').is(':checked') ? 1 : -1;
+			if (transportation == -1) {
+				transportation = $('#plan_transportation_not_required').is(':checked') ? 0 : -1;
+			}
+
+
 			$.ajax({
 				url: SITE + 'ajaxfiles/plan/add_plan.php',
 				type: 'POST',
@@ -220,7 +470,10 @@ $('#form-plan').validate({
 					'&event_time=' +
 					event_time +
 					'&event_checkin=' +
-					checkIn,
+					checkIn +
+				'&reservation=' + reservation +
+				'&transportation=' + transportation,
+
 				dataType: 'json',
 				success: function (response) {
 					var icon_image = iconSelect(plan_type)
@@ -246,6 +499,9 @@ $('#form-plan').validate({
 						updated_element.address = plan_address
 						updated_element.plan_checked_in = checkIn ? 1 : 0
 						updated_element.plan_date = plan_date
+						updated_element.reservation = reservation
+						updated_element.transportation = transportation
+
 						updated_state[matchValue] = updated_element
 						markers_list = [...updated_state]
 
@@ -281,6 +537,8 @@ $('#form-plan').validate({
 							plan_checked_in: checkIn ? 1 : 0,
 							plan_date: plan_date,
 							schedule_linked: response.flag,
+							reservation: reservation,
+							transportation: transportation
 						}
 
 						markers_list.push(dataS)
@@ -306,7 +564,6 @@ $('#form-plan').validate({
 					$('#date-content').hide()
 					$('#schedule-content').hide()
 
-					$('#plan_address').prop('disabled', true)
 					$('#btn-plan').html('Add')
 					getPlansList()
 

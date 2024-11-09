@@ -25,13 +25,13 @@ $("#search_form").validate({
   },
 
   submitHandler: function (form) {
-    
     var search = $("#search").val();
     var category_field = $("#category_field").val();
     var dataSet = "category=" + category_field + "&search=" + search;
     
-    window.open(SITE + "marketplace?" + dataSet);     
-    
+    window.open(SITE + "marketplace?" + dataSet);    
+     
+
   }, // Do not change code below
   errorPlacement: function (error, element) {
     //error.insertAfter(element.parent());

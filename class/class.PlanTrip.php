@@ -39,7 +39,7 @@ class PlanTrip
         $this->lastid = '';
     }
 
-    function put_data($trip_id, $plan_name, $plan_type, $plan_address, $plan_checkin, $plan_date, $plan_lat, $plan_lng, $schedule_linked, $schedule_id, $schedule_flag = 0)
+    function put_data($trip_id, $plan_name, $plan_type, $plan_address, $plan_checkin, $plan_date, $plan_lat, $plan_lng, $schedule_linked, $schedule_id, $schedule_flag = 0, $reservation_flag = 0, $transportation_flag = 0)
     {
         global $dbh;
         $stmt = $tmp = $query = '';
@@ -47,7 +47,7 @@ class PlanTrip
 
         if (!empty($trip_id)) {
             //return $trip_id;
-            $query = "INSERT INTO " . $this->table . " (trip_id, plan_name, plan_type, plan_address, plan_checked_in, plan_date, plan_lat,plan_lng,schedule_linked,schedule_id,schedule_flag,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO " . $this->table . " (trip_id, plan_name, plan_type, plan_address, plan_checked_in, plan_date, plan_lat,plan_lng,schedule_linked,schedule_id,schedule_flag,created_at, reservation_flag, transportation_flag) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
             $stmt = $dbh->prepare($query);
             $stmt->bindValue(1, $trip_id, PDO::PARAM_INT);
             $stmt->bindValue(2, $plan_name, PDO::PARAM_STR);
@@ -61,6 +61,9 @@ class PlanTrip
             $stmt->bindValue(10, $schedule_id, PDO::PARAM_INT);
             $stmt->bindValue(11, $schedule_flag, PDO::PARAM_INT);
             $stmt->bindValue(12, date('Y-m-d H:i:s'), PDO::PARAM_STR);
+            $stmt->bindValue(13, $reservation_flag, PDO::PARAM_INT);
+            $stmt->bindValue(14, $transportation_flag, PDO::PARAM_INT);
+
             $tmp = $stmt->execute();
             $this->lastid = $dbh->lastInsertId();
             // print_r($stmt->errorInfo());
@@ -76,13 +79,13 @@ class PlanTrip
         }
     }
 
-    function edit_data($id_plan, $plan_name, $plan_type, $plan_address, $plan_checked_in, $plan_date, $plan_lat, $plan_lng)
+    function edit_data($id_plan, $plan_name, $plan_type, $plan_address, $plan_checked_in, $plan_date, $plan_lat, $plan_lng, $reservation_flag = 0, $transportation_flag = 0)
     {
         global $dbh;
         $stmt = $tmp = $query = '';
         $this->error = '';
         if (!empty($id_plan)) {
-            $query = "UPDATE " . $this->table . " SET plan_name = ?, plan_type = ? ,plan_address = ?, plan_checked_in = ?, plan_date = ? ,plan_lat = ?,plan_lng = ? WHERE id_plan = ?";
+            $query = "UPDATE " . $this->table . " SET plan_name = ?, plan_type = ? ,plan_address = ?, plan_checked_in = ?, plan_date = ? ,plan_lat = ?,plan_lng = ?, reservation_flag = ?, transportation_flag = ? WHERE id_plan = ?";
             $stmt = $dbh->prepare($query);
             $stmt->bindValue(1, $plan_name, PDO::PARAM_STR);
             $stmt->bindValue(2, $plan_type, PDO::PARAM_STR);
@@ -91,7 +94,9 @@ class PlanTrip
             $stmt->bindValue(5, $plan_date, PDO::PARAM_STR);
             $stmt->bindValue(6, $plan_lat, PDO::PARAM_STR);
             $stmt->bindValue(7, $plan_lng, PDO::PARAM_STR);
-            $stmt->bindValue(8, $id_plan, PDO::PARAM_INT);
+            $stmt->bindValue(8, $reservation_flag, PDO::PARAM_INT);
+            $stmt->bindValue(9, $transportation_flag, PDO::PARAM_INT);
+            $stmt->bindValue(10, $id_plan, PDO::PARAM_INT);
             $tmp = $stmt->execute();
             if (!$tmp) {
                 $this->error = 'error_fail';

@@ -165,7 +165,7 @@ h1{
 	}
 	</style>
 	<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-	<h1><b> $title</b></h1>
+	<h1><b> $trip->trip_title</b></h1>
 	";
 }
 
@@ -343,7 +343,7 @@ if (($trip->trip_location_from != NULL || $trip->trip_location_from != '') && ($
 	if (($trip->trip_hotel_name != NULL || $trip->trip_hotel_name != '') || ($trip->trip_rental_agency != NULL || $trip->trip_rental_agency != '') || (($trip->trip_location_to != NULL || $trip->trip_location_to != '') && ($trip->trip_location_from != NULL || $trip->trip_location_from != ''))) {
 
 		$dep_date = $trip->trip_location_datel ? date('F d, Y', strtotime($trip->trip_location_datel)) : null;
-		$dep_time = $trip->trip_location_datel_deptime ? date('h:i:s A', strtotime($trip->trip_location_datel_deptime)) : null;
+		$dep_time = $trip->trip_location_datel_deptime ? date('H:i:s A', strtotime($trip->trip_location_datel_deptime)) : null;
 
 		$ari_date = $trip->trip_location_datel_arr ? date('F d, Y', strtotime($trip->trip_location_datel_arr)) : null;
 		$ari_time = $trip->trip_location_datel_arrtime ? date('h:i:s A', strtotime($trip->trip_location_datel_arrtime)) : null;
@@ -547,7 +547,7 @@ if (json_decode($trip->location_multi_waypoint) <> NULL &&  $trip->location_mult
 	}
 	$multi_waypoint .= '</td></tr></table>';
 }
-if (($trip->trip_location_to != NULL || $trip->trip_location_to != '') && ($trip->trip_location_from != NULL || $trip->trip_location_from != '') && ($trip->trip_location_triptype != "o")) {
+if (($trip->trip_location_to != NULL || $trip->trip_location_to != '') && ($trip->trip_location_from != NULL || $trip->trip_location_from != '')) {
 	if (!empty($trip->trip_location_to_flightportion) || !empty($trip->trip_location_to_drivingportion) || !empty($trip->trip_location_to_trainportion)) {
 
 		$return_dep_date = $trip->trip_location_dater ? date('F d, Y', strtotime($trip->trip_location_dater)) : null;

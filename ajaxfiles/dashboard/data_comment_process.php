@@ -26,8 +26,9 @@ if (isset($_POST['commentfield']) && isset($_POST['id_trip'])) {
     ];
 
     $fields = json_encode($params);
-
+    
     $API_POST_PATH = $URL . $PATH;
+    //$API_POST_PATH = 'https://www.planiversity.com/staging/trip_info.php';
 
     $mData = curlRequestPost($API_POST_PATH, $fields);
     $rData = json_decode($mData);

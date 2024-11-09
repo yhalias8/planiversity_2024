@@ -25,8 +25,10 @@ function del_element(id)
       else
          return false;
  }
-
-
+ 
+ 
+ 
+ 
  $("#employee_form").validate({
   rules: {
       employee_fname: {

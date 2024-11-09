@@ -853,21 +853,7 @@ include('include_doctype.php');
         var icon_path = 'https://planiversity.com/assets/images/icon-pack/';
 
         function iconSelect(value) {
-            var hold;
-            switch (value) {
-                case "Place to eat":
-                    hold = "restaurant_new.png";
-                    break;
-                case "Things to do":
-                    hold = "place_new.png";
-                    break;
-                case "People to see":
-                    hold = "people_new.png";
-                    break;
-                default:
-                    hold = "restaurant_new.png";
-            }
-
+            var hold = "place_new.png";
             return hold;
         }
 
@@ -1177,7 +1163,6 @@ include('include_doctype.php');
             });
 
 
-            $('#plan_type').change(function() {
 
                 var parent_value = $(this).val();
 
@@ -1189,9 +1174,6 @@ include('include_doctype.php');
                     $("#plan_address").prop('disabled', false);
 
                 }
-
-
-            });
 
 
         });

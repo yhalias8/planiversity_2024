@@ -13,39 +13,44 @@ if (!$auth->isLogged()) {
 }
 
 
-if (isset($_POST['id']) && !empty($_POST['id'])) {
+if (isset($_POST['id']) && !empty($_POST['id'])){
+        
+       
+        $plan_id = $_POST['id'];
+        $schedule_linked = $_POST['schedule_linked'];
+        $schedule_id = $_POST['schedule_id'];       
+       
+        $plantrip = new PlanTrip();  
 
+        $plantrip->del_data($plan_id);
+        
+        if ($schedule_linked == 1) {
+            $timeline = new Timeline();
+            $timeline->del_data($_POST['schedule_id']);
+        }        
+        
+        if ($plantrip->error){
 
-    $plan_id = $_POST['id'];
-    $schedule_linked = $_POST['schedule_linked'];
-    $schedule_id = $_POST['schedule_id'];
-
-    $plantrip = new PlanTrip();
-
-    $plantrip->del_data($plan_id);
-
-    if ($schedule_linked == 1) {
-        $timeline = new Timeline();
-        $timeline->del_data($_POST['schedule_id']);
-    }
-
-    if ($plantrip->error) {
-
-        $response = array(
+        $response = array (
             'status' => 422,
-            'message' => "A system error has been encountered. Please try again",
+            'message' => "A system error has been encountered. Please try again",            
         );
+    
+        http_response_code(422);            
 
-        http_response_code(422);
-    } else {
+        }else{
 
-        $response = array(
-            "status" => 200,
-            "message" => "Successfully Plan Deleted",
+        $response = array (  
+                  "status" => 200,
+                  "message" => "Successfully deleted plan",              
         );
 
         http_response_code(200);
-    }
 
-    echo json_encode($response);
+        }
+
+        echo json_encode($response);        
+
 }
+
+

@@ -1,6 +1,6 @@
 <!doctype html>
 <script type="text/javascript">
-    var isMobile = {
+       var isMobile = {
         Android: function() {
             return navigator.userAgent.match(/Android/i);
         },
@@ -20,12 +20,12 @@
             return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
         }
     };
+	
+   var newDoctype = document.implementation.createDocumentType(
+ 'html',
+ '-//WAPFORUM//DTD XHTML Mobile 1.0//EN',
+ 'http://www.wapforum.org/DTD/xhtml-mobile10.dtd'
+);
 
-    var newDoctype = document.implementation.createDocumentType(
-        'html',
-        '-//WAPFORUM//DTD XHTML Mobile 1.0//EN',
-        'http://www.wapforum.org/DTD/xhtml-mobile10.dtd'
-    );
-
-    if (isMobile.any()) document.doctype.parentNode.replaceChild(newDoctype, document.doctype);
+if( isMobile.any() ) document.doctype.parentNode.replaceChild(newDoctype,document.doctype);
 </script>

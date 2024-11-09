@@ -1,5 +1,3 @@
-
-
 #mobile-content {
     display: none;
 }
@@ -39,22 +37,30 @@ img.artwork-logo {
     padding-top: 20px;
 }
 
+/*@media only screen and (max-width: 1199px) and (min-width: 1125px)  {
+
+}*/
+
 @media(min-width: 1024.98px) and (max-width: 1197px){
 
 .launch_commision_item_sec {
     margin-left: 25%;
 }
 
-
-.closed-sidebar:not(.sidebar-mobile-open) .app-sidebar .scrollbar-sidebar {
-    overflow-y: scroll !important;
-    display: block;
-    width: 100%;
-    z-index: 999999;
 }
 
-}
 
+/*@media (max-width: 1024px) {*/
+/*    #mobile-content {*/
+/*        display: block;*/
+/*    }*/
+/*    .app-sidebar {*/
+/*        display: none;*/
+/*    }*/
+/*    .dashboard_mail_sec {*/
+/*        display: none;*/
+/*    }*/
+/*}*/
 
 @media (max-width: 768px) {
     img.mobile-logo {

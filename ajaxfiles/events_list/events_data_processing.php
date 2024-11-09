@@ -1,5 +1,12 @@
 <?php
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+ini_set('error_reporting', E_ALL);
+error_reporting(E_ALL);
 include '../../config.ini.php';
+include '../../class/class.Googlecalendar.php';
+include '../../class/class.MicrosoftGraph.php';
+
 
 if (isset($_POST['title']) && isset($_POST['event_date_from']) && isset($_POST['event_date_to'])) {
    
@@ -103,11 +110,11 @@ event_title, event_time_from, event_time_to, event_location, event_overview, spe
 
     if ($_POST['event_date_from'] && $_POST['event_time_from'] && $_POST['event_time_to']) {
 
-        $stmh = $dbh->prepare("SELECT sync_googlecalendar FROM users WHERE id=?");
+        $stmh = $dbh->prepare("SELECT sync_googlecalendar, sync_outlookcalendar, gcaltoken, outlooktoken FROM users WHERE id=?");
         $stmh->bindValue(1, $userdata['id'], PDO::PARAM_INT);
         $tmp = $stmh->execute();
-        $google_object = [];
-        $google_object = $stmh->fetch(PDO::FETCH_OBJ);
+        $integration_data = [];
+        $integration_data = $stmh->fetch(PDO::FETCH_OBJ);
 
         $event_date_from = $_POST['event_date_from'];
         $event_date_to = $_POST['event_date_to'];
@@ -155,7 +162,8 @@ event_title, event_time_from, event_time_to, event_location, event_overview, spe
         $mail = new PHPMailer;
         $mail->CharSet = 'UTF-8';
 
-        if ($google_object->sync_googlecalendar) {
+
+        if ($integration_data->sync_googlecalendar) {
 
             $mail->From = $auth->config->site_email;
             $mail->FromName = $auth->config->site_name;
@@ -163,7 +171,56 @@ event_title, event_time_from, event_time_to, event_location, event_overview, spe
             $mail->isHTML(true);
             $mail->Subject = 'Planiversity.com - Event';
             $mail->Body = $event_text;
-            $mail->send();
+
+            if ($integration_data->gcaltoken){
+                $googleCalendarAPI = new GoogleCalendar();
+    
+                $data = [
+                    'summary' => $_POST['title'],
+                    'dateTimeStart' => $event_date_from . " " . $event_time_from,
+                    'dateTimeEnd' => $date_calculation . " " . $event_time_to,
+                    'location' => $_POST['location'],
+                    'description' => $description,
+                ];
+    
+                $response = $googleCalendarAPI->postData($data);
+                $response_data = json_decode($response, true);
+                $gcalendar_id = $response_data['id'];
+                
+                // Update event ID in database
+                $query = "UPDATE events SET gcalendar_id = ? WHERE id = ?";
+                $stmt = $dbh->prepare($query);
+                $stmt->execute([$gcalendar_id,  $lastID]);
+
+            }else{
+                $mail->send();
+            }
+        }
+
+        if ($integration_data->sync_outlookcalendar) {
+
+            if ($integration_data->outlooktoken){
+                $microsoftGraph = new MicrosoftGraph();
+    
+                $data = [
+                    'subject' => $_POST['title'],
+                    'dateTimeStart' => $event_date_from . " " . $event_time_from,
+                    'dateTimeEnd' => $date_calculation . " " . $event_time_to,
+                    'location' => $_POST['location'],
+                    'description' => $description,
+                ];
+    
+                $respons = $microsoftGraph->postData($data);
+                $response_data = json_decode($respons);
+                $outlook_event_id = $response_data->id;
+                
+                // Update event ID in database
+                if ($outlook_event_id) {
+                    $query = "UPDATE events SET outlook_event_id = ? WHERE id = ?";
+                    $stmt = $dbh->prepare($query);
+                    $stmt->execute([$outlook_event_id,  $lastID]);
+                }
+            }
         }
 
         if ($notification_agree && !empty($invitee_list)) {

@@ -20,11 +20,11 @@ if (isset($_POST['name']) && isset($_POST['email']) && isset($_POST['message']) 
     if (!empty($mobile)) {
         $mobile_number = $country_code . $mobile;
     }
-
+    
     $user_id = null;
     if ($auth->isLogged()) {
         $user_id = $userdata['id'];
-    }
+    }    
 
     $params = [
         'name' => $name,

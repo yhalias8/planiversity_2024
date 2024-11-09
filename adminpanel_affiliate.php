@@ -82,18 +82,7 @@ include('include_doctype.php');
                                         Admin
                                     </a>
                                 <?php } ?>
-                                <a href="<?php echo SITE; ?>about-us" class="dropdown-item drop-menu-item" target="_blank">
-                                    About Us
-                                </a>
-                                <a href="<?php echo SITE; ?>select-your-payment" class="dropdown-item drop-menu-item" target="_blank">
-                                    What It Costs
-                                </a>
-                                <a href="<?php echo SITE; ?>faq" class="dropdown-item drop-menu-item" target="_blank">
-                                    FAQs
-                                </a>
-                                <a href="<?php echo SITE; ?>data-security" class="dropdown-item drop-menu-item" target="_blank">
-                                    Data Security
-                                </a>
+                               
                                 <a href="<?php echo SITE; ?>contact-us" class="dropdown-item drop-menu-item" target="_blank">
                                     Contact Us
                                 </a>

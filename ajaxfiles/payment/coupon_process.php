@@ -9,10 +9,11 @@ if (isset($_POST['code']) && isset($_POST['check']) && isset($_POST['date']) && 
     
     $prefix = substr($code, 0, 3);
     $postfix = substr($code, -3);
-
-    $stmt = $dbh->prepare("SELECT sha1(id) as id,CURDATE() as today_date,coupon_code,start_date,end_date,percent,lifetime,target_auth_level,target_plan_level FROM coupon WHERE coupon_code=? and status=? or id = (select id from `coupon` where coupon_prefix LIKE '%$prefix%' and coupon_postfix LIKE '%$postfix%' and bulk_coupon=1 and status='active')");    
+    
+    $stmt = $dbh->prepare("SELECT sha1(id) as id,CURDATE() as today_date,coupon_code,start_date,end_date,percent,lifetime,target_auth_level,target_plan_level FROM coupon WHERE coupon_code=? and status=? or id = (select id from `coupon` where coupon_prefix LIKE '%$prefix%' and coupon_postfix LIKE '%$postfix%' and bulk_coupon=1 and status='active')");
 
     //$stmt = $dbh->prepare("SELECT sha1(id) as id,CURDATE() as today_date,coupon_code,start_date,end_date,percent,lifetime FROM coupon WHERE coupon_code=? and status=?");
+    
     $stmt->bindValue(1, $code, PDO::PARAM_STR);
     $stmt->bindValue(2, 'active', PDO::PARAM_STR);
     $tmp = $stmt->execute();
@@ -34,13 +35,12 @@ if (isset($_POST['code']) && isset($_POST['check']) && isset($_POST['date']) && 
             "today_date" => $list->today_date,
             "context" => $list->lifetime,
             "breakdown" => discountPercentProcess($list->percent),
-            "plan_level" => $list->target_plan_level,            
+            "plan_level" => $list->target_plan_level,
         );
         
-        $auth_level = array($userdata['account_type'], 'Either');
+        $auth_level = array($userdata['account_type'], 'Either','Admin');
 
         if (($gettime >= $deltime1) && ($gettime <= $deltime2)) {
-
 
             if (in_array($list->target_auth_level, $auth_level)) {
 
@@ -52,6 +52,7 @@ if (isset($_POST['code']) && isset($_POST['check']) && isset($_POST['date']) && 
                     "data" => $mdata,
                     "message" => "Successfully coupon code fetched",
                 );
+                
             } else {
 
                 http_response_code(422);
@@ -59,11 +60,10 @@ if (isset($_POST['code']) && isset($_POST['check']) && isset($_POST['date']) && 
                 $response = array(
                     'status' => 422,
                     "code" => $code,
-                    'message' => "This code not associated with your account type ",
+                    'message' => "This code is not associated with your account type ",
                 );
             }
-
-
+           
         } else {
 
             http_response_code(422);
@@ -86,6 +86,7 @@ if (isset($_POST['code']) && isset($_POST['check']) && isset($_POST['date']) && 
 
     echo json_encode($response);
 }
+
 
 function discountPercentProcess($percent)
 {

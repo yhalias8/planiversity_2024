@@ -14,18 +14,21 @@
     <link rel="icon" type="image/png" sizes="16x16" href="<?= SITE; ?>images/favicon.png">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--calendar css-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.min.css">
+
     <link href="<?= SITE ?>assets/css/fullcalendar.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="<?= SITE ?>assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="<?= SITE ?>assets/css/icons.css" rel="stylesheet" type="text/css" />
-    <link href="<?= SITE ?>assets/css/app-style.css?v=2023" rel="stylesheet" type="text/css" />
+    <link href="<?= SITE ?>assets/css/app-style.css?v=20230209" rel="stylesheet" type="text/css" />
+
     <link href="<?= SITE ?>assets/css/theme.css" rel="stylesheet" type="text/css" />
-    <link href="<?= SITE ?>assets/css/people.css" rel="stylesheet" type="text/css" />
+
     <script src="<?= SITE ?>assets/js/modernizr.min.js"></script>
+
     <script src="<?= SITE ?>assets/js/jquery.min.js"></script>
     <script src="<?= SITE ?>assets/js/moment.min.js"></script>
     <script src='<?= SITE ?>assets/js/fullcalendar.min.js'></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.js"></script>
 
     <!--Facebook Pixel Code-->

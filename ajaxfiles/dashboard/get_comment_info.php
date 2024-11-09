@@ -12,6 +12,7 @@ if (isset($_GET['id_trip'])) {
     $parms = "?trip_id=" . $_GET['id_trip'];
 
     $API_GET_PATH = $URL . $PATH . $parms;
+    //$API_GET_PATH = 'https://www.planiversity.com/staging/trip_info.php' . $parms;
 
     $mData = curlRequestGet($API_GET_PATH);
     $rData = json_decode($mData);

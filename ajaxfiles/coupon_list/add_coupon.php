@@ -26,7 +26,6 @@ if (isset($_POST['title']) && isset($_POST['start_date']) && isset($_POST['coupo
     $prefix = filter_var($_POST["prefix"], FILTER_SANITIZE_STRING);
     $postfix = filter_var($_POST["postfix"], FILTER_SANITIZE_STRING);
 
-
     $error = '';
 
 

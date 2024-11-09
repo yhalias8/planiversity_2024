@@ -7,6 +7,7 @@ if (!$auth->isLogged()) {
 	header("Location:" . SITE . "login");
 }
 
+
 // DB table to use
 $table = 'events';
 

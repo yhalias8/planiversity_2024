@@ -834,3 +834,4 @@ $mpdf->Output('pdf/'.$pdfname.'.pdf', \Mpdf\Output\Destination::FILE);
 //echo SITE.'pdf/'.$pdfname.'.pdf';
 
 //$mpdf->Output();
+?>

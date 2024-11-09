@@ -113,4 +113,5 @@ include_once("include_new_header.php");
         </div>
     </div>
 </div>
+
 <?php include_once("include_new_footer.php"); ?>

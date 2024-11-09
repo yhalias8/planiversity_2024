@@ -13,6 +13,33 @@ $trip = new TripPlan();
 $id_trip = filter_var($_GET["idtrip"], FILTER_SANITIZE_STRING);
 if (empty($id_trip)) header("Location:" . SITE . "trip/how-are-you-traveling");
 $trip->get_data($id_trip);
+
+// echo '<pre/>';
+// print_r($trip);
+
+// $markerAlpaArr = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB');
+
+// echo "multiWay 1st ".$trip->location_multi_waypoint_latlng."<br/>";
+
+// echo "multiWay 2nd ".json_decode($trip->location_multi_waypoint_latlng)."<br/>";
+
+// echo "multiWay 3rd ".count(json_decode($trip->location_multi_waypoint_latlng))."<br/>";
+
+//  if ($trip->trip_location_to_flightportion || $trip->trip_location_to_drivingportion || $trip->trip_location_to_trainportion) {
+//                 $start_marker = $markerAlpaArr[count(json_decode($trip->location_multi_waypoint_latlng)) + 1];
+//                 $end_marker =  $markerAlpaArr[count(json_decode($trip->location_multi_waypoint_latlng)) + 2];
+//                 echo "First";
+//             } else {
+//                 $start_marker = $markerAlpaArr[count(json_decode($trip->location_multi_waypoint_latlng))];
+//                 $end_marker =  $markerAlpaArr[count(json_decode($trip->location_multi_waypoint_latlng)) + 1];
+//                 echo "Second";
+//             }
+            
+// var_dump($start_marker);
+
+
+// die();
+
 if ($trip->error) {
     if ($trip->error == 'error_access') { // popup and 
         header("Location:" . SITE . "trip/how-are-you-traveling");
@@ -20,6 +47,7 @@ if ($trip->error) {
     } else
         $output = 'A system error has been encountered. Please try again.';
 }
+
 $transport = (isset($trip->trip_transport) && !empty($trip->trip_transport)) ? $trip->trip_transport : '';
 $tmp = str_replace('(', '', $trip->trip_location_from_latlng); // Ex: (25.7616798, -80.19179020000001)
 $tmp = str_replace(')', '', $tmp);
@@ -72,17 +100,22 @@ include('include_doctype.php');
     <link href="<?php echo SITE; ?>assets/css/app-style.css" rel="stylesheet" type="text/css" />
 
     <script src="<?php echo SITE; ?>assets/js/modernizr.min.js"></script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
 
     <link href="<?php echo SITE; ?>style/menu.css" rel="stylesheet" type="text/css" />
     <link href="<?php echo SITE; ?>style/responsive.css" rel="stylesheet" type="text/css" />
 
     <script>
-        var SITE = '<?php echo SITE; ?>'
+        var SITE = '<?= 'https://' . $_SERVER['HTTP_HOST'] . '/staging/'; ?>'
     </script>
     <script src="<?= SITE; ?>assets/js/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script src="<?php echo SITE; ?>js/trip_timeline.js"></script>
     <script src="<?php echo SITE; ?>js/js_map.js"></script>
+    
+    
 
     <script src="<?php echo SITE; ?>js/responsive-nav.js"></script>
     <script src="<?php echo SITE; ?>js/flexcroll.js"></script>
@@ -127,42 +160,10 @@ include('include_doctype.php');
             margin: 4px 0;
         }
     </style>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146873572-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'UA-146873572-1');
-    </script>
-    <!-- Google Tag Manager -->
-    <script>
-        (function(w, d, s, l, i) {
-            w[l] = w[l] || [];
-            w[l].push({
-                'gtm.start': new Date().getTime(),
-                event: 'gtm.js'
-            });
-            var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s),
-                dl = l != 'dataLayer' ? '&l=' + l : '';
-            j.async = true;
-            j.src =
-                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-            f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-PBF3Z2D');
-    </script>
-    <!-- End Google Tag Manager -->
 </head>
 
 <body class="custom_notes">
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PBF3Z2D" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+
     <?php include('new_backend_header.php'); ?>
     <div class="navbar-custom old-site-colors">
         <div class="container-fluid">
@@ -186,6 +187,12 @@ include('include_doctype.php');
                             <p class="main-color"><img class="mr-2" src="<?php echo SITE; ?>images/slider_02.png" alt="Schedule">Filters</p>
                         </a>
                     </li>
+                   <!-- <li>-->
+                   <!-- 	<a href="<?php echo SITE; ?>trip/plans/<?php echo $_GET['idtrip']; ?>" class="left-nav-button">-->
+                        	<!--<img src="<?php echo SITE; ?>assets/images/step_filters.png" alt="Filters">-->
+                   <!--      	<p class="main-color"><img class="mr-2" src="<?php echo SITE; ?>images/plans.png" alt="Schedule">Plans</p>-->
+                   <!--   	</a>-->
+                  	<!--</li>-->
                     <li>
                         <a href="<?php echo SITE; ?>trip/travel-documents/<?php echo $_GET['idtrip']; ?>" class="left-nav-button">
                             <!--<img src="<?php echo SITE; ?>assets/images/step_documents.png" alt="Documents">-->
@@ -355,6 +362,24 @@ include('include_doctype.php');
             </div>
         </div>
     </div>
+    
+        <div class="modal fade" id="update_schedule" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Update Schedule</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div id="upload-demo" class="center-block"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cropImageBtn" class="btn btn-primary crop_submit_button">Save Photo</button>
+                    <button type="button" class="btn btn-danger btn-close-modal" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!--<div class="push"></div>-->
 
@@ -380,6 +405,9 @@ include('include_doctype.php');
         $lng_to_flightportion = $tmp[1];
     }
     ?>
+    <!--<script src="<? /*= SITE; */ ?>js/node_modules/php-date-formatter/js/php-date-formatter.min.js"></script>
+<script src="<? /*= SITE; */ ?>js/node_modules/jquery-mousewheel/jquery.mousewheel.js"></script>
+<script src="<? /*= SITE; */ ?>js/node_modules/jquery.datetimepicker.js?v=3"></script>-->
 
     <script src="<?= SITE; ?>assets/js/moment.min.js"></script>
     <script src="<?= SITE; ?>assets/js/bootstrap-datepicker.js"></script>
@@ -474,6 +502,9 @@ include('include_doctype.php');
                 $start_marker = $markerAlpaArr[count(json_decode($trip->location_multi_waypoint_latlng))];
                 $end_marker =  $markerAlpaArr[count(json_decode($trip->location_multi_waypoint_latlng)) + 1];
             }
+            
+            //var_dump($start_marker);
+            
             if ($trip->trip_transport == 'vehicle') {
                 $vehicle_location_from = 'location_from';
                 $vehicle_location_to = 'location_to';

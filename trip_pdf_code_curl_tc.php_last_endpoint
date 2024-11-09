@@ -6,55 +6,40 @@ ini_set('memory_limit', '1280M');
 ini_set('precision', 17);
 ini_set('serialize_precision', -1);
 
+parse_str($argv[1], $params);
+parse_str($argv[2], $params);
 
-// parse_str($argv[1], $params);
-// parse_str($argv[2], $params);
-// $idtrip = $params['idtrip'];
-
-$mapBoxKey = "pk.eyJ1IjoicGxhbml2ZXJzaXR5IiwiYSI6ImNrbWwwMXVhZjAxYnMyd2xlcW5yZGR5cTUifQ.SLgwBubC1t4UpKZ2MEyzZg";
-$key = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
-
-//parse_str($argv[2], $params);
-//$uid = $params['uid'];
-
-$text = array("First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh");
-
-
-$uid     = $_GET['uid'];
+$uid 	= $_GET['uid'];
 $idtrip = $_GET['idtrip'];
 
+$mapBoxKey 	= "pk.eyJ1IjoicGxhbml2ZXJzaXR5IiwiYSI6ImNrbWwwMXVhZjAxYnMyd2xlcW5yZGR5cTUifQ.SLgwBubC1t4UpKZ2MEyzZg";
+$key 		= 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
+
+$text 		= array("First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh");
+
+include_once("config.ini.php");
 include_once("config.ini.curl.php");
 
-define("WEB_HOSTING_URL", "/home/planiv5/public_html/"); // live version
-
-// if (!$auth->isLogged()) {
-//     $_SESSION['redirect'] = 'trip/pdf/' . $idtrip;
-//     header("Location:" . WEB_HOSTING_URL . "login");
-// }
+define("WEB_HOSTING_URL", "/home/planiv5/public_html/staging/"); // live version
 
 include("class/class.Plan.php");
 $plan = new Plan();
-
-// if (!$plan->check_plan($userdata['id'])) { //header("Location:".WEB_HOSTING_URL."billing/".$_POST['idtrip']);
-//     //exit();     
-// }
-//   exit;
 
 include("class/class.TripPlan.php");
 $trip = new TripPlan();
 
 $idtrip = filter_var($idtrip, FILTER_SANITIZE_STRING);
+if (empty($idtrip)) {
+	header("Location:" . SITE . "trip/how-are-you-traveling");
+}
 
-// if (empty($idtrip)){
-//     header("Location:" . WEB_HOSTING_URL . "trip/how-are-you-traveling");
-// }
-//echo $idtrip . ",";
-
+echo $idtrip . ",";
 $trip->get_data($idtrip);
-//$trip->setProgressing($idtrip, 0);
-echo "0,";
 
-//$plan->change_status_plan($userdata['id']);
+$trip->setProgressing($idtrip, 0);
+echo "0";
+$plan->change_status_plan($userdata['id']);
+
 
 
 $stmh = $dbh->prepare("SELECT sync_googlecalendar FROM users WHERE id_note=?");
@@ -1665,26 +1650,79 @@ $origin_lon = trim(explode(',', $origin_r)[1]);
 $origin_lat = trim(explode(',', $origin_r)[0]);
 $destination_lon = trim(explode(',', $destination)[1]);
 $destination_lat = trim(explode(',', $destination)[0]);
+
+
+
 if ($trip->trip_transport == "vehicle") {
-    $full_route = "";
-    $multi_waypoint = json_decode($trip->location_multi_waypoint);
+    
+	$full_route = "";
+    
+    if (empty($trip->location_multi_waypoint)) {
+        $multi_waypoint = [];
+    } else {
+        $multi_waypoint = json_decode($trip->location_multi_waypoint);
+    }
+
     $make_text = array("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
     $i = 1;
     $mark_position_text = "";
-    foreach ($multi_waypoint as $address) {
-        if ($address != "") {
-            $addressLocation = $trip->curlRequest('https://maps.google.com/maps/api/geocode/json?address=' . $address . '&sensor=false&key=' . $key);
-            $outputFrom = json_decode($addressLocation);
-            $latitudeFrom = $outputFrom->results[0]->geometry->location->lat;
-            $longitudeFrom = $outputFrom->results[0]->geometry->location->lng;
-            $mark_position_text .= ",pin-s-$make_text[$i]+007acc($longitudeFrom,$latitudeFrom)";
-            $i++;
+
+    if ($multi_waypoint) {
+        $multi_data = [];
+        foreach ($multi_waypoint as $address) {
+            if ($address != "") {
+                $addressLocation = $trip->curlRequest('https://maps.google.com/maps/api/geocode/json?address=' . $address . '&sensor=false&key=' . $key);
+                $multi_data = json_decode($addressLocation);
+                $latitudeFrom = $multi_data->results[0]->geometry->location->lat;
+                $longitudeFrom = $multi_data->results[0]->geometry->location->lng;
+                $mark_position_text .= ",pin-s-$make_text[$i]+007acc($longitudeFrom,$latitudeFrom)";
+                $i++;
+            }
         }
     }
-    if (count($multi_waypoint) == 1 && $multi_waypoint[0]  == "") {
+
+    $array_list = [];
+    if ($trip->location_multi_waypoint_latlng) {
+        $array_hold = json_decode($trip->location_multi_waypoint_latlng);
+
+        foreach ($array_hold as $f => $val) {
+            $multi_lon = trim(explode(',', $val->location_multi_waypoint_latlng)[1]);
+            $multi_lat = trim(explode(',', $val->location_multi_waypoint_latlng)[0]);
+            $d_array[] = [(float) $multi_lon, (float) $multi_lat];
+        }
+        $location_multi_waypoint_latlng = $d_array;
+    } else {
+        $location_multi_waypoint_latlng = $array_list;
+    }
+
+    if ($trip->trip_via_waypoints) {
+        $array_hold = json_decode($trip->trip_via_waypoints);
+
+        foreach ($array_hold as $f => $val) {
+            $data_array[] = [(float) $val->lng, (float) $val->lat];
+        }
+        $via_waypoints = $data_array;
+    } else {
+        $via_waypoints = $array_list;
+    }
+
+
+    $mSlice = array_merge($location_multi_waypoint_latlng, $via_waypoints);
+    rsort($mSlice);
+    $slice = "";
+    $clength = count($mSlice);
+    for ($x = 0; $x < $clength; $x++) {
+        $slice .= "%3B" . $mSlice[$x][0] . "%2C" . $mSlice[$x][1];        
+    }
+
+    $waypoint = "$origin_lon%2C$origin_lat$slice%3B$destination_lon%2C$destination_lat";
+
+    if (count($multi_waypoint)) {
         $distance = "";
         $duration = "";
-        $drivingDirectionApi = "https://api.mapbox.com/directions/v5/mapbox/driving/$origin_lon%2C$origin_lat%3B$destination_lon%2C$destination_lat?alternatives=true&geometries=geojson&steps=true&access_token=$mapBoxKey";
+
+        $drivingDirectionApi = "https://api.mapbox.com/directions/v5/mapbox/driving/$waypoint?alternatives=true&geometries=geojson&steps=false&access_token=$mapBoxKey";
+
         $api = $trip->curlRequest($drivingDirectionApi);
         $drivingDirectionResult = json_decode($api, true);
         if ($drivingDirectionResult["code"] == "Ok") {
@@ -1697,10 +1735,13 @@ if ($trip->trip_transport == "vehicle") {
     } else {
         $full_route = $trip->location_full_path;
     }
-    $pdf->AddPage('P', 'A4');
+
+   	$pdf->AddPage('P', 'A4');
     $pdf->SetMargins(10, 12, 10);
     $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
-    $route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . $full_route . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat)$mark_position_text,pin-s-$make_text[$i]+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
+
+	$route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . $full_route . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat)$mark_position_text,pin-s-$make_text[$i]+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
+	
     $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
     $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
     $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);

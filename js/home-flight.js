@@ -270,15 +270,6 @@ function roundTripCalculation(slices) {
     $(".flight_timeline").html(items);
 }
 
-$(document).on("click", ".action_close", function(event) {
-    $("#results_count").html("0");
-    $("#search_result").html("");
-    $("#search_result_section").hide();
-    $(".loading_screen").show();
-    $(".result-actions").hide();
-    $(".flight_load_more").hide();
-});
-
 $(document).on("click", ".flight-item", function(event) {
     var offerID = $(this).data("offer-id");
     var trip_mode = $("input[name='trip_style']:checked").val();
@@ -832,6 +823,32 @@ function travalers_input_populate(TData) {
     $("#traveler_inputs").html(item_input);
 }
 
+let pas = [{
+        type: "adult",
+        loyalty_programme_accounts: [],
+        id: "pas_0000ALDZniJTjcpjOqFzMo",
+        given_name: null,
+        family_name: null,
+        age: null,
+    },
+    {
+        type: "child",
+        loyalty_programme_accounts: [],
+        id: "pas_0000ALDZniJTjcpjOqFzMp",
+        given_name: null,
+        family_name: null,
+        age: null,
+    },
+    {
+        type: "infant_without_seat",
+        loyalty_programme_accounts: [],
+        id: "pas_0000ALDZniJTjcpjOqFzMq",
+        given_name: null,
+        family_name: null,
+        age: null,
+    },
+];
+
 $("#master_modal_click").on("click", function(e) {
     $("#master_modal").modal("hide");
 });
@@ -1060,8 +1077,8 @@ $("#flight_initial_form").validate({
     },
 
     submitHandler: function(form) {
-        $(".flight_search").css("cursor", "wait");
-        $(".flight_search").attr("disabled", true);
+        // $('.flight_search').css('cursor', 'wait');
+        // $('.flight_search').attr('disabled', true);
 
         $("#results_count").html("0");
         $("#search_result").html("");
@@ -1108,8 +1125,8 @@ $("#flight_initial_form").validate({
                 console.log("next_page", next_page);
                 console.log("previous_page", previous_page);
 
-                $(".flight_search").css("cursor", "pointer");
-                $(".flight_search").removeAttr("disabled");
+                // $('.flight_search').css('cursor', 'pointer');
+                // $('.flight_search').removeAttr('disabled');
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 // toastr.error('A system error has been encountered. Please try again');

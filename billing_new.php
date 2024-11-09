@@ -1,9 +1,8 @@
 <!-- Start TradeDoubler Landing Page Tag Insert on all landing pages to handle first party cookie-->
 <script language="JavaScript">
-(function(i,s,o,g,r,a,m){i['TDConversionObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script', 'https://svht.tradedoubler.com/tr_sdk.js?org=2307051&prog=324547&dr=true&rand=' + Math.random(), 'tdconv');
+	(function(i,s,o,g,r,a,m){i['TDConversionObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script', 'https://svht.tradedoubler.com/tr_sdk.js?org=2307051&prog=324547&dr=true&rand=' + Math.random(), 'tdconv');
 </script>
 <!-- End TradeDoubler tag-->
-
 <?php
 include_once("config.ini.php");
 
@@ -19,21 +18,25 @@ $statusMsg = '';
 
 require 'PayPal-PHP-SDK/autoload.php';
 include("class/class.Plan.php");
+
 $plan = new Plan();
+
 if ($plan->check_plan($userdata['id'])) { // if you have a plan export PDF
     if (isset($_GET['idtrip']) && !empty($_GET['idtrip']))
         header("Location:" . SITE . "trip/pdf/" . $_GET['idtrip']);
 }
+
 //set api key
 $stripe = array(
     "secret_key"      => STRIPE_SECRET_KEY,
     "publishable_key" => STRIPE_PUBLISHABLE_KEY
 );
+
 \Stripe\Stripe::setApiKey($stripe['secret_key']);
 
-/***************** PAYPAL *********************************/
+/***************** PAYPAL *****************/
 $PAYPAL_EMAIL = 'planiversitymgmt@gmail.com';
-$PAYPAL_URL = 'https://www.paypal.com/cgi-bin/webscr'; // 'https://www.paypal.com/cgi-bin/webscr';
+$PAYPAL_URL = 'https://www.paypal.com/cgi-bin/webscr';
 
 $apiContext = new \PayPal\Rest\ApiContext(
     new \PayPal\Auth\OAuthTokenCredential(
@@ -41,10 +44,12 @@ $apiContext = new \PayPal\Rest\ApiContext(
         PAYPAL_CLIENT_SECRET
     )
 );
+
 if (!empty($_GET['status'])) {
     if ($_GET['status'] == "success") {
         $token = $_GET['token'];
         $agreement = new \PayPal\Api\Agreement();
+
         try {
             // Execute agreement
             $agreement->execute($token, $apiContext);
@@ -66,20 +71,20 @@ if (!empty($_POST["subscribe"])) {
     require_once "billing_paypal_subscription_plan.php";
 }
 
-
-
 //check whether stripe token is not empty
 if (!empty($_POST['stripeToken'])) {
     //get token, card and user info from the form
-    $token  = $_POST['stripeToken'];
+    $token = $_POST['stripeToken'];
+
     //add customer to stripe
     $customer = \Stripe\Customer::create(array(
         'email' => $userdata['email'],
-        'source'  => $token
+        'source' => $token
     ));
 
     //item information
     $itemName = "Planiversity.com - " . $_POST["payment_type"];
+
     if ($userdata['account_type'] == 'Individual') {
         if ($_POST['payment_type'] == 'Monthly Plan')
             $Price = '4.99';
@@ -91,9 +96,11 @@ if (!empty($_POST['stripeToken'])) {
         else
             $Price = '249.00';
     }
+
     $itemPrice = str_replace(".", "", $Price);
     $currency = "usd";
     $chargeJson = [];
+
     if ($userdata['account_type'] != 'Individual' && $_POST['payment_type'] == 'Monthly Plan') {
         try {
             $subscription = \Stripe\Subscription::create(array(
@@ -104,16 +111,16 @@ if (!empty($_POST['stripeToken'])) {
                     ),
                 ),
             )); ?>
-            <!-- Start TradeDoubler Conversion Tag Insert on confirmation Page -->
+			<!-- Start TradeDoubler Conversion Tag Insert on confirmation Page -->
 			<script language="JavaScript">
 				tdconv('init', '2307051', {'element': 'iframe' });
 				tdconv('track', 'sale', {'transactionId':'<?= rand(9999, 10000) ?>', 'ordervalue':<?= $itemPrice ?>, 'voucher':'FREEDEL', 'currency':'USD', 'event':419142});
 			</script>
 			<!-- End TradeDoubler tag-->
             <?php sleep(3);
-            if (isset($_GET['idtrip']) && !empty($_GET['idtrip']))
+            if (isset($_GET['idtrip']) && !empty($_GET['idtrip'])) {
                 header("Location:" . SITE . "trip/pdf/" . $_GET['idtrip']);
-            else { // show mesage and redirect in 5 sec
+            } else { // show mesage and redirect in 5 sec
                 header("Location:" . SITE . "welcome");
             }
         } catch (Exception $e) {
@@ -128,18 +135,21 @@ if (!empty($_POST['stripeToken'])) {
             'currency' => $currency,
             'description' => $itemName,
         ));
+
         $chargeJson = $charge->jsonSerialize();
+
         //check whether the charge is successful
         if ($chargeJson['amount_refunded'] == 0 && empty($chargeJson['failure_code']) && $chargeJson['paid'] == 1 && $chargeJson['captured'] == 1) { ?>
-        
-			<!-- Start TradeDoubler Conversion Tag Insert on confirmation Page -->
+            
+            <!-- Start TradeDoubler Conversion Tag Insert on confirmation Page -->
 			<script language="JavaScript">
 				tdconv('init', '2307051', {'element': 'iframe' });
 				tdconv('track', 'sale', {'transactionId':'<?= rand(9999, 10000) ?>', 'ordervalue':<?= $chargeJson['amount'] ?>, 'voucher':'FREEDEL', 'currency':'USD', 'event':419142});
 			</script>
 			<!-- End TradeDoubler tag-->
-
-            <?php //order details 
+			
+          	<?php 
+            //order details 
             $amount = $chargeJson['amount'];
             $balance_transaction = $chargeJson['balance_transaction'];
             $currency = $chargeJson['currency'];
@@ -206,6 +216,7 @@ if (!empty($_POST['stripeToken'])) {
                 header("Location:" . SITE . "welcome");
             }
         } else {
+
             $statusMsg = "Transaction has been failed";
         }
     }
@@ -219,53 +230,22 @@ include('include_doctype.php');
     <meta charset="utf-8">
     <title>PLANIVERSITY - BILLING PAGE</title>
 
-    <link rel="shortcut icon" href="<?php echo SITE; ?>favicon.ico" type="image/x-icon">
-    <link rel="icon" href="<?php echo SITE; ?>favicon.ico" type="image/x-icon">
-    <script src="<?php echo SITE; ?>js/jquery-1.11.3.js"></script>
+    <link rel="shortcut icon" href="<?= SITE; ?>favicon.ico" type="image/x-icon">
+    <link rel="icon" href="<?= SITE; ?>favicon.ico" type="image/x-icon">
+    <script src="<?= SITE; ?>js/jquery-1.11.3.js"></script>
     <script>
-        var SITE = '<?php echo SITE; ?>'
+        var SITE = '<?= SITE; ?>'
     </script>
-    <script src="<?php echo SITE; ?>js/v1.js"></script>
+    <script src="<?= SITE; ?>js/v1.js"></script>
     <script src="https://js.stripe.com/v3/"></script>
 
     <?php include('new_head_files.php'); ?>
+    <?php include('include_google_analitics.php') ?>
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146873572-1"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag('js', new Date());
-
-        gtag('config', 'UA-146873572-1');
-    </script>
-    <!-- Google Tag Manager -->
-    <script>
-        (function(w, d, s, l, i) {
-            w[l] = w[l] || [];
-            w[l].push({
-                'gtm.start': new Date().getTime(),
-                event: 'gtm.js'
-            });
-            var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s),
-                dl = l != 'dataLayer' ? '&l=' + l : '';
-            j.async = true;
-            j.src =
-                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-            f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-PBF3Z2D');
-    </script>
-    <!-- End Google Tag Manager -->
 </head>
 
 <body class="custom_billing">
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PBF3Z2D" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+
     <?php include('new_backend_header.php'); ?>
     </header>
     <style>
@@ -392,7 +372,7 @@ include('include_doctype.php');
                                         <div class="pay-option-wrapper">
                                             <div class="radio form-check-inline mgn-top-20">
                                                 <input type="radio" id="radio-visa" value="visa" name="payment-option" checked>
-                                                <label for="radio-visa"><img src="<?php echo SITE; ?>assets/images/payment1.png" alt="visa"></label>
+                                                <label for="radio-visa"><img src="<?= SITE; ?>assets/images/payment1.png" alt="visa"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -400,7 +380,7 @@ include('include_doctype.php');
                                         <div class="pay-option-wrapper">
                                             <div class="radio form-check-inline mgn-top-20">
                                                 <input type="radio" id="radio-mastercard" value="mastercard" name="payment-option">
-                                                <label for="radio-mastercard"><img src="<?php echo SITE; ?>assets/images/payment2.png" alt="visa"></label>
+                                                <label for="radio-mastercard"><img src="<?= SITE; ?>assets/images/payment2.png" alt="visa"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -408,7 +388,7 @@ include('include_doctype.php');
                                         <div class="pay-option-wrapper">
                                             <div class="radio form-check-inline mgn-top-20">
                                                 <input type="radio" id="radio-amex" value="amex" name="payment-option">
-                                                <label for="radio-amex"><img src="<?php echo SITE; ?>assets/images/payment3.png" alt="visa"></label>
+                                                <label for="radio-amex"><img src="<?= SITE; ?>assets/images/payment3.png" alt="visa"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -416,7 +396,7 @@ include('include_doctype.php');
                                         <div class="pay-option-wrapper">
                                             <div class="radio form-check-inline mgn-top-20">
                                                 <input type="radio" id="radio-discover" value="discover" name="payment-option">
-                                                <label for="radio-discover"><img src="<?php echo SITE; ?>assets/images/payment4.png" alt="visa"></label>
+                                                <label for="radio-discover"><img src="<?= SITE; ?>assets/images/payment4.png" alt="visa"></label>
                                             </div>
                                         </div>
                                     </div>
@@ -913,20 +893,20 @@ include('include_doctype.php');
                 <div class="card-box" id="pay_paypal">
                     <div class="pay-with-paypal">
                         <p class="pay-with">Pay with</p>
-                        <img src="<?php echo SITE; ?>assets/images/paypal.png" alt="pay with paypal">
-                        <form action="<?php echo $PAYPAL_URL; ?>" method="post" id="paymentPP_form">
+                        <img src="<?= SITE; ?>assets/images/paypal.png" alt="pay with paypal">
+                        <form action="<?= $PAYPAL_URL; ?>" method="post" id="paymentPP_form">
                             <input type="hidden" name="cmd" value="_xclick" />
-                            <input type="hidden" name="business" value="<?php echo $PAYPAL_EMAIL; ?>" />
+                            <input type="hidden" name="business" value="<?= $PAYPAL_EMAIL; ?>" />
                             <input type="hidden" name="item_name" id="item_name" value="<?php if ($userdata['account_type'] == 'Individual') echo 'Planiversity.com - Case by Case';
                                                                                         else echo 'Planiversity.com - Monthly Plan'; ?>" />
-                            <input type="hidden" name="item_number" id="item_number" value="<?php echo $userdata['id'] . '-' . $_GET['idtrip']; ?>" />
+                            <input type="hidden" name="item_number" id="item_number" value="<?= $userdata['id'] . '-' . $_GET['idtrip']; ?>" />
                             <input type="hidden" name="amount" id="amount" value="<?php if ($userdata['account_type'] == 'Individual') echo '1.49';
                                                                                     else echo '24.99'; ?>" />
                             <input type="hidden" name="currency_code" value="USD" />
                             <input type="hidden" name="button_subtype" value="services" />
-                            <input type="hidden" name="return" value="<?php echo ($_GET['idtrip'] ? SITE . 'trip/pdf/' . $_GET['idtrip'] : SITE . 'billing'); ?>" />
-                            <input type="hidden" name="cancel_return" value="<?php echo SITE; ?>welcome" />
-                            <input type="hidden" name="notify_url" value="<?php echo SITE; ?>notify_url.php" />
+                            <input type="hidden" name="return" value="<?= ($_GET['idtrip'] ? SITE . 'trip/pdf/' . $_GET['idtrip'] : SITE . 'billing'); ?>" />
+                            <input type="hidden" name="cancel_return" value="<?= SITE; ?>welcome" />
+                            <input type="hidden" name="notify_url" value="<?= SITE; ?>notify_url.php" />
                             <center><input name="pay" type="submit" id="pay" value="CLICK BELOW TO BE DIRECTED TO PAYPAL" class="goto-paypal-btn subscribe-btn" /></center>
                         </form>
                     </div>
@@ -934,26 +914,25 @@ include('include_doctype.php');
                 <div class="card-box" id="pay_paypal_monthly" style="margin-top:-20px;">
                     <div class="pay-with-paypal">
                         <p class="pay-with">Pay with</p>
-                        <img src="<?php echo SITE; ?>assets/images/paypal.png" alt="pay with paypal">
-                        <form action="<?php echo $PAYPAL_URL; ?>" method="post" id="paymentPP_form">
+                        <img src="<?= SITE; ?>assets/images/paypal.png" alt="pay with paypal">
+                        <form action="<?= $PAYPAL_URL; ?>" method="post" id="paymentPP_form">
                             <input type="hidden" name="cmd" value="_xclick" />
-                            <input type="hidden" name="business" value="<?php echo $PAYPAL_EMAIL; ?>" />
+                            <input type="hidden" name="business" value="<?= $PAYPAL_EMAIL; ?>" />
                             <input type="hidden" name="item_name" id="item_name" value="<?php if ($userdata['account_type'] == 'Individual') echo 'Planiversity.com - Case by Case';
                                                                                         else echo 'Planiversity.com - Monthly Plan'; ?>" />
-                            <input type="hidden" name="item_number" id="item_number" value="<?php echo $userdata['id'] . '-' . $_GET['idtrip']; ?>" />
+                            <input type="hidden" name="item_number" id="item_number" value="<?= $userdata['id'] . '-' . $_GET['idtrip']; ?>" />
                             <input type="hidden" name="amount" id="amount" value="<?php if ($userdata['account_type'] == 'Individual') echo '1.49';
                                                                                     else echo '24.99'; ?>" />
                             <input type="hidden" name="currency_code" value="USD" />
                             <input type="hidden" name="button_subtype" value="services" />
-                            <input type="hidden" name="return" value="<?php echo ($_GET['idtrip'] ? SITE . 'trip/pdf/' . $_GET['idtrip'] : SITE . 'billing'); ?>" />
-                            <input type="hidden" name="cancel_return" value="<?php echo SITE; ?>welcome" />
-                            <input type="hidden" name="notify_url" value="<?php echo SITE; ?>notify_url.php" />
+                            <input type="hidden" name="return" value="<?= ($_GET['idtrip'] ? SITE . 'trip/pdf/' . $_GET['idtrip'] : SITE . 'billing'); ?>" />
+                            <input type="hidden" name="cancel_return" value="<?= SITE; ?>welcome" />
+                            <input type="hidden" name="notify_url" value="<?= SITE; ?>notify_url.php" />
                             <center><input name="pay" type="submit" id="pay" value="Subscribe" class="goto-paypal-btn subscribe-btn" style="width: 289px;margin: 28px auto;font-size: 15px;" /></center>
                         </form>
                     </div>
                 </div><br clear="all">
             </div>
-
 
             <div id="myModal" class="modal fade show modal-custom" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog">
@@ -977,11 +956,12 @@ include('include_doctype.php');
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <input name="payment_submit" id="payment_submit" type="submit" disabled class="accept-btn disabled-btn" value="I Accept" />
+                            <input name="payment_submit" id="payment_submit" type="button" disabled class="accept-btn disabled-btn" value="I Accept" />
                         </div>
                     </div>
                 </div>
             </div>
+
             <script>
                 $(document).ready(function(e) {
 
@@ -1015,10 +995,11 @@ include('include_doctype.php');
                         form$.get(0).submit();
                     }
                 }
-                Stripe.setPublishableKey('<?php echo STRIPE_PUBLISHABLE_KEY; ?>');
+
+                Stripe.setPublishableKey('<?= STRIPE_PUBLISHABLE_KEY; ?>');
+
                 $(document).ready(function() {
                     //on form submit
-                    //$("#payment_form").submit(function(event) {
                     $("#payment_submit").click(function(event) {
                         //disable the submit button to prevent repeated clicks
                         $('#myModal').modal('hide');
@@ -1030,7 +1011,7 @@ include('include_doctype.php');
                         $('#payment_submit1').addClass('disabled-btn');
                         $('#pay_loading1').modal('show');
 
-                        //create single-use token to charge the user
+                        // create single-use token to charge the user
                         Stripe.createToken({
                             number: $('#payment_cardnumber').val(),
                             cvc: $('#payment_cvc').val(),
@@ -1045,21 +1026,25 @@ include('include_doctype.php');
                         $('#item_name').val('Planiversity.com - Case by Case');
                         $('#popupmess').html('I authorize Planiversity, LLC to charge me a one-time payment of $1.49.');
                     });
+
                     $('#radio-monthly-plan-ind').click(function() {
                         $('#amount').val('4.99');
                         $('#item_name').val('Planiversity.com - Monthly Plan');
                         $('#popupmess').html('I authorize Planiversity, LLC to bill this account monthly. I also understand that any requests for changes to billing must be submitted to Planiversity customer service.');
                     });
+
                     $('#radio-monthly-plan').click(function() {
                         $('#amount').val('24.99');
                         $('#item_name').val('Planiversity.com - Monthly Plan');
                         $('#popupmess').html('I authorize Planiversity, LLC to bill this account monthly. I also understand that any requests for changes to billing must be submitted to Planiversity customer service.');
                     });
+
                     $('#radio-annual-plan').click(function() {
                         $('#amount').val('249.00');
                         $('#item_name').val('Planiversity.com - Annual Plan');
                         $('#popupmess').html('I authorize Planiversity, LLC to bill this account annual. I also understand that any requests for changes to billing must be submitted to Planiversity customer service.');
                     });
+
                     $('#checkbox2').click(function() {
                         if (document.getElementById('checkbox2').checked == true) {
                             $('#payment_submit').removeAttr('disabled');
@@ -1070,13 +1055,14 @@ include('include_doctype.php');
                         }
                     });
                 });
+
                 $('.modal-custom').on('show.bs.modal', function(e) {
                     setTimeout(function() {
                         $('.modal-backdrop').addClass('modal-backdrop-custom');
                     });
                 });
                 // paypal
-                var account_type = '<?php echo $userdata['account_type']; ?>';
+                var account_type = '<?= $userdata['account_type']; ?>';
 
                 function paypal_config() {
                     var monthly_plan_checked = $("#radio-monthly-plan").is(":checked");
@@ -1088,6 +1074,7 @@ include('include_doctype.php');
                         $("#pay_paypal_monthly").css("display", "none");
                     }
                 }
+
                 paypal_config();
                 $(document).on("click", "#radio-monthly-plan, #radio-annual-plan", function() {
                     paypal_config();

@@ -2,22 +2,45 @@
 
 use setasign\Fpdi\Tcpdf\Fpdi;
 
+
+
 ini_set('memory_limit', '1280M');
+
 ini_set('precision', 17);
+
 ini_set('serialize_precision', -1);
 
-$mapBoxKey = "pk.eyJ1IjoicGxhbml2ZXJzaXR5IiwiYSI6ImNrbWwwMXVhZjAxYnMyd2xlcW5yZGR5cTUifQ.SLgwBubC1t4UpKZ2MEyzZg";
-$key = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
 
-$text = array("First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh");
+
+parse_str($argv[1], $params);
+
+parse_str($argv[2], $params);
+
+
 
 $uid     = $_GET['uid'];
+
 $idtrip = $_GET['idtrip'];
 
 
+
+$mapBoxKey     = "pk.eyJ1IjoicGxhbml2ZXJzaXR5IiwiYSI6ImNrbWwwMXVhZjAxYnMyd2xlcW5yZGR5cTUifQ.SLgwBubC1t4UpKZ2MEyzZg";
+
+$key         = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
+
+
+
+$text         = array("First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh");
+
+
+
+include_once("config.ini.php");
+
 include_once("config.ini.curl.php");
 
-define("WEB_HOSTING_URL", "/home/planiv5/public_html/"); // live version
+
+
+define("WEB_HOSTING_URL", "/home/planiv5/public_html/staging/"); // live version
 // define("WEB_HOSTING_URL", "C:/OSPanel/domains/Planiversity2021/"); // dev version
 // if (!$auth->isLogged()) {
 //     $_SESSION['redirect'] = 'trip/pdf/' . $idtrip;
@@ -2846,9 +2869,10 @@ if (file_exists($pdfpath)) unlink($pdfpath);
 $pdf->Output(WEB_HOSTING_URL . 'pdf/' . $pdfname . '.pdf', "F");
 $trip->edit_data_pdf($idtrip);
 $trip->setProgressing($idtrip, 100);
-// print_r($trip->error);
-echo "100,";
-echo "OK";
+// var_dump(WEB_HOSTING_URL . 'pdf/' . $pdfname . '.pdf');
+print_r($trip->error);
+echo "100!!!!";
+echo "OK DONE";
 
 
 

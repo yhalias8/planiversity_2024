@@ -134,7 +134,7 @@
                     
                     <p class="footer-content-titile">Quick Links</p>
                  <div class="footer-content-body">
-                     <a class="footer-sitemap" href="">Free Demo</a>
+                     <a class="footer-sitemap" href="<?= SITE ?>data-security">Data Security</a>
                  </div>
                  <div class="footer-content-body">
                      <a class="footer-sitemap" href="<?= SITE ?>affiliate">Become an Affiliate</a>

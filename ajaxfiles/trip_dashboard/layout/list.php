@@ -17,14 +17,16 @@ function trip($dbh, $user_id, $id, $acc_type)
     } else {
         $trip_reason = "Business";
     }
-    
+
+
+
     $from_address = explode(" ", $tripl->location_from);
     $to_address = explode(" ", $tripl->location_to);
-    
+
     $employee_ = "";
-    // if (!empty($tripl->id_employee)) {
-    //     $employee_ = ' ' . get_employee($tripl->id_employee);
-    // }
+    if (!empty($tripl->id_employee)) {
+        $employee_ = ' ' . get_employee($tripl->id_employee);
+    }
 
     $triptitle = trim($tripl->title);
     $triptitle = str_replace('&#39;', '_', $triptitle);
@@ -42,7 +44,7 @@ function trip($dbh, $user_id, $id, $acc_type)
         $titledata = $titledata2 = $from_address[0] . ' to ' . $to_address[0];
         $action  = '<a href=' . $export_url . ' target="_blank">Export &nbsp;&nbsp;<i class="bi bi-box-arrow-in-right"></i></a>';
     }
-    
+
     $trip_date = date('M d h:i A', strtotime($tripl->location_datel . ' ' . $tripl->location_datel_deptime)) . ' - ' . date('h:i A', strtotime($tripl->location_datel_arrtime));
     $link = SITE . "/assets/billing2/images/map_img.jpg";
 
@@ -51,7 +53,7 @@ function trip($dbh, $user_id, $id, $acc_type)
     $destination = $destination_r;
     $des_lon = trim(explode(',', $destination)[1]);
     $des_lat = trim(explode(',', $destination)[0]);
-    
+
     $destinataion_update = explode(",", $destination)[1] . ',' . explode(",", $destination)[0];
 
     //$destination_route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+0688e9(" . $des_lon . ")/" . $des_lat . ",11,0/740x940@2x?access_token=$mapBoxKey";
@@ -59,7 +61,8 @@ function trip($dbh, $user_id, $id, $acc_type)
     $destination_route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+0688e9(" . trim($destinataion_update, " ") . ")/" . trim($destinataion_update, " ") . ",6,0/600x400@2x?access_token=$mapBoxKey";
 
     //$destination_route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+0688e9($des_lon)/$des_lat,16,0/400x600@2x?access_token=$mapBoxKey";
-    //$export_url = SITE . "trip/name/" . $tripl->id_trip;    
+    $export_url = SITE . "trip/name/" . $tripl->id_trip;
+
 
 
     return '<div id="meeting" class="tabcontent">

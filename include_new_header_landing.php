@@ -17,31 +17,16 @@
     <script src="<?= SITE; ?>newpage/Planiversity/js/bootstrap.min.js"></script>
     <script src="<?= SITE; ?>newpage/Planiversity/js/custom.js"></script>
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119611408-1"></script>
-<script type="text/javascript">
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'UA-119611408-1');
-</script>-->
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146873572-1"></script>
-    <script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119611408-1"></script>
+    <script type="text/javascript">
         window.dataLayer = window.dataLayer || [];
 
         function gtag() {
             dataLayer.push(arguments);
         }
         gtag('js', new Date());
-
-        gtag('config', 'UA-146873572-1');
+        gtag('config', 'UA-119611408-1');
     </script>
     <script type="text/javascript">
         function show_win(id) { //$('#link_'+id).toggle();
@@ -322,30 +307,9 @@
             font-size: 25px;
         }
     </style>
-    <!-- Google Tag Manager -->
-    <script>
-        (function(w, d, s, l, i) {
-            w[l] = w[l] || [];
-            w[l].push({
-                'gtm.start': new Date().getTime(),
-                event: 'gtm.js'
-            });
-            var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s),
-                dl = l != 'dataLayer' ? '&l=' + l : '';
-            j.async = true;
-            j.src =
-                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-            f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-PBF3Z2D');
-    </script>
-    <!-- End Google Tag Manager -->
 </head>
 
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PBF3Z2D" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
     <div class="login_cont">
         <div class="login_cont_in">
             <a id="login_cont_close" class="close">&times;</a>
@@ -448,7 +412,7 @@
                                             <a class="btn free-trial-button" href="logout">Log Out</a>
                                         <?php   } else { ?>
                                             <!--<a class="btn free-trial-button" href="" data-toggle="modal" id="show_loginform" data-target="#freetrial">Sign In</a>-->
-                                            <a class="btn free-trial-button" id="show_loginform">Sign In</a>
+                                            <a href="javascript:void(0)" class="btn free-trial-button" id="show_loginform">Sign In</a>
                                         <?php } ?>
                                         <!--<a class="btn free-trial-button" href="" data-toggle="modal" id="show_loginform" data-target="#freetrial">Sign In</a>-->
                                         <!--<a class="btn free-trial-button" id="show_loginform">Sign In</a>-->

@@ -21,10 +21,11 @@ if (isset($_POST['image'])) {
 	$image_name = $return_dir . $file_name;
 	file_put_contents($image_name, $data);
 
-	$query = "UPDATE employees SET photo = ? WHERE id_employee = ?";
+	$query = "UPDATE employees SET photo = ?,photo_connect= ? WHERE id_employee = ?";
 	$stmtnew = $dbh->prepare($query);
 	$stmtnew->bindValue(1, $file_name, PDO::PARAM_STR);
-	$stmtnew->bindValue(2, $_POST["useId"], PDO::PARAM_INT);
+	$stmtnew->bindValue(2, 0, PDO::PARAM_INT);
+	$stmtnew->bindValue(3, $_POST["useId"], PDO::PARAM_INT);
 	$stmtnew->execute();
 
 	echo $return_url;

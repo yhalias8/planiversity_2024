@@ -90,9 +90,6 @@ include('include_doctype.php');
                                 </a>
                             <?php } ?>
 
-                            <a href="<?php echo SITE; ?>welcome" class="dropdown-item drop-menu-item">
-                                Home
-                            </a>   
                             
                             <a href="<?php echo SITE; ?>contact-us" class="dropdown-item drop-menu-item" target="_blank">
                                 Contact Us
@@ -157,6 +154,9 @@ include('include_doctype.php');
                     </li>
                     <li class="active-link">
                         <a href="<?php echo SITE; ?>apanel/transactions">Transactions</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo SITE; ?>apanel/affiliate">Affiliate</a>
                     </li>
                     <li>
                         <a href="<?php echo SITE; ?>apanel/users">Users</a>

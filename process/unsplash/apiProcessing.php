@@ -10,6 +10,8 @@ if (isset($_GET['request_id']) && isset($_GET['type'])  && isset($_GET['keyword'
 
   $url = "";
 
+  //https: //api.unsplash.com/search/photos?query=travel&per_page=10&orientation=portrait&page=1&client_id
+
 
   if (isset($_GET['keyword'])) {
     $url .= "?query=" . urlencode($_GET['keyword']);

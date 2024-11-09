@@ -361,7 +361,6 @@
 
 
         submitHandler: function(form) {
-
             let uuid = localStorageValueGet();
             var search = $('#search').val();
             var category_field = $('#category_field').val();
@@ -375,6 +374,7 @@
                 scrollTop: $("#marketplace-content").offset().top - 70
             }, 1000);
 
+
         }, // Do not change code below
         errorPlacement: function(error, element) {
             //error.insertAfter(element.parent());
@@ -383,8 +383,6 @@
 
     });
 
-
-
     $(document).on("click", ".view_more", function(event) {
         let uuid = localStorageValueGet();
         var current_page = $(this).val();
@@ -392,43 +390,42 @@
         serviceListProcess(dataSet, true, true);
     });
     
-    
     function paginationLoad(total_pages, reload) {
-    
-            if (reload) {
-                $('#pagination-step').twbsPagination('destroy');
-                $('#page-content').text('Page 1') + ' content here';
-            }
-    
-            var numPages = Math.ceil(total_pages / 8);
-    
-            if (numPages != 0) {
-    
-                pagination = $('#pagination-step').twbsPagination({
-                    totalPages: numPages,
-                    visiblePages: 5,
-                    first: '',
-                    last: '',                
-                    next: 'Next',
-                    prev: 'Previous',
-                    initiateStartPageClick: false,
-                    //startPage: page,
-                    hideOnlyOnePage: true,
-                    onPageClick: function(event, page) {
-                        //fetch content and render here
-                        $('#page-content').text('Page ' + page) + ' content here';
-    
-                        let uuid = localStorageValueGet();
-                        //var current_page = $('.view_more').val();
-                        var dataSet = 'category=' + category + '&page=' + page + '&uuid=' + uuid;
-                        serviceListProcess(dataSet);
-    
-                        console.log('total_pages Inside', total_pages);
-                    }
-                });
-            }
-    }    
-    
+
+        if (reload) {
+            $('#pagination-step').twbsPagination('destroy');
+            $('#page-content').text('Page 1') + ' content here';
+        }
+
+        var numPages = Math.ceil(total_pages / 8);
+
+
+        if (numPages != 0) {
+
+            pagination = $('#pagination-step').twbsPagination({
+                totalPages: numPages,
+                visiblePages: 5,
+                first: '',
+                last: '',                
+                next: 'Next',
+                prev: 'Previous',
+                initiateStartPageClick: false,
+                //startPage: page,
+                hideOnlyOnePage: true,
+                onPageClick: function(event, page) {
+                    //fetch content and render here
+                    $('#page-content').text('Page ' + page) + ' content here';
+
+                    let uuid = localStorageValueGet();
+                    //var current_page = $('.view_more').val();
+                    var dataSet = 'category=' + category + '&page=' + page + '&uuid=' + uuid;
+                    serviceListProcess(dataSet);
+
+                    console.log('total_pages Inside', total_pages);
+                }
+            });
+        }
+    }
 
     function serviceListProcess(dataSet, cat_mode = null, load_more = null, data_empty = null) {
         if (data_empty) {
@@ -459,24 +456,44 @@
                 console.log('response', response);
 
                 $(".loading_section").hide();
+                // if (load_more) {
+                //     $("#service_content").append(response.data.responseList);
+                //     serviceList = [...serviceList, ...response.data.results.data];
+                // } else {
+                //     $("#service_content").html(response.data.responseList);
+                //     serviceList = [...response.data.results.data];
+                // }
                 
                 $("#service_content").html(response.data.responseList);
-                serviceList = [...response.data.results.data]; 
-
+                serviceList = [...response.data.results.data];     
+                
                 paginationLoad(response.data.total_count, cat_mode);
                 $('.service_count').html(response.data.total_count);                
 
                 next_page = response.data.next_page;
                 // request_query = response.data.request_query;
 
+                console.log('serviceList', serviceList);
+
+                $(".view_more").val(response.data.next_page);
+                // $("#previous_button").val(response.data.previous_page);
+
+                // if (response.data.responseList) {
+                //     $("#api_proceced").val(1);
+                //     $("#api_query").val(request_query);
+                // }
+
+                // if (next_page || previous_page) {
+                //     $(".load_more").show();
+                // }
 
                 console.log('response.data.results.next_page_url', response.data.results.next_page_url);
 
-                if (response.data.results.next_page_url == null) {
-                    $(".view_more").hide();
-                } else {
-                    $(".view_more").show();
-                }
+                // if (response.data.results.next_page_url == null) {
+                //     $(".view_more").hide();
+                // } else {
+                //     $(".view_more").show();
+                // }
 
                 // if (previous_page == null) {
                 //     $("#previous_button").attr("disabled", true);

@@ -18,7 +18,9 @@ $idtrip = $_GET['idtrip'];
 include_once("config.ini.php");
 include_once("config.ini.curl.php");
 
-define("WEB_HOSTING_URL", "/home/planiv5/public_html/"); // live version
+
+define("WEB_HOSTING_URL", "/home/planiv5/public_html/staging/"); // live version
+
 
 
 // if (!$auth->isLogged()) {
@@ -1015,7 +1017,7 @@ $tmp1 = explode(',', $tmp1);
 $filter_lat_to = $filter_lat_to2 = trim($tmp1[0]);
 $filter_lng_to = $filter_lng_to2 = trim($tmp1[1]);
 
-$ptd = $dbh->prepare("SELECT id_plan as id,plan_name as title,plan_lat as lat,plan_lng as lng,plan_type as type,plan_address as address FROM tripit_plans WHERE trip_id=?  AND schedule_linked = 0");
+$ptd = $dbh->prepare("SELECT id_plan as id,plan_name as title,plan_lat as lat,plan_lng as lng,plan_type as type,plan_address as address FROM tripit_plans WHERE trip_id=? AND schedule_linked = 0");
 $ptd->bindValue(1, $idtrip, PDO::PARAM_INT);
 $tmp = $ptd->execute();
 $aux = '';
@@ -1466,7 +1468,7 @@ $currentPage = $currentPage + 1;
 
 ///////////////////////////////////////Map Plan Route Destination start////////////////////////
 
-$dtd = $dbh->prepare("SELECT id_plan as id,plan_name as title,plan_lat as lat,plan_lng as lng,plan_type as type FROM tripit_plans WHERE trip_id=?  AND schedule_linked = 0");
+$dtd = $dbh->prepare("SELECT id_plan as id,plan_name as title,plan_lat as lat,plan_lng as lng,plan_type as type FROM tripit_plans WHERE trip_id=? AND schedule_linked = 0");
 $dtd->bindValue(1, $idtrip, PDO::PARAM_INT);
 $tmp = $dtd->execute();
 $aux = '';

@@ -27,7 +27,7 @@
                             <a class="nav-link" href="<?= SITE ?>marketplace">Marketplace</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= SITE ?>travel-booking">Travel Booking</a>
+                            <a class="nav-link" href="<?= SITE ?>travel-deals">Travel Deals</a>
                         </li>
                         <li class="sign_in_btn">
                             <a class="btn" href="<?= SITE ?>login" id="show_loginform">Sign In</a>

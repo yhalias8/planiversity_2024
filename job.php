@@ -175,8 +175,8 @@ include('include_doctype.php');
                     }
                     if ($userdata['account_type'] == 'Business' || $userdata['account_type'] == 'Admin') { ?>
                         <li>
-                            <a href="<?php echo SITE ?>employees" class="left-nav-button">
-                                <i class="mdi mdi-account-multiple"></i>Employee
+                            <a href="<?php echo SITE ?>people" class="left-nav-button">
+                                <i class="mdi mdi-account-multiple"></i>People
                             </a>
                         </li>
                         <li>
@@ -260,7 +260,7 @@ include('include_doctype.php');
                                         </div>
 
                                         <div class="col-sm-12 number-group">
-                                            <label class="emp-form-label">Employees</label>
+                                            <label class="emp-form-label">People</label>
                                             <div class="form-group process-btn">
 
                                                 <input type="text" class="form-control account-form-control input-lg" id="invitee_type" placeholder="Search Employee" list="invitee_id_datalist" autocomplete="off" autofocus="">
@@ -527,7 +527,7 @@ include('include_doctype.php');
 
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <p class="event-title">Employees</p>
+                                    <p class="event-title">People</p>
 
                                     <div id="employee_list"></div>
 

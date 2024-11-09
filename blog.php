@@ -1,8 +1,8 @@
 <?php
 include_once("config.ini.php");
-include_once('include_login_php.php');
+include('include_login_php.php');
 include_once("include_new_header.php");
-//include('include_doctype.php');
+include('include_doctype.php');
 ?>
 <div class="account-main-wrapper spacer">
   <div class="container">
@@ -16,4 +16,4 @@ include_once("include_new_header.php");
 </script>
 <script src="https://io.dropinblog.com/js/embed.js"></script>
 
-<?php include_once("include_new_footer_other.php") ?>
+<?php include_once("include_new_footer.php") ?>

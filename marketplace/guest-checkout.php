@@ -84,19 +84,19 @@ $flag = "wish_redirect";
 
                                     </div>
                                     
-                                     <div class="col-xl-6 col-6 padding_left">
+                                    <div class="col-xl-6 col-6 padding_left">
 
                                         <div class="form-group">
                                             <label>Phone number</label>
                                             <input type="text" name="phone_number" id="phone_number" class="form-control reset_value valid" placeholder="">
                                         </div>
 
-                                    </div>
+                                    </div>                                    
 
                                     <div class="col-xl-12 col-12 padding_left">
 
                                         <div class="form-group">
-                                            <label>Address *</label>
+                                            <label>Address</label>
                                             <input type="text" name="address" id="address" class="form-control reset_value valid" placeholder="185 Berry St" required>
                                         </div>
 

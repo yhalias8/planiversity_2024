@@ -12,7 +12,7 @@
   <link href="<?php echo SITE; ?>newpage/Planiversity/css/font-awesome.min.css" rel="stylesheet">
   <link href="<?php echo SITE; ?>newpage/Planiversity/css/bootstrap.min.css" rel="stylesheet">
 
-  <link href="<?php echo SITE; ?>newpage/Planiversity/css/style.css?2022" rel="stylesheet">
+  <link href="<?php echo SITE; ?>newpage/Planiversity/css/style.css?1020" rel="stylesheet">
   <script src="<?php echo SITE; ?>newpage/Planiversity/js/jquery.min.js"></script>
   <script src="<?php echo SITE; ?>assets/js/popper.min.js"></script>
   <script src="<?php echo SITE; ?>newpage/Planiversity/js/bootstrap.min.js"></script>
@@ -23,41 +23,17 @@
   </script>  
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146873572-1"></script>
-  <script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119611408-1"></script>
+  <script type="text/javascript">
     window.dataLayer = window.dataLayer || [];
 
     function gtag() {
       dataLayer.push(arguments);
     }
     gtag('js', new Date());
-
-    gtag('config', 'UA-146873572-1');
+    gtag('config', 'UA-119611408-1');
   </script>
-
-  <!-- Google Tag Manager -->
-  <script>
-    (function(w, d, s, l, i) {
-      w[l] = w[l] || [];
-      w[l].push({
-        'gtm.start': new Date().getTime(),
-        event: 'gtm.js'
-      });
-      var f = d.getElementsByTagName(s)[0],
-        j = d.createElement(s),
-        dl = l != 'dataLayer' ? '&l=' + l : '';
-      j.async = true;
-      j.src =
-        'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-      f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-PBF3Z2D');
-  </script>
-  <!-- End Google Tag Manager -->
-  
-  <?php include_once("includes/reditus_tracking_script.php"); ?>
-  
   <script type="text/javascript">
-  
     function show_win(id) { //$('#link_'+id).toggle();
       $('#win_' + id).toggle('slow');
     }
@@ -256,8 +232,8 @@
     }
 
     .topbar {
-      background: linear-gradient(135deg, #0191FD 0.69%, #0D256E 99.13%), #F7F8FA !important;
-      box-shadow: none !important;
+      background: linear-gradient(135deg, #0191FD 0.69%, #0D256E 99.13%), #F7F8FA;
+      box-shadow: none;
     }
 
     .topbar a {
@@ -300,45 +276,36 @@
       d.getElementsByTagName("head")[0].appendChild(s)
     })(window)
   </script>
-
+  
   <!--Facebook Pixel Code-->
-  <script>
-    ! function(f, b, e, v, n, t, s) {
-      if (f.fbq) return;
-      n = f.fbq = function() {
-        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-      };
+	<script>
+		!function (f, b, e, v, n, t, s) {
+		    if (f.fbq) return; n = f.fbq = function () {
+		        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+		    };
 
-      if (!f._fbq) f._fbq = n;
-      n.push = n;
-      n.loaded = !0;
-      n.version = '2.0';
+		    if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
 
-      n.queue = [];
-      t = b.createElement(e);
-      t.async = !0;
+		    n.queue = []; t = b.createElement(e); t.async = !0;
 
-      t.src = v;
-      s = b.getElementsByTagName(e)[0];
+		    t.src = v; s = b.getElementsByTagName(e)[0];
 
-      s.parentNode.insertBefore(t, s)
-    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+		    s.parentNode.insertBefore(t, s)
+		}(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
 
-    fbq('init', '871547440200746');
+		fbq('init', '871547440200746');
 
-    fbq('track', 'PageView');
-  </script>
+		fbq('track', 'PageView');
 
-  <noscript>
-    <img height="1" width="1" src="https://www.facebook.com/tr?id=871547440200746&ev=PageView&noscript=1" />
-  </noscript>
-  <!--End Facebook Pixel Code-->
+	</script>
+
+	<noscript>
+		<img height="1" width="1" src="https://www.facebook.com/tr?id=871547440200746&ev=PageView&noscript=1" />
+	</noscript>
+	<!--End Facebook Pixel Code-->
 </head>
 
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PBF3Z2D" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
   <div class="login_cont">
     <div class="login_cont_in">
       <a id="login_cont_close" class="close">&times;</a>
@@ -409,26 +376,24 @@
             <div class="collapse navbar-collapse hover-dropdown" id="mheader1">
               <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link" href="<?= SITE ?>about-us">About Us</a>
+                  <a class="nav-link" href="about-us">About Us</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="<?= SITE ?>blog">Blog</a>
+                  <a class="nav-link" href="faq">FAQ</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="<?= SITE ?>select-your-payment">What It Costs</a>
+                  <a class="nav-link" href="select-your-payment">What It Costs</a>
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="<?= SITE ?>data-security">Data Security</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="<?= SITE ?>marketplace">Marketplace</a>
+                  <a class="nav-link" href="marketplace">Marketplace</a>
+                  </a>
                 </li>                
                 <li class="nav-item">
-                  <a class="nav-link" href="<?= SITE ?>travel-booking">Travel Booking</a>
+                  <a class="nav-link" href="contact-us">Contact Us</a>
                 </li>
-                <li class="sign_in_btn"><a class="btn" href="<?= SITE ?>login">Sign In</a></li>
-              </ul>
+                <li class="sign_in_btn"><a class="btn" href="<?= SITE ?>login" >Sign In</a></li>                
+                </ul>
             </div>
           </nav>
         </div>

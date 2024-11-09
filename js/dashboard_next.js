@@ -104,7 +104,7 @@ const attendeesInfoProcess = (trip_ref) => {
         items += `<div class="col-md-3">
         <div class="people_left_side">
             <div class="people_img"><img src="${photo}"></div>
-            <div class="people_info">
+            <div class="people_info text-black">
                 <h4>${item.name}</h4>
                 <p>${item.email}</p>
             </div>
@@ -116,7 +116,8 @@ const attendeesInfoProcess = (trip_ref) => {
 
       if (response == null || response.length === 0 || response.data.user_count == 0) {
         items = "";
-        items += `<h3 class="no-found"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> There are no attendess to display.</h3>`;
+        // items += `<h3 class="no-found"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> There are no attendess to display.</h3>`;
+        items += `<h3 class="no-found"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> There are no attendess to display.</h3>`;
       }
 
 
@@ -152,7 +153,7 @@ const checkinUpdateInfoProcess = (trip_ref) => {
             <div class="people_img"><img src="${profileImageProcess(
               item
           )}"></div>
-            <div class="people_info">
+            <div class="people_info text-black">
             <b>${item.name}</b> ${item.event_name} at ${item.checked_in_date}
                 
             </div>
@@ -165,7 +166,7 @@ const checkinUpdateInfoProcess = (trip_ref) => {
             <div class="people_img"><img src="${profileImageProcess(
               item
           )}"></div>
-            <div class="people_info">
+            <div class="people_info text-black">
                 <h4>${item.name}</h4>
             </div>
         </div>
@@ -182,7 +183,8 @@ const checkinUpdateInfoProcess = (trip_ref) => {
 
       if (data == null || data.length === 0) {
         items = "";
-        items += `<h3 class="no-found"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> There are no updates to display.</h3>`;
+        // items += `<h3 class="no-found"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> There are no updates to display.</h3>`;
+        items += `<h3 class="no-found"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> There are no updates to display.</h3>`;
       }
 
       $("#update_details .statuses").html(items);
@@ -242,7 +244,8 @@ const documentInfoProcess = (trip_ref) => {
 
       if (data == null || data.length === 0) {
         items = "";
-        items += `<h3 class="no-found"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> There are no documents to display.</h3>`;
+        // items += `<h3 class="no-found"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> There are no documents to display.</h3>`;
+        items += `<h3 class="no-found"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> There are no documents to display.</h3>`;
       }
 
       $("#document_list").html(items);

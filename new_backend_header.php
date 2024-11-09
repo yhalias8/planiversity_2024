@@ -1,6 +1,8 @@
 <?php
 $img = SITE . 'images/my_profile_icon.png';
-if ($userdata['picture']) $img = SITE . 'ajaxfiles/profile/' . $userdata['picture'];
+
+if ($userdata['picture']) $img = SITE. 'ajaxfiles/profile/' . $userdata['picture'];
+
 ?>
 <header id="topnav">
     <div class="topbar-main">
@@ -24,7 +26,7 @@ if ($userdata['picture']) $img = SITE . 'ajaxfiles/profile/' . $userdata['pictur
                 <ul class="list-inline float-right mb-0">
                     <li class="menu-item list-inline-item  new-backend-header-style mobile_button">
                         <a class="navbar-toggle nav-link">
-                            <i class="fa fa-chevron-down" style="color:white;display;none;"></i>
+                            <i class="fa fa-chevron-down" style="color:white;display:none;"></i>
                         </a>
                     </li>
                     <li class="list-inline-item dropdown more-nav-list new-backend-header-style mobile_hide">
@@ -60,7 +62,7 @@ if ($userdata['picture']) $img = SITE . 'ajaxfiles/profile/' . $userdata['pictur
                         </div>
                     </li>
                     <li class="list-inline-item dropdown more-nav-list new-backend-header-style mobile_hide">
-                        <img src="<?php echo $img; ?>" width="35px" height="35px" alt="user" class="header-avatar rounded-circle">
+                        <img src="<?= $img; ?>" width="35px" height="35px" alt="user" class="header-avatar rounded-circle">
                     </li>
                     <!-- <?php if ($auth->isLogged()) { ?>
                     <li class="list-inline-item dropdown more-nav-list">

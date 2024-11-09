@@ -1,13 +1,20 @@
 <?php
+
 include_once("../config.ini.php");
+
 if ($auth->isLogged()) {
+
     header('location: ' . SITE . 'welcome');
 }
+
 ?>
 
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <title>Planiversity</title>
 
     <meta charset="utf-8">
@@ -20,12 +27,14 @@ if ($auth->isLogged()) {
 
     <link href="css/menuzord.css" rel="stylesheet" type="text/css" />
 
-    <link href="css/mystyle.css?v=100" rel="stylesheet">
+    <link href="css/mystyle.css" rel="stylesheet">
 
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <link href="css/responsive.css?v=100" rel="stylesheet">
-    
+    <link href="css/responsive.css" rel="stylesheet">
+
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -34,17 +43,16 @@ if ($auth->isLogged()) {
         html {
             scroll-behavior: smooth;
         }
-        
         .become_an_affiliate_for_submt img {
         width: 40px;
         margin-right: 5px;
         }
         .action_button {
-            padding: 8px 30px !important;
-            border-radius: 5px !important;
-        }        
+        padding: 8px 30px !important;
+        border-radius: 5px !important;
+        }
         .action_button:hover {
-            opacity: 0.8;
+        opacity: 0.8;
         }        
     </style>
 
@@ -80,15 +88,9 @@ if ($auth->isLogged()) {
             f.parentNode.insertBefore(j, f);
 
         })(window, document, 'script', 'dataLayer', 'GTM-PBF3Z2D');
-        
     </script>
-    
-    <?php include_once("../includes/reditus_tracking_script.php"); ?>
-    
 
     <script>
-    
-    
         (function(w) {
 
             var k = "nudgify",
@@ -214,7 +216,7 @@ if ($auth->isLogged()) {
 
                         </a>
 
-                        <a href="javascript:void(0)" title="" class="icon_baar">
+                        <!-- <a href="javascript:void(0)" title="" class="icon_baar">
 
                             <div></div>
 
@@ -222,7 +224,7 @@ if ($auth->isLogged()) {
 
                             <div></div>
 
-                        </a>
+                        </a> -->
 
                         <ul class="menuzord-menu menuzord-right">
 
@@ -322,12 +324,13 @@ if ($auth->isLogged()) {
 
                             <div class="row">
 
-
+                                
 
                                 <div class="col-xl-12 col-lg-12 col-md-12">
 
                                     <div class="become_an_affiliate_for_submt">
 
+                                        
                              <a href="https://app.getreditus.com/affiliate/sign_up/planiversity" target="_blank">
                              <button type="button" id="btn-contact" class="btn_submit action_button"><img src="<?=SITE?>/images/handshake_signup.png">SIGNUP NOW</button>
                              </a>
@@ -470,33 +473,31 @@ if ($auth->isLogged()) {
 
                 </div>
 
-                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6">
 
                     <div class="footer_item2">
+
                         <h4>Site Map</h4>
+
                         <ul class="list-unstyled">
+
                             <li><a href="<?= SITE ?>contact-us">Contact Us</a></li>
+
                             <li><a href="<?= SITE ?>blog">Blog</a></li>
+
                             <li><a href="<?= SITE ?>data-security">Data Security</a></li>
+
                             <li><a href="">What You'll Get</a></li>
+
                             <li><a href="<?= SITE ?>sitemap.xml">Sitemap</a></li>
+
                         </ul>
 
                     </div>
-                    
-                    
-                    <div class="footer_item2">
-                        <h4>Legal</h4>
-                        <ul class="list-unstyled">
-                            <li><a href="https://getterms.io/view/98sYm/privacy/en-us">Privacy Policy</a></li>
-                            <li><a href="https://getterms.io/view/98sYm/tos/en-us">Terms of Service</a></li>
-                            <li><a href="https://getterms.io/view/98sYm/cookie/en-us">Cookies</a></li>
-                            <li><a href="https://getterms.io/view/98sYm/aup/en-us">AUP</a></li>
-                            
-                        </ul>
-                    </div>                    
-                    
-                    
+
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6">
                     <div class="footer_item2">
                         <h4>Quick Links</h4>
                         <ul class="list-unstyled">
@@ -505,11 +506,8 @@ if ($auth->isLogged()) {
                             <li><a href="">Partners</a></li>
                             <li><a href="https://planivers.com" target="_blank">Planivers Magazine</a></li>
                         </ul>
-                    </div>                    
-
+                    </div>
                 </div>
-
-                
 
                 <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6">
 
@@ -660,6 +658,59 @@ if ($auth->isLogged()) {
 
 
 
+    <script type="text/javascript">
+        "use strict";
+
+
+
+        ! function() {
+
+            var t = window.driftt = window.drift = window.driftt || [];
+
+            if (!t.init) {
+
+                if (t.invoked) return void(window.console && console.error && console.error("Drift snippet included twice."));
+
+                t.invoked = !0, t.methods = ["identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on"],
+
+                    t.factory = function(e) {
+
+                        return function() {
+
+                            var n = Array.prototype.slice.call(arguments);
+
+                            return n.unshift(e), t.push(n), t;
+
+                        };
+
+                    }, t.methods.forEach(function(e) {
+
+                        t[e] = t.factory(e);
+
+                    }), t.load = function(t) {
+
+                        var e = 3e5,
+
+                            n = Math.ceil(new Date() / e) * e,
+
+                            o = document.createElement("script");
+
+                        o.type = "text/javascript", o.async = !0, o.crossorigin = "anonymous", o.src = "https://js.driftt.com/include/" + n + "/" + t + ".js";
+
+                        var i = document.getElementsByTagName("script")[0];
+
+                        i.parentNode.insertBefore(o, i);
+
+                    };
+
+            }
+
+        }();
+
+        drift.SNIPPET_VERSION = '0.3.1';
+
+        drift.load('99c7am4huua5');
+    </script>
 
 </body>
 

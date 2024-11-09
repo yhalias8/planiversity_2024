@@ -165,7 +165,7 @@ h1{
 	}
 	</style>
 	<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-	<h1><b> $title</b></h1>
+	<h1><b> $trip->trip_title</b></h1>
 	";
 }
 
@@ -336,7 +336,7 @@ if (($trip->trip_location_from != NULL || $trip->trip_location_from != '') && ($
 	if (($trip->trip_hotel_name != NULL || $trip->trip_hotel_name != '') || ($trip->trip_rental_agency != NULL || $trip->trip_rental_agency != '') || (($trip->trip_location_to != NULL || $trip->trip_location_to != '') && ($trip->trip_location_from != NULL || $trip->trip_location_from != ''))) {
 
 		$dep_date = $trip->trip_location_datel ? date('F d, Y', strtotime($trip->trip_location_datel)) : null;
-		$dep_time = $trip->trip_location_datel_deptime ? date('h:i:s A', strtotime($trip->trip_location_datel_deptime)) : null;
+		$dep_time = $trip->trip_location_datel_deptime ? date('H:i:s A', strtotime($trip->trip_location_datel_deptime)) : null;
 
 		$ari_date = $trip->trip_location_datel_deptime ? date('F d, Y', strtotime($trip->trip_location_datel_deptime)) : null;
 		$ari_time = $trip->trip_location_datel_arrtime ? date('h:i:s A', strtotime($trip->trip_location_datel_arrtime)) : null;

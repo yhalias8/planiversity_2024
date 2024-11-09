@@ -38,6 +38,7 @@ if ($uuid) {
             <div class="block-heading">
                 <p>If you are a Planiversity member, you will receive up to a 10 percent discount on services</p>
             </div>
+
             <div class="content">
                 <div class="row service_load">
 
@@ -48,7 +49,9 @@ if ($uuid) {
                     <div class="col-md-12 col-lg-8">
                         <div class="items"></div>
                         <p id="foot_note" style="display:none">We're sorry, you have to be signed in to use the messaging function on Planiversity.</p>
+                        
                     </div>
+
                     <div class="col-md-12 col-lg-4">
                         <div class="summary" style="display: none;">
                             <h3>Summary</h3>
@@ -61,33 +64,35 @@ if ($uuid) {
                             <button type="button" data-props="contact" class="btn btn-primary btn-lg btn-block e_button member contact">Contact Seller</button>
                         </div>
                     </div>
+
                 </div>
             </div>
+
         </div>
     </section>
     
     <div class="modal fade modal-blur" id="advanced_popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
-            <div class="modal-dialog modal-popup-lg modal-dialog-centered" role="document">
-    
-                <div class="modal-content">
-                    <div class="modal-body connect-bg-ground text-center advanced-popup-body">
-    
-                        <div class="advanced_section">
-    
-                            <h3>Because this is a unique offer and requires specific details to best fulfill your requirements,<span> you'll need to contact the seller first</span></h3>
-                            <p>Contacting the seller is quick and easy <span>just reach out and inquire about the offer</span></p>
-    
-                        </div>
-    
+        <div class="modal-dialog modal-popup-lg modal-dialog-centered" role="document">
+
+            <div class="modal-content">
+                <div class="modal-body connect-bg-ground text-center advanced-popup-body">
+
+                    <div class="advanced_section">
+
+                        <h3>Because this is a unique offer and requires specific details to best fulfill your requirements,<span> you'll need to contact the seller first</span></h3>
+                        <p>Contacting the seller is quick and easy <span>just reach out and inquire about the offer</span></p>
+
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-info btn-close-modal contact-seller">Contact Seller</button>
-                    </div>
+
                 </div>
-    
-    
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info btn-close-modal contact-seller">Contact Seller</button>
+                </div>
             </div>
-        </div>    
+
+
+        </div>
+    </div>    
 
     <div class="modal fade modal-blur" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -111,10 +116,6 @@ if ($uuid) {
                                 <input type="email" class="form-control" name="email" placeholder="Your Email">
                             </div>
                             <div class="form-group">
-                                <!-- <input type="number" class="form-control" name="mobile" placeholder="Your Mobile Number"> -->
-
-
-
                                 <div class="input-group">
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-secondary dropdown-toggle" id="dropdownSelectLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -2376,8 +2377,7 @@ if ($uuid) {
                                     </div>
                                     <span class="input-group-addon">+1</span>
                                     <input type="text" class="form-control" name="mobile" placeholder="(555) 123-4567">
-                                </div>
-
+                                </div>                                
                             </div>
                             <div class="form-group">
                                 <textarea class="form-control" name="message" placeholder="Your Message" rows="4"></textarea>
@@ -2435,9 +2435,11 @@ if ($uuid) {
                 </div>
             </div>
         </div>
+    </div>
 
-        <?php include_once("includes/include_order_script.php"); ?>
-        <?php include_once("includes/include_footer.php"); ?>
+    <?php include_once("includes/include_order_script.php"); ?>
+    <?php include_once("includes/include_footer.php"); ?>
+
 
 </body>
 

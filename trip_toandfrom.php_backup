@@ -37,6 +37,7 @@ switch ($transport) {
 
 $output = '';
 if (isset($_POST['location_submit'])) {
+    
     $from = $_POST["location_from"];
     $to = $_POST["location_to"];
     $from_latlng = $_POST["location_from_latlng"];
@@ -127,12 +128,12 @@ if (isset($_POST['location_submit'])) {
         $rental_agency_address = $_POST['rental_agency_address'];
     }
 
-    if (!empty($from) && !empty($to) && !empty($from_latlng) && !empty($to_latlng)) {
+    if (!empty($from) && !empty($to) && !empty($from_latlng) && !empty($to_latlng)) { // save data trip in DB
         include("class/class.TripPlan.php");
         $trip = new TripPlan();
         $trip->put_data($transport, $from, $to, $from_latlng, $to_latlng, $filter, $embassis, $location_triptype, $location_datel, $location_datel_deptime, $location_datel_arrtime, $dep_flight_no, $dep_seat_no, $location_dater, $location_dater_deptime, $location_dater_arrtime, $ret_flight_no, $ret_seat_no, $hotel_name, $hotel_date_checkin, $hotel_date_checkout, $rental_agency, $rental_date_pick, $rental_date_drop, $location_from_flightportion, $location_to_flightportion, $location_from_latlng_flightportion, $location_to_latlng_flightportion, $location_from_drivingportion, $location_to_drivingportion, $location_from_latlng_drivingportion, $location_to_latlng_drivingportion, $location_from_trainportion, $location_to_trainportion, $location_from_latlng_trainportion, $location_to_latlng_trainportion, "", "", $hotel_address, $rental_agency_address, json_encode($location_multi_waypoint), $location_multi_waypoint_latlng, $via_waypoints, $location_multi_waypoint_date, $location_multi_waypoint_dep_date, $multi_waypoint_flight_no, $multi_waypoint_seat_no);
 
-        if (!$trip->error) {
+        if (!$trip->error) { //header("Location:".SITE."trip/route/".$dbh->lastInsertId());
             header("Location:" . SITE . "trip/create-timeline/" . $dbh->lastInsertId());
         } else {
             $output = 'A system error has been encountered. Please try again.' . $trip->error;
@@ -208,39 +209,19 @@ include('include_doctype.php');
         .algolia-places .ap-input-icon {
             margin-top: 16px;
         }
-        
+
         .list-inline {
             display: none;
-        }
-        
-        .right-side-link {
-            display: inherit;
-        }
-
-        .affiliate_link {
-            margin-left: 50px;
-            position: relative;
-            top: 3px;
-        }
-
-        .affiliate_link p {
-            font-size: 12px;
-            color: #000;
-        }
-
-        .affiliate_link p span {
-            color: #048cf2;
-        }
-
-        .affiliate_link p span:hover {
-            color: #048cf9;
         }
     </style>
 </head>
 
 <body class="custom_toandfrom">
 
+    <!--<div class="content">-->
+
     <?php
+    //include('include_header.php')
     include('new_backend_header.php');
     ?>
     <div class="navbar-custom old-site-colors">
@@ -303,12 +284,12 @@ include('include_doctype.php');
                             <p class="main-color"><img class="mr-2" src="<?php echo SITE; ?>images/slider_02.png" alt="Schedule">Filters</p>
                         </a>
                     </li>
-                   <li>
+                    <li>
                     	<a href="#" class="left-nav-button">
                         	<!--<img src="<?php echo SITE; ?>assets/images/step_filters.png" alt="Filters">-->
                          	<p class="main-color"><img class="mr-2" src="<?php echo SITE; ?>images/plans.png" alt="Schedule">Plans</p>
                       	</a>
-                  	</li>                    
+                  	</li>
                     <li>
                         <a href="#" class="left-nav-button">
                             <!--<img src="<?php echo SITE; ?>assets/images/step_documents.png" alt="Documents">-->
@@ -340,6 +321,9 @@ include('include_doctype.php');
                     <div class="modal-header bb-none pt-4">
                         <button type="button" class="close" aria-hidden="true">-</button>
                         <h4 class="modal-title" id="myLargeModalLabel">Build Your Itinerary</h4>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        
                     </div>
 
                     <div class="modal-body" id="schedule-modal-body">
@@ -731,22 +715,13 @@ include('include_doctype.php');
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12 col-lg-12 right-side-link" style="min-height: 46px;">
+                                <div class="col-md-12 col-lg-12" style="min-height: 46px;">
                                     <div class="checkbox checkbox-primary">
                                         <input name="hotel_located" id="hotel_located" type="checkbox">
                                         <label for="hotel_located">
                                             Located at Airport
                                         </label>
                                     </div>
-                                    
-                                    <div class="affiliate_link">
-                                        <a href="https://tp.media/r?marker=311162&trs=171390&p=2076&u=https%3A%2F%2Fbooking.com" target="_blank">
-                                            <p>
-                                                Book a hotel room with <span>Booking.com</span>
-                                            </p>
-                                        </a>
-                                    </div>
-                                    
                                 </div>
                                 <div class="col-md-12 col-lg-12">
                                     <label class="mr-b-10">Hotel Address</label>
@@ -793,22 +768,13 @@ include('include_doctype.php');
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12 col-lg-12 right-side-link" style="min-height: 46px;">
+                                <div class="col-md-12 col-lg-12" style="min-height: 46px;">
                                     <div class="checkbox checkbox-primary">
                                         <input name="rental_agency_located" id="rental_agency_located" type="checkbox">
                                         <label for="rental_agency_located">
                                             Located at Airport
                                         </label>
                                     </div>
-                                    
-                                    <div class="affiliate_link">
-                                        <a href="https://tp.media/r?marker=311162&trs=171390&p=3814&u=https%3A%2F%2Frentalcars.com" target="_blank">
-                                            <p>
-                                                Get a car rental with <span>Rentalcars.com</span>
-                                            </p>
-                                        </a>
-                                    </div>
-                                    
                                 </div>
                                 <div class="col-md-12 col-lg-12">
                                     <label class="mr-b-10">Rental Agency Address</label>
@@ -913,7 +879,6 @@ include('include_doctype.php');
     <script>
         $(window).on('load', function() {
             $('#schedule-modal').modal('show');
-
         });
         $('#change-travel-method').change(function() {
             var mode = $('#change-travel-method').val();
@@ -1075,10 +1040,10 @@ include('include_doctype.php');
                     }
                 }
 
-                //alert(me.origin_dportionPlaceLocation)
                 me.portionroute(ptype);
             });
         };
+        
         DrawPlaneDirectionsHandler.prototype.setupAlgoliaPlaceChangedListenerPortion = function(autocomplete, mode, ptype) {
             var me = this;
             autocomplete.on('change', function(e) {
@@ -1134,54 +1099,56 @@ include('include_doctype.php');
                 document.getElementById('location_from_latlng_drivingportion').value = me.origin_dportionPlaceLocation;
                 document.getElementById('location_to_latlng_drivingportion').value = me.destination_dportionPlaceLocation;
                 var bounds = new google.maps.LatLngBounds();
-                // var marker_origin = new google.maps.Marker({
-                //     position: new google.maps.LatLng(me.origin_dportionPlaceLocation.lat(), me.origin_dportionPlaceLocation.lng()),
-                //     label: {
-                //         text: "",
-                //         color: "#ffffff",
-                //     },
-                //     icon:'https://planiversity.com/assets/images/icon.png'
-                // });
+                
+                var marker_icon = new google.maps.MarkerImage(
+               		'https://planiversity.com/assets/images/icon.png',
+                  	null,
+                   	// The origin for my image is 0,0.
+                   	new google.maps.Point(0, 0),
+                   	// The center of the image is 50,50 (my image is a circle with 100,100)
+                   	new google.maps.Point(50, 50)
+            	);
+                
                 var marker_destination = new google.maps.Marker({
                     position: new google.maps.LatLng(me.destination_dportionPlaceLocation.lat(), me.destination_dportionPlaceLocation.lng()),
-                    icon: 'https://planiversity.com/assets/images/icon.png',
+                    // icon: 'https://planiversity.com/assets/images/icon.png',
+                    icon: marker_icon,
                     label: {
                         text: markerAlpaArr[mark_number + 1],
                         color: "#ffffff",
                     }
                 });
-                //if(marker_a)
-                //marker_origin.setMap(map);
-                //if(marker_b)
+                
                 marker_destination.setMap(map);
-                // bounds.extend(marker_origin.position);
+                
                 bounds.extend(marker_destination.position);
                 map.fitBounds(bounds);
             } else {
                 document.getElementById('location_from_latlng_trainportion').value = me.origin_tportionPlaceLocation;
                 document.getElementById('location_to_latlng_trainportion').value = me.destination_tportionPlaceLocation;
                 var bounds = new google.maps.LatLngBounds();
-                // var marker_origin = new google.maps.Marker({
-                //     position: new google.maps.LatLng(me.origin_tportionPlaceLocation.lat(), me.origin_tportionPlaceLocation.lng()),
-                //     label: {
-                //         text: "",
-                //         color: "#ffffff",
-                //     },
-                //     icon:'https://planiversity.com/assets/images/icon.png'
-                // });
+                
+                var marker_icon = new google.maps.MarkerImage(
+               		'https://planiversity.com/assets/images/icon.png',
+                  	null,
+                   	// The origin for my image is 0,0.
+                   	new google.maps.Point(0, 0),
+                   	// The center of the image is 50,50 (my image is a circle with 100,100)
+                   	new google.maps.Point(50, 50)
+            	);
+                
                 var marker_destination = new google.maps.Marker({
                     position: new google.maps.LatLng(me.destination_tportionPlaceLocation.lat(), me.destination_tportionPlaceLocation.lng()),
-                    icon: 'https://planiversity.com/assets/images/icon.png',
+                    // icon: 'https://planiversity.com/assets/images/icon.png',
+                    icon: marker_icon,
                     label: {
                         text: markerAlpaArr[mark_number + 1],
                         color: "#ffffff",
                     }
                 });
-                //if(marker_a)
-                //marker_origin.setMap(map);
-                //if(marker_b)
+                
                 marker_destination.setMap(map);
-                // bounds.extend(marker_origin.position);
+               
                 bounds.extend(marker_destination.position);
                 map.fitBounds(bounds);
 
@@ -1195,11 +1162,9 @@ include('include_doctype.php');
                 },
                 travelMode: google.maps.TravelMode[ptype]
             }, function(response, status) {
-                if (status === 'OK') { //alert('-origin:---'+this.origin_dportionPlaceId+'----'+ptype);
-                    //if (ptype=='DRIVING') me.directionsDisplay1.setDirections(response); else me.directionsDisplay2.setDirections(response);
-                    var line = new google.maps.Polyline({
+                if (status === 'OK') { 
+                	var line = new google.maps.Polyline({
                         path: response.routes[0].overview_path,
-                        //geodesic: true,
                         strokeColor: '#0688E9',
                         strokeOpacity: 1.0,
                         strokeWeight: 3
@@ -1212,6 +1177,7 @@ include('include_doctype.php');
                 }
             });
         };
+        
         /************************* NEW **********************************/
         DrawPlaneDirectionsHandler.prototype.setupPlaceChangedListener = function(autocomplete, mode) {
             var me = this;
@@ -1447,7 +1413,7 @@ include('include_doctype.php');
                 var via_waypoints = [];
                 for (var j = 0; j < result.routes[0].legs.length; j++) {
                     var way_point = result.routes[0].legs[j];
-                    // var waypoints = result.route[0].legs[j].via_waypoint;
+                    
                     for (var k = 0; k < way_point.via_waypoint.length; k++) {
                         var vlat = way_point.via_waypoint[k].location.lat();
                         var vlng = way_point.via_waypoint[k].location.lng();
@@ -1467,7 +1433,7 @@ include('include_doctype.php');
                         points_arr.push(lat_lng);
                     }
                 }
-                // console.log(points_arr);
+                
                 if (result.routes[0].legs.length > 0) {
                     // get miles
                     var center_point = result.routes[0].overview_path.length / 2;
@@ -1483,6 +1449,7 @@ include('include_doctype.php');
                 via_waypoints = JSON.stringify(via_waypoints);
                 $("#via_waypoints").val(via_waypoints);
             });
+            
             this.setupAlgoliaPlaceChangedListener(originPlaceAutocomplete, 'ORIG');
             this.setupAlgoliaPlaceChangedListener(destPlaceAutocomplete, 'DEST');
             if (transportWay === 'train') {
@@ -1628,7 +1595,7 @@ include('include_doctype.php');
 
         AutocompleteDirectionsHandler.prototype.setupAlgoliaPlaceChangedListener = function(autocomplete, mode) {
             var me = this;
-            // autocomplete.bindTo('bounds', this.map);
+            
             autocomplete.on('change', function(e) {
                 var geocoder = new google.maps.Geocoder;
                 var latlng = e.suggestion.latlng;
@@ -1700,43 +1667,55 @@ include('include_doctype.php');
                 document.getElementById('location_from_latlng_drivingportion').value = me.origin_dportionPlaceLocation;
                 document.getElementById('location_to_latlng_drivingportion').value = me.destination_dportionPlaceLocation;
                 var bounds = new google.maps.LatLngBounds();
-                // marker_origin = new google.maps.Marker({
-                //     position: me.origin_dportionPlaceLocation,
-                //     icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markerAlpaArr[mark_number] + '|007acc|FFFFFF'
-                // });
+                
+                var marker_icon = new google.maps.MarkerImage(
+               		'https://planiversity.com/assets/images/icon.png',
+                  	null,
+                   	// The origin for my image is 0,0.
+                   	new google.maps.Point(0, 0),
+                   	// The center of the image is 50,50 (my image is a circle with 100,100)
+                   	new google.maps.Point(50, 50)
+            	);
+                
                 marker_destination = new google.maps.Marker({
                     position: me.destination_dportionPlaceLocation,
-                    icon: 'https://planiversity.com/assets/images/icon.png',
+                    // icon: 'https://planiversity.com/assets/images/icon.png',
+                    icon: marker_icon,
                     label: {
                         text: markerAlpaArr[mark_number + 1],
                         color: "#ffffff",
                     }
                 });
-                //marker_origin.setMap(this.map);
+                
                 marker_destination.setMap(this.map);
-                // bounds.extend(marker_origin.position);
+                
                 bounds.extend(marker_destination.position);
             }
+            
             if (ptype == 'TRANSIT') {
                 document.getElementById('location_from_latlng_trainportion').value = me.origin_tportionPlaceLocation;
                 document.getElementById('location_to_latlng_trainportion').value = me.destination_tportionPlaceLocation;
                 var bounds = new google.maps.LatLngBounds();
-                // marker_origin = new google.maps.Marker({
-                //     position: me.origin_tportionPlaceLocation,
-                //     icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markerAlpaArr[mark_number] + '|007acc|FFFFFF'
-                // });
-
+                
+                var marker_icon = new google.maps.MarkerImage(
+               		'https://planiversity.com/assets/images/icon.png',
+                  	null,
+                   	// The origin for my image is 0,0.
+                   	new google.maps.Point(0, 0),
+                   	// The center of the image is 50,50 (my image is a circle with 100,100)
+                   	new google.maps.Point(50, 50)
+            	);
+                
                 marker_destination = new google.maps.Marker({
                     position: me.destination_tportionPlaceLocation,
-                    icon: 'https://planiversity.com/assets/images/icon.png',
+                    // icon: 'https://planiversity.com/assets/images/icon.png',
+                    icon: marker_icon,
                     label: {
                         text: markerAlpaArr[mark_number + 1],
                         color: "#ffffff",
                     }
                 });
-                //marker_origin.setMap(this.map);
                 marker_destination.setMap(this.map);
-                // bounds.extend(marker_origin.position);
                 bounds.extend(marker_destination.position);
             }
 
@@ -1754,16 +1733,11 @@ include('include_doctype.php');
                     destination: {
                         'placeId': (ptype == "DRIVING" ? this.destination_dportionPlaceId : this.destination_tportionPlaceId)
                     },
-                    //travelMode: this.travelMode,
                     travelMode: google.maps.TravelMode[ptype]
                 }, function(response, status) {
                     if (status === 'OK') {
-                        /*alert('-------'+ptype);  */
-                        //if (ptype=='DRIVING') me.directionsDisplay1.setDirections(response); else me.directionsDisplay2.setDirections(response);
-
                         var line = new google.maps.Polyline({
                             path: response.routes[0].overview_path,
-                            //geodesic: true,
                             strokeColor: '#0688E9',
                             strokeOpacity: 1.0,
                             strokeWeight: 3
@@ -1783,28 +1757,31 @@ include('include_doctype.php');
                 if (marker_origin) {
                     marker_origin.setMap(null);
                 }
+                
                 if (marker_destination) {
                     marker_destination.setMap(null);
                 }
-                // marker_origin = new google.maps.Marker({
-                //     position: me.origin_fportionPlaceLocation,
-                //     icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markerAlpaArr[mark_number] + '|007acc|FFFFFF'
-                // });
+                
+                var marker_icon = new google.maps.MarkerImage(
+               		'https://planiversity.com/assets/images/icon.png',
+                  	null,
+                   	// The origin for my image is 0,0.
+                   	new google.maps.Point(0, 0),
+                   	// The center of the image is 50,50 (my image is a circle with 100,100)
+                   	new google.maps.Point(50, 50)
+            	);
+            	
                 marker_destination = new google.maps.Marker({
                     position: me.destination_fportionPlaceLocation,
-                    icon: 'https://planiversity.com/assets/images/icon.png',
+                    // icon: 'https://planiversity.com/assets/images/icon.png',
+                    icon: marker_icon,
                     label: {
                         text: markerAlpaArr[mark_number + 1],
                         color: "#ffffff",
                     }
                 });
-                //marker_origin.setMap(this.map);
                 marker_destination.setMap(this.map);
-                // bounds.extend(marker_origin.position);
                 bounds.extend(marker_destination.position);
-
-                //document.getElementById('location_from_latlng_flightportion').value = me.origin_fportionPlaceLocation;
-                //document.getElementById('location_to_latlng_flightportion').value = me.destination_fportionPlaceLocation;
 
                 var flightPlanCoordinates = [{
                         lat: me.origin_fportionPlaceLocation.lat(),
@@ -1907,7 +1884,7 @@ include('include_doctype.php');
                     travelMode: this.travelMode,
                 }, function(response, status) {
                     if (status === 'OK') {
-                        //                me.directionsDisplay
+                        // me.directionsDisplay
                         directionsRenderer.setDirections(response);
                         var my_route = response.routes[0];
                         addMarker(my_route)
@@ -1979,19 +1956,19 @@ include('include_doctype.php');
         $("#rental_agency_located").click(function() {
             if (this.checked == true) {
                 $("#rental_agency_address").hide();
-                //                $('#rental_agency_address').prop('required',false);
+                // $('#rental_agency_address').prop('required',false);
             } else {
                 $("#rental_agency_address").show();
-                //                $("#rental_agency_address").prop('required',true);
+                // $("#rental_agency_address").prop('required',true);
             }
         });
         $("#hotel_located").click(function() {
             if (this.checked == true) {
                 $("#hotel_address").hide();
-                //                $('#hotel_address').prop('required',false);
+                // $('#hotel_address').prop('required',false);
             } else {
                 $("#hotel_address").show();
-                //                $("#hotel_address").prop('required',true);
+                // $("#hotel_address").prop('required',true);
             }
         });
         $('input[type=radio][name=location_triptype]').change(function() {
@@ -2036,7 +2013,7 @@ include('include_doctype.php');
                 $("#myLargeModalLabel").css({
                     fontSize: 21
                 });
-                //                $('#schedule-modal').modal('show');
+                // $('#schedule-modal').modal('show');
                 $(this).html("-");
             } else {
                 $("#schedule-modal").addClass('modaltrans');

@@ -1,10 +1,9 @@
 <?php include_once("include_script.php"); ?>
 
 <script>
-
     let order_props;
     let popup_activation = 0;
-    
+
     $(function() {
         localStorageValueInitialized();
         localStorageWishValueInitialized();
@@ -38,13 +37,13 @@
     });
     
     function toogleInfoMesage(value) {
-    
-            if (value == 'auth') {
-                $('.info_message').hide();
-            } else {
-                $('.info_message').show();
-            }
-        }    
+
+        if (value == 'auth') {
+            $('.info_message').hide();
+        } else {
+            $('.info_message').show();
+        }
+    }    
     
     $(".dropdown-menu li button").click(function(evt) {
         // Setup VARs
@@ -65,13 +64,12 @@
         $('#country_code').val(selectedDialCode);
         inputGroupInput.attr("placeholder", selectedExampleNumber);
     });    
-    
 
 
-$(document).on("click", ".member", function(event) {
+    $(document).on("click", ".member", function(event) {
 
         order_props = $(this).data("props");
-
+        
         toogleInfoMesage(order_props);
 
         $('.e_button').css('cursor', 'wait');
@@ -117,6 +115,7 @@ $(document).on("click", ".member", function(event) {
 
         });
 
+
     });
     
     $(document).on("click", ".contact-seller", function(event) {
@@ -124,7 +123,7 @@ $(document).on("click", ".member", function(event) {
         $('#advanced_popup').modal('hide');
         $('#contactModal').modal('show');
 
-    });      
+    });    
 
     $("#contactform").validate({
 
@@ -280,7 +279,6 @@ $(document).on("click", ".member", function(event) {
 
     });
 
-
     function initialServiceLoad() {
         uuid = "<?= $uuid ?>";
         var dataSet = 'service_uuid=' + uuid;
@@ -310,7 +308,7 @@ $(document).on("click", ".member", function(event) {
                 $(".items").html(response.data.responseList);
                 $("#subtotal").html(response.data.service_price);
                 $("#total").html(response.data.service_price);
-                
+
                 $("#foot_note").show();
 
                 $('.e_button').css('cursor', 'pointer');
@@ -321,7 +319,6 @@ $(document).on("click", ".member", function(event) {
 
                 $('.e_button').css('cursor', 'pointer');
                 $('.e_button').removeAttr('disabled');
-
 
             }
 

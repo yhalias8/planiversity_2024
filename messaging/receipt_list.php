@@ -1,22 +1,39 @@
 <?php
 include_once('../config.ini.php');
 include_once('list.php');
-$PATH = "message/recipients";
-$parms = "";
-$parms .= "?uuid=" . $userdata['id'];
 
-if (isset($_GET['search'])) {
-    $parms .= "&search=" . $_GET['search'];
+$rData = (object) [
+    'data' =>
+        (object) [
+            'data' => []
+        ],
+];
+
+$sql = <<<SQL
+select u.id,u.name,u.customer_number,u.picture
+from employees e
+inner join users u on u.customer_number=e.employee_id
+where e.id_user=:user_id
+SQL;
+
+if ($_GET['search']) {
+    $sql .= ' and (u.name like :search_name or u.customer_number = :search_customer_number)';
 }
 
-if (isset($_GET['page'])) {
-    $parms .= "&page=" . $_GET['page'];
+global $dbh;
+
+$stmt = $dbh->prepare($sql);
+
+$stmt->bindParam(':user_id', $userdata['id'], PDO::PARAM_INT);
+if ($_GET['search']) {
+    $stmt->bindParam(':search_customer_number', $_GET['search']);
+    $str = "%" . $_GET['search'] . "%";
+    $stmt->bindParam(':search_name', $str);
 }
 
-$API_GET_PATH = $URL . $PATH . $parms;
+$stmt->execute();
 
-$mData = curlRequestGet($API_GET_PATH);
-$rData = json_decode($mData);
+$rData->data->data = $stmt->fetchAll(PDO::FETCH_OBJ);
 
 if (!empty($rData->data->data)) {
     $returnValue = $rData->data->data;
@@ -27,6 +44,7 @@ if (!empty($rData->data->data)) {
 }
 
 $responseList = processReceiptData($returnValue, $FILE_PATH);
+
 
 $output = [
     'responseList' => $responseList,

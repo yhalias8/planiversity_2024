@@ -23,7 +23,6 @@ if (isset($_POST['title']) && isset($_POST['event_date_from']) && isset($_POST['
     $deposit_amount = filter_var($_POST["deposit_amount"]);
     $id = filter_var($_POST["eid"]);
 
-
     $error = '';
 
     $query = "UPDATE events SET event_title = ?, customer_name = ?,customer_number = ?,customer_address = ?,event_time_from = ?,event_time_to = ?,event_location = ?,event_overview = ?,special_instructions = ?,deposit = ?,deposit_amount = ?,event_date_from = ?,event_date_to = ? WHERE id = ?";
@@ -43,7 +42,6 @@ if (isset($_POST['title']) && isset($_POST['event_date_from']) && isset($_POST['
     $stmt->bindValue(13, $event_date_to, PDO::PARAM_STR);    
     $stmt->bindValue(14, $id, PDO::PARAM_INT);
     $tmp = $stmt->execute();
-
 
     if (!$tmp) {
         $error = 'error_fail';

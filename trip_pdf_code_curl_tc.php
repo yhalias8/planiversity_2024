@@ -14,31 +14,9 @@ ini_set('serialize_precision', -1);
 
 
 
+parse_str($argv[1], $params);
 
-
-// parse_str($argv[1], $params);
-
-// parse_str($argv[2], $params);
-
-// $idtrip = $params['idtrip'];
-
-
-
-$mapBoxKey = "pk.eyJ1IjoicGxhbml2ZXJzaXR5IiwiYSI6ImNrbWwwMXVhZjAxYnMyd2xlcW5yZGR5cTUifQ.SLgwBubC1t4UpKZ2MEyzZg";
-
-$key = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
-
-
-
-//parse_str($argv[2], $params);
-
-//$uid = $params['uid'];
-
-
-
-$text = array("First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh");
-
-
+parse_str($argv[2], $params);
 
 
 
@@ -48,37 +26,29 @@ $idtrip = $_GET['idtrip'];
 
 
 
+$mapBoxKey     = "pk.eyJ1IjoicGxhbml2ZXJzaXR5IiwiYSI6ImNrbWwwMXVhZjAxYnMyd2xlcW5yZGR5cTUifQ.SLgwBubC1t4UpKZ2MEyzZg";
+
+$key         = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
+
+
+
+$text         = array("First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh");
+
+
+
+include_once("config.ini.php");
+
 include_once("config.ini.curl.php");
 
 
 
-define("WEB_HOSTING_URL", "/home/planiv5/public_html/"); // live version
-
-
-
-// if (!$auth->isLogged()) {
-
-//     $_SESSION['redirect'] = 'trip/pdf/' . $idtrip;
-
-//     header("Location:" . WEB_HOSTING_URL . "login");
-
-// }
+define("WEB_HOSTING_URL", "/home/planiv5/public_html/staging/"); // live version
 
 
 
 include("class/class.Plan.php");
 
 $plan = new Plan();
-
-
-
-// if (!$plan->check_plan($userdata['id'])) { //header("Location:".WEB_HOSTING_URL."billing/".$_POST['idtrip']);
-
-//     //exit();     
-
-// }
-
-//   exit;
 
 
 
@@ -90,27 +60,26 @@ $trip = new TripPlan();
 
 $idtrip = filter_var($idtrip, FILTER_SANITIZE_STRING);
 
+if (empty($idtrip)) {
+
+	header("Location:" . SITE . "trip/how-are-you-traveling");
+}
 
 
-// if (empty($idtrip)){
 
-//     header("Location:" . WEB_HOSTING_URL . "trip/how-are-you-traveling");
-
-// }
-
-//echo $idtrip . ",";
-
-
+echo $idtrip . ",";
 
 $trip->get_data($idtrip);
 
-//$trip->setProgressing($idtrip, 0);
-
-echo "0,";
 
 
+$trip->setProgressing($idtrip, 0);
 
-//$plan->change_status_plan($userdata['id']);
+echo "0";
+
+$plan->change_status_plan($userdata['id']);
+
+
 
 
 
@@ -134,49 +103,49 @@ $google_object = $stmh->fetch(PDO::FETCH_OBJ);
 
 if ($google_object->sync_googlecalendar) {
 
-    $user_timezone = $userdata['timezone'];
+	$user_timezone = $userdata['timezone'];
 
-    //date_default_timezone_set($user_timezone);		
+	//date_default_timezone_set($user_timezone);		
 
-    $event_text = '';
+	$event_text = '';
 
-    // trip plan
+	// trip plan
 
-    $event['title'] = $trip->trip_title;
+	$event['title'] = $trip->trip_title;
 
-    $event['description'] = 'trip (from: ' . $trip->trip_location_from . ' - to: ' . $trip->trip_location_to . ') on ' . $trip->trip_transport;
+	$event['description'] = 'trip (from: ' . $trip->trip_location_from . ' - to: ' . $trip->trip_location_to . ') on ' . $trip->trip_transport;
 
-    $startdate = ($trip->trip_location_datel != '0000-00-00') ? $trip->trip_location_datel : date('Y-m-d');
+	$startdate = ($trip->trip_location_datel != '0000-00-00') ? $trip->trip_location_datel : date('Y-m-d');
 
-    $enddate = ($trip->trip_location_dater != '0000-00-00') ? $trip->trip_location_dater : date('Y-m-d');
+	$enddate = ($trip->trip_location_dater != '0000-00-00') ? $trip->trip_location_dater : date('Y-m-d');
 
-    if ($trip->trip_location_triptype == 'o')
+	if ($trip->trip_location_triptype == 'o')
 
-        $enddate = $startdate;
+		$enddate = $startdate;
 
-    $day = date('j', strtotime($startdate));
+	$day = date('j', strtotime($startdate));
 
-    $month = date('n', strtotime($startdate));
+	$month = date('n', strtotime($startdate));
 
-    $year = date('Y', strtotime($startdate));
+	$year = date('Y', strtotime($startdate));
 
-    $event['start_time'] = str_replace('-', '', $startdate); //date('Ymd',mktime(0,0,0,$month,$day,$year)).'T'.date('His',mktime(0,0,0,$month,$day,$year)).'Z'; //date('c',mktime(0,0,0,$month,$day,$year));
+	$event['start_time'] = str_replace('-', '', $startdate); //date('Ymd',mktime(0,0,0,$month,$day,$year)).'T'.date('His',mktime(0,0,0,$month,$day,$year)).'Z'; //date('c',mktime(0,0,0,$month,$day,$year));
 
-    $event['start_time2'] = date('D, j M Y', mktime(0, 0, 0, $month, $day, $year));
+	$event['start_time2'] = date('D, j M Y', mktime(0, 0, 0, $month, $day, $year));
 
-    $day = date('j', strtotime($enddate));
+	$day = date('j', strtotime($enddate));
 
-    $month = date('n', strtotime($enddate));
+	$month = date('n', strtotime($enddate));
 
-    $year = date('Y', strtotime($enddate));
+	$year = date('Y', strtotime($enddate));
 
-    $event['end_time'] = str_replace('-', '', $enddate);
+	$event['end_time'] = str_replace('-', '', $enddate);
 
-    //date('Ymd',mktime(0,0,0,$month,$day,$year)).'T'.date('His',mktime(23,59,0,$month,$day,$year)).'Z'; //date('c',mktime(23,59,0,$month,$day,$year));
+	//date('Ymd',mktime(0,0,0,$month,$day,$year)).'T'.date('His',mktime(23,59,0,$month,$day,$year)).'Z'; //date('c',mktime(23,59,0,$month,$day,$year));
 
-    $event['end_time2'] = date('D, j M Y', mktime(0, 0, 0, $month, $day, $year));
+	$event['end_time2'] = date('D, j M Y', mktime(0, 0, 0, $month, $day, $year));
 
-    $event_text = '<html>		
+	$event_text = '<html>		
 
 						  <body>
 
@@ -204,33 +173,33 @@ if ($google_object->sync_googlecalendar) {
 
 							</p>';
 
-    // timeline
+	// timeline
 
-    $stmt = $dbh->prepare("SELECT * FROM timeline WHERE id_trip=?");
+	$stmt = $dbh->prepare("SELECT * FROM timeline WHERE id_trip=?");
 
-    $stmt->bindValue(1, $idtrip, PDO::PARAM_INT);
+	$stmt->bindValue(1, $idtrip, PDO::PARAM_INT);
 
-    $tmp = $stmt->execute();
+	$tmp = $stmt->execute();
 
-    if ($tmp && $stmt->rowCount() > 0) {
+	if ($tmp && $stmt->rowCount() > 0) {
 
-        $timelines = $stmt->fetchAll(PDO::FETCH_OBJ);
+		$timelines = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-        foreach ($timelines as $timeline) {
+		foreach ($timelines as $timeline) {
 
-            $startdate = explode(' ', $timeline->date);
+			$startdate = explode(' ', $timeline->date);
 
-            $endate = date('Y-m-d H:i:s', strtotime($timeline->date . '+1 hour'));
+			$endate = date('Y-m-d H:i:s', strtotime($timeline->date . '+1 hour'));
 
-            $endate = explode(' ', $endate);
+			$endate = explode(' ', $endate);
 
-            $event['start_time'] = str_replace('-', '', $startdate[0]) . 'T' . str_replace(':', '', $startdate[1]);
+			$event['start_time'] = str_replace('-', '', $startdate[0]) . 'T' . str_replace(':', '', $startdate[1]);
 
-            $event['end_time'] = str_replace('-', '', $endate[0]) . 'T' . str_replace(':', '', $endate[1]);
+			$event['end_time'] = str_replace('-', '', $endate[0]) . 'T' . str_replace(':', '', $endate[1]);
 
-            $event['start_time2'] = date('D, j M Y h:i a', strtotime($timeline->date));
+			$event['start_time2'] = date('D, j M Y h:i a', strtotime($timeline->date));
 
-            $event_text .= '<p>' . $timeline->title . '<br/>
+			$event_text .= '<p>' . $timeline->title . '<br/>
 
 									  Order for: ' . $userdata['name'] . '<br/>
 
@@ -241,35 +210,32 @@ if ($google_object->sync_googlecalendar) {
 									  <a style="padding: 15px 38px;font-size: 17px;line-height:30px;border: 2px solid #f6a027;color: #fff;outline: none;background: #f6a027;cursor: pointer;text-indent:0;text-align:center;text-transform:uppercase;text-decoration: none;" href="http://www.google.com/calendar/event?action=TEMPLATE&dates=' . $event['start_time'] . '%2F' . $event['end_time'] . '&ctz=' . urlencode($user_timezone) . '&text=' . urlencode($timeline->title) . '&location=&details=">Add event to calendar</a>
 
 								  </p>';
+		}
+	}
 
-        }
-
-    }
-
-    $event_text .= '</body>
+	$event_text .= '</body>
 
 					  </html>';
 
 
 
-    $mail = new PHPMailer;
+	$mail = new PHPMailer;
 
-    $mail->CharSet = 'UTF-8';
+	$mail->CharSet = 'UTF-8';
 
-    $mail->From = $auth->config->site_email;
+	$mail->From = $auth->config->site_email;
 
-    $mail->FromName = $auth->config->site_name;
+	$mail->FromName = $auth->config->site_name;
 
-    $mail->addAddress($userdata['email']);
+	$mail->addAddress($userdata['email']);
 
-    $mail->isHTML(true);
+	$mail->isHTML(true);
 
-    $mail->Subject = 'Planiversity.com - Calendar Event';
+	$mail->Subject = 'Planiversity.com - Calendar Event';
 
-    $mail->Body = $event_text;
+	$mail->Body = $event_text;
 
-    $mail->send();
-
+	$mail->send();
 }
 
 // END --- add event to google calendar
@@ -292,29 +258,28 @@ class top_bar
 
 {
 
-    public $title;
+	public $title;
 
-    public $content;
+	public $content;
 
-    public $subtext;
+	public $subtext;
 
-    public function __construct($title, $content, $subtext = "")
+	public function __construct($title, $content, $subtext = "")
 
-    {
+	{
 
-        $this->title = $title;
+		$this->title = $title;
 
-        $this->content = $content;
+		$this->content = $content;
 
-        $this->subtext = $subtext;
+		$this->subtext = $subtext;
+	}
 
-    }
+	public function html_content()
 
-    public function html_content()
+	{
 
-    {
-
-        $html = '<style>
+		$html = '<style>
 
 		.header{
 
@@ -344,10 +309,8 @@ class top_bar
 
 		';
 
-        return $html;
-
-    }
-
+		return $html;
+	}
 }
 
 //////////////////////////////////////Page Header End/////////////////////////////////////////////////
@@ -360,7 +323,11 @@ class top_bar
 
 
 
-$fontname = TCPDF_FONTS::addTTFfont('/home/planiv5/public_html/tcpdf/examples/images/CircularStd-Medium.ttf', 'TrueTypeUnicode', '', 96);
+//$fontname = TCPDF_FONTS::addTTFfont('/home/planiv5/public_html/tcpdf/examples/images/CircularStd-Medium.ttf', 'TrueTypeUnicode', '', 96);
+
+
+
+$fontname = TCPDF_FONTS::addTTFfont('tcpdf/examples/images/CircularStd-Medium.ttf', 'TrueTypeUnicode', '', 96);
 
 
 
@@ -392,10 +359,9 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
 if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
 
-    require_once(dirname(__FILE__) . '/lang/eng.php');
+	require_once(dirname(__FILE__) . '/lang/eng.php');
 
-    $pdf->setLanguageArray($l);
-
+	$pdf->setLanguageArray($l);
 }
 
 $pdf->SetFont($fontname, '', 14, '', false);
@@ -458,10 +424,6 @@ $currentPage = $currentPage + 1;
 
 
 
-
-
-
-
 //////////////////////////////////////Itinerary slide with all stops info start//////////////////////
 
 $pdf->AddPage('P', 'A4');
@@ -490,8 +452,7 @@ $acronym_from = "";
 
 foreach ($words as $w) {
 
-    $acronym_from .= $w[0];
-
+	$acronym_from .= $w[0];
 }
 
 $latLng_timezone_to = trim($trip->trip_location_to_latlng, '()');
@@ -516,8 +477,7 @@ $acronym_to = "";
 
 foreach ($words as $w) {
 
-    $acronym_to .= $w[0];
-
+	$acronym_to .= $w[0];
 }
 
 $hotel = '';
@@ -534,12 +494,10 @@ $transport = "Flight";
 
 if ($trip->trip_transport == "vehicle") {
 
-    $transport = "Drive";
-
+	$transport = "Drive";
 } else if ($trip->trip_transport == "train") {
 
-    $transport = "Train";
-
+	$transport = "Train";
 }
 
 
@@ -586,283 +544,180 @@ $html = $section_2->html_content();
 
 if ($trip->trip_hotel_address != NULL || $trip->trip_hotel_address != '') {
 
-    $hotel .= '
+	$hotel .= '
 
-    <table class="body">
+	<table><tr class="divider"><td></td></tr></table>
 
-			<tr>
+	<table class="table">
 
-				<td width="2%">
+	<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
 
-				</td>
+	<th colspan="2">Hotel Booking</th>
 
-
-
-				<td width="95%" rowspan="2">
-
-						<table width="100%">
-
-				   
-
-						<tr class="content-1">
-
-						<td width="100%"><p style="color:#0D256E; font-size:20px; font-weight:bold;">Hotel Booking</p></td>								
-
-						</tr>
+	</tr>
 
 
 
-						<tr class="content-1">
+	<tr nobr="true" width="100%">
 
-						<td width="100%"><hr style="width:100%; background-color:#3E4754; font-size:2px;line-height:10px"/></td>					
+	<th colspan="2">Hotel Name : <span class="pad-left item_details">' . $trip->trip_hotel_name . '</span></th>
 
-						</tr>
-
-
-
-			   			<tr class="content-1">
-
-			   				<td width="70%"><p style="color:#67758D; font-size:15px"><b>Hotel Name: </b> <span>' . $trip->trip_hotel_name . '</span></p></td>			   				
-
-			   			</tr>
-
-			   			
-
-			   			<tr class="content-1">
-
-			   				<td width="70%"><p style="color:#67758D; font-size:15px"><b>Hotel Address: </b> <span>' . $trip->trip_hotel_address . '</span></p></td>			   				
-
-			   			</tr>		 
-
-						
-
-						<tr class="content-1">								   
-
-						<td width="100%"><p style="color:#67758D; font-size:15px;font-weight: 100;">
-
-						<b>Check-in: </b> <span>' . $trip->trip_hotel_date_checkin . '</span>, <span style="margin-left:20px"></span>
-
-						<b>Check-out: </b> <span>' . $trip->trip_hotel_date_checkout  . '</span>								
-
-						</p></td>								   								   
-
-						</tr>						
+	</tr>
 
 
 
-			   		</table>
+	<tr nobr="true" width="100%" style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
-				</td>
+	<th colspan="2">Hotel Address : <span class="pad-left item_details">' . $trip->trip_hotel_address . '</span></th>
 
-			</tr>
+	</tr>	
 
-		</table>
 
-    ';
 
+	<tr>
+
+	<td><font size="10">Check-in</font> : <span class="pad-left item_details">' . $trip->trip_hotel_date_checkin . '</span></td>
+
+	<td><font size="10">Check-out</font> : <span class="pad-left item_details">' . $trip->trip_hotel_date_checkout . '</span></td>
+
+	</tr>
+
+	</table>
+
+		';
 }
 
 if ($trip->trip_rental_agency_address != NULL || $trip->trip_rental_agency_address != '') {
 
-    $rental .= '
+	$rental .= '
 
-        <table class="body">
+	
 
-			<tr>
+	<table><tr class="divider"><td></td></tr></table>
 
-				<td width="2%">
+	<table class="table">
 
+	<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
 
+	<th colspan="2">Rental Car Information</th>
 
-				</td>
-
-				<td width="95%" rowspan="2">
-
-										
-
-					<tr class="content-1">
-
-					<td width="100%"><p style="color:#0D256E; font-size:20px; font-weight:bold;">Rental Car Information</p></td>								
-
-					</tr>
+	</tr>
 
 
 
-			   		<table width="100%">
+	<tr nobr="true" width="100%">
+
+	<th colspan="2">Agency Name : <span class="pad-left item_details">' . $trip->trip_rental_agency . '</span></th>
+
+	</tr>
 
 
 
-					   <tr class="content-1">
+	<tr nobr="true" width="100%" style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
-					   <td width="100%"><hr style="width:100%; background-color:#3E4754; font-size:2px;line-height:10px"/></td>					
+	<th colspan="2">Address : <span class="pad-left item_details">' . $trip->trip_rental_agency_address . '</span></th>
 
-					   </tr>
-
-			   			
-
-						<tr class="content-1">
-
-			   				<td width="70%"><p style="color:#67758D; font-size:14px"><b>Agency Name:  </b> <span>' . $trip->trip_rental_agency . '</span></p></td>			   				
-
-			   			</tr>		   							
-
-			   			
-
-						<tr class="content-1">
-
-			   				<td width="70%"><p style="color:#67758D; font-size:14px"><b>Location:</b> <span>' . $trip->trip_rental_agency_address . '</span></p></td>			   				
-
-			   			</tr>	
+	</tr>	
 
 
 
-						<tr class="content-1">								   
+	<tr>
 
-						<td width="100%"><p style="color:#67758D; font-size:15px;font-weight: 100;">
+	<td><font size="10">Pick-up</font> : <span class="pad-left item_details">' . $trip->trip_rental_date_pick . '</span></td>
 
-						<b>Pick-up: </b> <span>' . $trip->trip_rental_date_pick . '</span>, <span style="margin-left:20px"></span>
+	<td><font size="10">Drop-off</font> : <span class="pad-left item_details">' . $trip->trip_rental_date_drop . '</span></td>
 
-						<b>Drop-off: </b> <span>' . $trip->trip_rental_date_drop  . '</span>								
+	</tr>
 
-						</p></td>								   								   
+	</table>
 
-						</tr>						
+	';
+}
+
+if (($trip->trip_location_from != NULL || $trip->trip_location_from != '') && ($trip->trip_location_to != NULL || $trip->trip_location_to != '')) {
+
+	if (($trip->trip_hotel_name != NULL || $trip->trip_hotel_name != '') || ($trip->trip_rental_agency != NULL || $trip->trip_rental_agency != '') || (($trip->trip_location_to != NULL || $trip->trip_location_to != '') && ($trip->trip_location_from != NULL || $trip->trip_location_from != ''))) {
 
 
 
-			   		</table>
+		$dep_date = $trip->trip_location_datel ? date('F d, Y', strtotime($trip->trip_location_datel)) : null;
 
-				</td>
+		$dep_time = $trip->trip_location_datel_deptime ? date('H:i:s A', strtotime($trip->trip_location_datel_deptime)) : null;
+
+
+
+		$ari_date = $trip->trip_location_datel_deptime ? date('F d, Y', strtotime($trip->trip_location_datel_deptime)) : null;
+
+		$ari_time = $trip->trip_location_datel_arrtime ? date('h:i:s A', strtotime($trip->trip_location_datel_arrtime)) : null;
+
+
+
+
+
+		if ($trip->trip_transport == "vehicle") {
+
+			$departure_information .= '
+
+
+
+
+
+			<table class="table">
+
+
+
+			<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
+
+			<th colspan="2">Drive Data</th>
+
+		    </tr>
+
+
+
+			<tr nobr="true" width="100%">
+
+			<th colspan="2">Departure : <span class="pad-left item_details">' . $trip->trip_location_from . '</span></th>
+
+		    </tr>
+
+
+
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
+
+			<td><font size="10">Departure Date</font> : <span class="pad-left item_details">' . $dep_date . '</span></td>
+
+			<td><font size="10">Departure Time</font> : <span class="pad-left item_details">' . $dep_time . '</span></td>
 
 			</tr>
 
 
 
-		</table>';
+			<tr nobr="true" width="100%">
 
-}
+			<th colspan="2">Arrival : <span class="pad-left item_details">' . $trip->trip_location_to . '</span></th>
 
-if (($trip->trip_location_from != NULL || $trip->trip_location_from != '') && ($trip->trip_location_to != NULL || $trip->trip_location_to != '')) {
+		    </tr>
 
-    if (($trip->trip_hotel_name != NULL || $trip->trip_hotel_name != '') || ($trip->trip_rental_agency != NULL || $trip->trip_rental_agency != '') || (($trip->trip_location_to != NULL || $trip->trip_location_to != '') && ($trip->trip_location_from != NULL || $trip->trip_location_from != ''))) {
 
 
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
-        $dep_date = $trip->trip_location_datel ? date('F d, Y', strtotime($trip->trip_location_datel)) : null;
+			<td><font size="10">Arrival Date</font> : <span class="pad-left item_details">' . $ari_date . '</span></td>
 
-        $dep_time = $trip->trip_location_datel_deptime ? date('H:i:s A', strtotime($trip->trip_location_datel_deptime)) : null;
+			<td><font size="10">Arrival Time</font> : <span class="pad-left item_details">' . $ari_time . '</span></td>
 
+			</tr>
 
 
-        $ari_date = $trip->trip_location_datel_deptime ? date('F d, Y', strtotime($trip->trip_location_datel_deptime)) : null;
 
-        $ari_time = $trip->trip_location_datel_arrtime ? date('h:i:s A', strtotime($trip->trip_location_datel_arrtime)) : null;
+			</table>	
 
 
-
-
-
-        if ($trip->trip_transport == "vehicle") {
-
-            $departure_information .= '
-
-				<table class="body">
-
-					<tr>
-
-						<td width="100%" rowspan="2">
-
-							
-
-							   <table width="100%">
-
-
-
-							   	<tr class="content-1">
-
-							   	<td><p style="color:#0D256E; font-size:22px; font-weight:bold;">Drive Data</p></td>								
-
-							   	</tr>
-
-
-
-								 <tr class="content-1">
-
-								 <td width="100%"><hr style="width:100%; background-color:#3E4754; font-size:2px;line-height:10px"/></td>					
-
-								 </tr>
-
-
-
-								 <tr class="content-1">								   
-
-								 <td width="80%"><p style="color:#67758D; font-size:15px;font-weight: 100;"><b>Departure : </b> <span>' . $trip->trip_location_from . '</span></p></td>								   								   
-
-								 </tr>		
-
-								 
-
-								 
-
-								<tr class="content-1">								   
-
-								<td width="100%"><p style="color:#67758D; font-size:15px;font-weight: 100;">
-
-								<b>Departure Date: </b> <span>' . $dep_date . '</span>, <span style="margin-left:20px"></span>
-
-								<b>Departure Time: </b> <span>' . $dep_time . '</span>								
-
-								</p></td>								   								   
-
-								</tr>	
-
-								
-
-								<tr class="content-1">	
-
-								<td width="100%"><p style="width:100%; background-color:#fff; font-size:0.1px">i</p></td>
-
-								</tr>
-
-
-
-								<tr class="content-1">								   
-
-								<td width="80%"><p style="color:#67758D; font-size:15px;font-weight: 100;"><b>Arrival : </b> <span>' . $trip->trip_location_to . '</span></p></td>								   								   
-
-								</tr>
-
-
-
-								<tr class="content-1">								   
-
-								<td width="100%"><p style="color:#67758D; font-size:15px;font-weight: 100;">
-
-								<b>Arrival Date: </b> <span>' . $ari_date . '</span>, <span style="margin-left:20px"></span>
-
-								<b>Arrival Time: </b> <span>' . $ari_time . '</span>								
-
-								</p></td>								   								   
-
-								</tr>								
-
-
-
-							   </table>
-
-						</td>
-
-					</tr>
-
-
-
-				</table>		
 
 				';
+		} elseif ($trip->trip_transport == "train") {
 
-        } elseif ($trip->trip_transport == "train") {
-
-            $departure_information .= '
+			$departure_information .= '
 
 				<table class="body">
 
@@ -957,116 +812,71 @@ if (($trip->trip_location_from != NULL || $trip->trip_location_from != '') && ($
 				</table>		
 
 				';
-
-        } else {
-
+		} else {
 
 
 
 
-            $departure_information .= '
 
-				<table class="body">
+			$departure_information .= '
 
-					<tr>
-
-						<td width="100%" rowspan="2">							 
-
-							   <table width="100%">								   																   					   
-
-								
-
-							   <tr class="content-1">
-
-								<td><p style="color:#0D256E; font-size:22px; font-weight:bold;">Flight Data</p></td>								
-
-							    </tr>
+			<table class="table">
 
 
 
-								<tr class="content-1">
+			<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
 
-								<td width="100%"><hr style="width:100%; background-color:#3E4754; font-size:2px;line-height:10px"/></td>					
+			<th colspan="2">Flight Data</th>
 
-							    </tr>
-
-
-
-								<tr class="content-1">								   
-
-								<td width="80%"><p style="color:#67758D; font-size:15px;font-weight: 100;"><b>Departure : </b> <span>' . $trip->trip_location_from . '</span></p></td>								   								   
-
-								</tr>
+		    </tr>
 
 
 
-								<tr class="content-1">								   
+			<tr nobr="true" width="100%">
 
-								<td width="100%"><p style="color:#67758D; font-size:15px;font-weight: 100;">
+			<th colspan="2">Departure : <span class="pad-left item_details">' . $trip->trip_location_from . '</span></th>
 
-								<b>Departure Date: </b> <span>' . $dep_date . '</span>, <span style="margin-left:20px"></span>
-
-								<b>Departure Time: </b> <span>' . $dep_time . '</span>								
-
-								</p></td>								   								   
-
-								</tr>				
-
-								
-
-								<tr class="content-1">	
-
-								<td width="100%"><p style="width:100%; background-color:#fff; font-size:0.1px">i</p></td>
-
-								</tr>	
+		    </tr>
 
 
 
-								
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
-								<tr class="content-1">								   
+			<td><font size="10">Departure Date</font> : <span class="pad-left item_details">' . $dep_date . '</span></td>
 
-								<td width="80%"><p style="color:#67758D; font-size:15px;font-weight: 100;"><b>Arrival : </b> <span>' . $trip->trip_location_to . '</span></p></td>								   								   
+			<td><font size="10">Departure Time</font> : <span class="pad-left item_details">' . $dep_time . '</span></td>
 
-								</tr>
+			</tr>
 
 
 
-								<tr class="content-1">								   
+			<tr nobr="true" width="100%">
 
-								<td width="100%"><p style="color:#67758D; font-size:15px;font-weight: 100;">
+			<th colspan="2">Arrival : <span class="pad-left item_details">' . $trip->trip_location_to . '</span></th>
 
-								<b>Arrival Date: </b> <span>' . $ari_date . '</span>, <span style="margin-left:20px"></span>
+		    </tr>
 
-								<b>Arrival Time: </b> <span>' . $ari_time . '</span>								
 
-								</p></td>								   								   
 
-								</tr>
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
-								
+			<td><font size="10">Arrival Date</font> : <span class="pad-left item_details">' . $ari_date . '</span></td>
 
-								
+			<td><font size="10">Arrival Time</font> : <span class="pad-left item_details">' . $ari_time . '</span></td>
 
-								<div></div>
+			</tr>
 
-							   </table>
 
-						</td>
 
-					</tr>
+			</table>	
 
-					
-
-				</table>		
+		
 
 				';
+		}
+	} else {
 
-        }
-
-    } else {
-
-        $departure_information .= '
+		$departure_information .= '
 
 			<table class="body">
 
@@ -1131,376 +941,207 @@ if (($trip->trip_location_from != NULL || $trip->trip_location_from != '') && ($
 			</table>		
 
 			';
-
-    }
-
+	}
 }
 
 
 
 $multi_waypoint = "";
 
-if (count(json_decode($trip->location_multi_waypoint)) != 0 && ($trip->location_multi_waypoint != NULL && $trip->location_multi_waypoint != '[""]')) {
+if (json_decode($trip->location_multi_waypoint) <> NULL &&  $trip->location_multi_waypoint != NULL) {
 
-    var_dump($trip->location_multi_waypoint);
+	//var_dump($trip->location_multi_waypoint);
 
-    $multi_waypoint = '<table class="body">';
+	//$multi_waypoint = '<table class="body">';
 
-    $location_multi_waypoint = json_decode($trip->location_multi_waypoint);
+	$location_multi_waypoint = json_decode($trip->location_multi_waypoint);
 
-    $location_multi_waypoint_date = json_decode($trip->location_multi_waypoint_date);
+	$location_multi_waypoint_date = json_decode($trip->location_multi_waypoint_date);
 
-    for ($i = 0; $i < count($location_multi_waypoint); $i++) {
+	for ($i = 0; $i < count($location_multi_waypoint); $i++) {
 
-        $multi_waypoint .= '
+		$multi_waypoint .= '
 
-	    
+		<table><tr class="divider"><td></td></tr></table>	    
 
-				<tr>
+		<table class="table">
 
+		<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
 
+		<th colspan="1">' . $text[$i] . ' Stop</th>
 
-				<td width="2%">
-
-
-
-				</td>
+		</tr>
 
 
 
-					<td width="95%" rowspan="2">										
+		<tr nobr="true" width="100%">
+
+		<th colspan="1">Destination : <span class="pad-left item_details">' . $location_multi_waypoint[$i] . '</span></th>
+
+		</tr>
 
 
 
-						<table width="100%" >
+		<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
+		<td><font size="10">Date</font> : <span class="pad-left item_details">' . $location_multi_waypoint_date[$i] . '</span></td>		
 
+		</tr>
 
-							<tr class="content-1">	
+		</table>
 
-							<td width="100%"><p style="width:100%; background-color:#fff; font-size:0.1px">i</p></td>
-
-							</tr>	
-
-
-
-							<tr class="content-1">
-
-							<td width="100%"><p style="color:#0D256E; font-size:20px; font-weight:bold;">' . $text[$i] . ' Stop</p></td>								
-
-							</tr>
-
-
-
-							<tr class="content-1">
-
-							<td width="100%"><hr style="width:100%; background-color:#3E4754; font-size:2px;line-height:10px"/></td>					
-
-							</tr>
-
-
-
-							<tr class="content-1">
-
-								<td width="70%" style="color:#67758D; font-size:15px"><b>Hotel Address: </b> <span>' . $location_multi_waypoint[$i] . '</span></td>								
-
-							</tr>	
-
-							
-
-							<tr class="content-1">
-
-							<td width="100%" style="color:#67758D; font-size:15px;">Date : ' . $location_multi_waypoint_date[$i] . '</td>
-
-							</td>
-
-
-
-						</table>
-
-					</td>
-
-				</tr>
-
-				</table>
+	
 
 		';
+	}
 
-    }
-
-    $multi_waypoint .= '</table>';
+	//$multi_waypoint .= '</table>';
 
 }
 
 if (($trip->trip_location_to != NULL || $trip->trip_location_to != '') && ($trip->trip_location_from != NULL || $trip->trip_location_from != '')) {
 
-    if (!empty($trip->trip_location_to_flightportion) || !empty($trip->trip_location_to_drivingportion) || !empty($trip->trip_location_to_trainportion)) {
+	if (!empty($trip->trip_location_to_flightportion) || !empty($trip->trip_location_to_drivingportion) || !empty($trip->trip_location_to_trainportion)) {
 
 
 
-        $return_dep_date = $trip->location_dater ? date('F d, Y', strtotime($trip->location_dater)) : null;
+		$return_dep_date = $trip->location_dater ? date('F d, Y', strtotime($trip->location_dater)) : null;
 
-        $return_dep_time = $trip->trip_location_dater_deptime ? date('h:i:s A', strtotime($trip->trip_location_dater_deptime)) : null;
+		$return_dep_time = $trip->trip_location_dater_deptime ? date('h:i:s A', strtotime($trip->trip_location_dater_deptime)) : null;
 
 
 
-        $return_ari_date = $trip->trip_location_dater_deptime ? date('F d, Y', strtotime($trip->trip_location_dater_deptime)) : null;
+		$return_ari_date = $trip->trip_location_dater_deptime ? date('F d, Y', strtotime($trip->trip_location_dater_deptime)) : null;
 
-        $return_ari_time = $trip->trip_location_dater_arrtime ? date('h:i:s A', strtotime($trip->trip_location_dater_arrtime)) : null;
+		$return_ari_time = $trip->trip_location_dater_arrtime ? date('h:i:s A', strtotime($trip->trip_location_dater_arrtime)) : null;
 
 
 
-        if (($trip->trip_location_to_flightportion != NULL || $trip->trip_location_to_flightportion != '')) {
+		if (($trip->trip_location_to_flightportion != NULL || $trip->trip_location_to_flightportion != '')) {
 
-            $retrun_information .= '
+			$retrun_information .= '
 
-				<table class="body">
+			<table><tr class="divider"><td></td></tr></table>
 
-					
+			<table class="table">
 
-					<tr>
 
-						<td width="2%">
 
+			<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
 
+			<th colspan="2">Return ' . $transport . ' Data</th>
 
-						</td>
+		    </tr>
 
-						<td width="90%" rowspan="2">
 
-						    
 
-							<table width="100%">
+			<tr nobr="true" width="100%">
 
-							
+			<th colspan="2">Departure : <span class="pad-left item_details">' . $trip->trip_location_to . '</span></th>
 
-							<tr class="content-1">	
+		    </tr>
 
-							<td width="100%"><p style="width:100%; background-color:#fff; font-size:0.1px">i</p></td>
 
-							</tr>								 
 
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
+			<td><font size="10">Departure Date</font> : <span class="pad-left item_details">' . $return_dep_date . '</span></td>
 
-							<tr class="content-1">
+			<td><font size="10">Departure Time</font> : <span class="pad-left item_details">' . $return_dep_time . '</span></td>
 
-							<td><p style="color:#0D256E; font-size:22px; font-weight:bold;">Return Flight Data</p></td>								
+			</tr>
 
-							</tr>
 
 
+			<tr nobr="true" width="100%">
 
-							<tr class="content-1">
+			<th colspan="2">Arrival : <span class="pad-left item_details">' . $trip->trip_location_from . '</span></th>
 
-							<td width="100%"><hr style="width:100%; background-color:#3E4754; font-size:2px;line-height:10px"/></td>					
+		    </tr>
 
-							</tr>
 
 
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
-																			   
+			<td><font size="10">Arrival Date</font> : <span class="pad-left item_details">' . $return_ari_date . '</span></td>
 
-							<tr class="content-1">								   
+			<td><font size="10">Arrival Time</font> : <span class="pad-left item_details">' . $return_dep_time . '</span></td>
 
-							<td width="80%"><p style="color:#67758D; font-size:15px;font-weight: 100;"><b>Departure : </b> <span>' . $trip->trip_location_to . '</span></p></td>								   								   
+			</tr>
 
-							</tr>
 
 
+			</table>
 
-
-
-							<tr class="content-1">								   
-
-							<td width="100%"><p style="color:#67758D; font-size:15px;font-weight: 100;">
-
-							<b>Departure Date: </b> <span>' . $return_dep_date . '</span>, <span style="margin-left:20px"></span>
-
-							<b>Departure Time: </b> <span>' . $return_dep_time . '</span>								
-
-							</p></td>								   								   
-
-							</tr>			
-
-
-
-							<tr class="content-1">	
-
-							<td width="100%"><p style="width:100%; background-color:#fff; font-size:0.1px">i</p></td>
-
-							</tr>									
-
-							
-
-							
-
-							<tr class="content-1">								   
-
-							<td width="80%"><p style="color:#67758D; font-size:15px;font-weight: 100;"><b>Arrival : </b> <span>' . $trip->trip_location_from . '</span></p></td>								   								   
-
-							</tr>
-
-
-
-
-
-							<tr class="content-1">								   
-
-							<td width="100%"><p style="color:#67758D; font-size:15px;font-weight: 100;">
-
-							<b>Arrival Date: </b> <span>' . $return_ari_date . '</span>, <span style="margin-left:20px"></span>
-
-							<b>Arrival Time: </b> <span>' . $return_ari_time . '</span>								
-
-							</p></td>								   								   
-
-							</tr>	
-
-
-
-
-
-							</table>
-
-						</td>
-
-					</tr>
-
-				</table>		
+			
 
 			';
+		} elseif (($trip->trip_location_to_drivingportion != NULL || $trip->trip_location_to_drivingportion != '')) {
 
-        } elseif (($trip->trip_location_to_drivingportion != NULL || $trip->trip_location_to_drivingportion != '')) {
 
 
 
 
 
 
+			$retrun_information .= '
 
-            $retrun_information .= '
+			<table><tr class="divider"><td></td></tr></table>
 
-				<table class="body">
+			<table class="table">
 
-					<tr>
 
 
+			<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
 
-					<td width="2%">
+			<th colspan="2">Return ' . $transport . ' Data</th>
 
+		    </tr>
 
 
-					</td>
 
+			<tr nobr="true" width="100%">
 
+			<th colspan="2">Departure : <span class="pad-left item_details">' . $trip->trip_location_to . '</span></th>
 
-						<td width="95%" rowspan="2">
+		    </tr>
 
-						
 
-							<table width="100%">
 
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
+			<td><font size="10">Departure Date</font> : <span class="pad-left item_details">' . $return_dep_date . '</span></td>
 
-								<tr class="content-1">	
+			<td><font size="10">Departure Time</font> : <span class="pad-left item_details">' . $return_dep_time . '</span></td>
 
-								<td width="100%"><p style="width:100%; background-color:#fff; font-size:0.1px">i</p></td>
+			</tr>
 
-								</tr>	
 
 
+			<tr nobr="true" width="100%">
 
-								<tr class="content-1">
+			<th colspan="2">Arrival : <span class="pad-left item_details">' . $trip->trip_location_from . '</span></th>
 
-								<td><p style="color:#0D256E; font-size:22px; font-weight:bold;">Return ' . $transport . ' Data</p></td>								
+		    </tr>
 
-								</tr>
 
 
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
-								<tr class="content-1">
+			<td><font size="10">Arrival Date</font> : <span class="pad-left item_details">' . $return_ari_date . '</span></td>
 
-								<td width="100%"><hr style="width:100%; background-color:#3E4754; font-size:2px;line-height:10px"/></td>					
+			<td><font size="10">Arrival Time</font> : <span class="pad-left item_details">' . $return_dep_time . '</span></td>
 
-								</tr>
+			</tr>
 
 
 
-											   									
-
-								<tr class="content-1">								   
-
-								<td width="80%"><p style="color:#67758D; font-size:15px;font-weight: 100;"><b>Departure : </b> <span>' . $trip->trip_location_to . '</span></p></td>								   								   
-
-								</tr>
-
-
-
-
-
-								<tr class="content-1">								   
-
-								<td width="100%"><p style="color:#67758D; font-size:15px;font-weight: 100;">
-
-								<b>Departure Date: </b> <span>' . $return_dep_date . '</span>, <span style="margin-left:20px"></span>
-
-								<b>Departure Time: </b> <span>' . $return_dep_time . '</span>								
-
-								</p></td>								   								   
-
-								</tr>			
-
-
-
-								<tr class="content-1">	
-
-								<td width="100%"><p style="width:100%; background-color:#fff; font-size:0.1px">i</p></td>
-
-								</tr>									
-
-								
-
-								
-
-								<tr class="content-1">								   
-
-								<td width="80%"><p style="color:#67758D; font-size:15px;font-weight: 100;"><b>Arrival : </b> <span>' . $trip->trip_location_from . '</span></p></td>								   								   
-
-								</tr>
-
-
-
-
-
-								<tr class="content-1">								   
-
-								<td width="100%"><p style="color:#67758D; font-size:15px;font-weight: 100;">
-
-								<b>Arrival Date: </b> <span>' . $return_ari_date . '</span>, <span style="margin-left:20px"></span>
-
-								<b>Arrival Time: </b> <span>' . $return_ari_time . '</span>								
-
-								</p></td>								   								   
-
-								</tr>																								  		
-
-
-
-								
-
-							</table>
-
-						</td>
-
-					</tr>
-
-				</table>		
+			</table>		
 
 			';
+		} elseif (($trip->trip_location_to_trainportion != NULL || $trip->trip_location_to_trainportion != '')) {
 
-        } elseif (($trip->trip_location_to_trainportion != NULL || $trip->trip_location_to_trainportion != '')) {
-
-            $retrun_information .= '
+			$retrun_information .= '
 
 				<table class="body">
 
@@ -1617,280 +1258,231 @@ if (($trip->trip_location_to != NULL || $trip->trip_location_to != '') && ($trip
 				</table>		
 
 			';
+		}
+	} else {
 
-        }
+		if ($trip->trip_transport == "plane") {
 
-    } else {
+			$retrun_information .= '
 
-        if ($trip->trip_transport == "plane") {
+			<table><tr class="divider"><td></td></tr></table>
 
-            $retrun_information .= '
+			<table class="table">
 
-				<table class="body">
 
-					<tr>
 
-						<td width="10%">
+			<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
 
-							<div class="double" style="text-align:center;">
+			<th colspan="2">Return Flight Data 2</th>
 
-								<img src="' . $flight_image . '" width="40px" height="40px">	
+		    </tr>
 
-							</div>
 
-						</td>
 
-						<td width="90%" rowspan="2">
+			<tr nobr="true" width="100%">
 
-						<p style="color:#0D256E; font-size:25px; font-weight:bold;">Return Flight Information</p>
+			<th colspan="2">Departure : <span class="pad-left item_details">' . $trip->trip_location_to . '</span></th>
 
-			
+		    </tr>
 
-							<table width="100%">
 
-							    <tr class="title">
 
-									<td width="50%"><p style="color:#3E4754; font-size:14px;">Flight: ' . $trip->ret_flight_no . '/Seat ' . $trip->ret_seat_no . '</p></td>
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
-									<td width="50%"><p style="width:100%; color:#fff; background-color:#fff; font-size:4px">e</p><p style="color:#F39F32; font-size:14px; text-align:right">Date:' . $trip->trip_location_datel . '</p></td>
+			<td><font size="10">Departure Date</font> : <span class="pad-left item_details">' . $return_dep_date . '</span></td>
 
-								</tr>
+			<td><font size="10">Departure Time</font> : <span class="pad-left item_details">' . $return_dep_time . '</span></td>
 
-							
+			</tr>
 
-								<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>
 
-								<div></div>
 
-								
+			<tr nobr="true" width="100%">
 
-								<tr class="content-1">
+			<th colspan="2">Arrival : <span class="pad-left item_details">' . $trip->trip_location_from . '</span></th>
 
-									<td width="80%"><p style="color:#67758D; font-size:14px"><b>Departure: </b> <span>' . $trip->trip_location_to . '</span></p></td>
+		    </tr>
 
-									<td width="20%"><p style="color:#F39F32; font-size:14px; text-align:right">' . $trip->trip_location_dater_deptime . ' (' . $acronym_to . ')</p></td>
 
-								</tr>
 
-								<p style="width:100%; color:#fff; background-color:#fff; font-size:4px">e</p>
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
-								<tr class="content-1">
+			<td><font size="10">Arrival Date</font> : <span class="pad-left item_details">' . $return_ari_date . '</span></td>
 
-									<td width="80%"><p style="color:#67758D; font-size:14px"><b>Arrival: </b> <span>' . $trip->trip_location_from . '</span></p></td>
+			<td><font size="10">Arrival Time</font> : <span class="pad-left item_details">' . $return_dep_time . '</span></td>
 
-									<td width="20%"><p style="color:#F39F32; font-size:14px; text-align:right">' . $trip->trip_location_dater_arrtime . ' (' . $acronym_from . ')</p></td>
+			</tr>
 
-								</tr>		   						   		
 
-								<div></div>
 
-							</table>
+			</table>
 
-						</td>
-
-					</tr>
-
-				</table>		
+		
 
 			';
+		} elseif ($trip->trip_transport == "vehicle") {
 
-        } elseif ($trip->trip_transport == "vehicle") {
 
 
 
 
+			$retrun_information .= '
 
-            $retrun_information .= '
+			<table><tr class="divider"><td></td></tr></table>
 
-				<table class="body">
+			<table class="table">								
 
-					<tr>
+			<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
 
-						<td width="2%">
+			<th colspan="2">Return Drive Data</th>
 
-							
+		    </tr>
 
-						</td>
 
-						<td width="95%" rowspan="2">
 
-							<table width="100%">
+			<tr nobr="true" width="100%">
 
+			<th colspan="2">Departure : <span class="pad-left item_details">' . $trip->trip_location_to . '</span></th>
 
+		    </tr>
 
-								<tr class="content-1">	
 
-								<td width="100%"><p style="width:100%; background-color:#fff; font-size:0.1px">i</p></td>
 
-								</tr>	
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
+			<td><font size="10">Departure Date</font> : <span class="pad-left item_details">' . $return_dep_date . '</span></td>
 
+			<td><font size="10">Departure Time</font> : <span class="pad-left item_details">' . $return_dep_time . '</span></td>
 
+			</tr>
 
 
-								<tr class="content-1">
 
-								<td><p style="color:#0D256E; font-size:22px; font-weight:bold;">Return Drive Data</p></td>								
+			<tr nobr="true" width="100%">
 
-								</tr>								
+			<th colspan="2">Arrival : <span class="pad-left item_details">' . $trip->trip_location_from . '</span></th>
 
+		    </tr>
 
 
-							
 
-								<tr class="content-1">
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
-								<td width="100%"><hr style="width:100%; background-color:#3E4754; font-size:2px;line-height:10px"/></td>					
+			<td><font size="10">Arrival Date</font> : <span class="pad-left item_details">' . $return_ari_date . '</span></td>
 
-								</tr>
+			<td><font size="10">Arrival Time</font> : <span class="pad-left item_details">' . $return_dep_time . '</span></td>
 
+			</tr>
 
-
-								<tr class="content-1">								   
-
-								<td width="80%"><p style="color:#67758D; font-size:15px;font-weight: 100;"><b>Departure : </b> <span>' . $trip->trip_location_to . '</span></p></td>								   								   
-
-								</tr>
-
-
-
-								<tr class="content-1">								   
-
-								<td width="100%"><p style="color:#67758D; font-size:15px;font-weight: 100;">
-
-								<b>Departure Date: </b> <span>' . $return_dep_date . '</span>, <span style="margin-left:20px"></span>
-
-								<b>Departure Time: </b> <span>' . $return_dep_time . '</span>								
-
-								</p></td>								   								   
-
-								</tr>			
-
-
-
-								<tr class="content-1">	
-
-								<td width="100%"><p style="width:100%; background-color:#fff; font-size:0.1px">i</p></td>
-
-								</tr>									
-
-								
-
-								
-
-								<tr class="content-1">								   
-
-								<td width="80%"><p style="color:#67758D; font-size:15px;font-weight: 100;"><b>Arrival : </b> <span>' . $trip->trip_location_from . '</span></p></td>								   								   
-
-								</tr>
-
-
-
-
-
-								<tr class="content-1">								   
-
-								<td width="100%"><p style="color:#67758D; font-size:15px;font-weight: 100;">
-
-								<b>Arrival Date: </b> <span>' . $return_ari_date . '</span>, <span style="margin-left:20px"></span>
-
-								<b>Arrival Time: </b> <span>' . $return_ari_time . '</span>								
-
-								</p></td>								   								   
-
-								</tr>									
-
-								
-
-							</table>
-
-						</td>
-
-					</tr>
-
-				</table>		
+			</table>						
 
 			';
+		} else {
 
-        } else {
+			$retrun_information .= '				
 
-            $retrun_information .= '
+            <table><tr class="divider"><td></td></tr></table>
 
-				<table class="body">
+			<table class="table">								
 
-					<tr>
+			<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
 
-						<td width="10%">
+			<th colspan="2">Return Train Data</th>
 
-							<div class="double" style="text-align:center;">
+		    </tr>
 
-								<img src="' . $train_image . '" width="40px" height="40px">	
 
-							</div>
 
-						</td>
+			<tr nobr="true" width="100%">
 
-						<td width="90%" rowspan="2">
+			<th colspan="2">Departure : <span class="pad-left item_details">' . $trip->trip_location_to . '</span></th>
 
-							<table width="100%">
+		    </tr>
 
-								<tr class="title">
 
-									<td width="50%"><p style="color:#0D256E; font-size:25px; font-weight:bold;">Return Train Information</p></td>
 
-									<td width="50%"><p style="color:#F39F32; font-size:14px; text-align:right">Date: ' . $trip->trip_location_datel . '</p></td>
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
-								</tr>
+			<td><font size="10">Departure Date</font> : <span class="pad-left item_details">' . $return_dep_date . '</span></td>
 
-					
+			<td><font size="10">Departure Time</font> : <span class="pad-left item_details">' . $return_dep_time . '</span></td>
 
-								<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>
+			</tr>
 
-								<div></div>
 
-								<tr class="content-1">
 
-									<td width="80%"><p style="color:#67758D; font-size:14px"><b>Departure: </b> <span>' . $trip->trip_location_to . '</span></p></td>
+			<tr nobr="true" width="100%">
 
-									<td width="20%"><p style="color:#F39F32; font-size:14px; text-align:right">' . $trip->trip_location_dater_deptime . ' (' . $acronym_to . ')</p></td>
+			<th colspan="2">Arrival : <span class="pad-left item_details">' . $trip->trip_location_from . '</span></th>
 
-								</tr>
+		    </tr>
 
-								<p style="width:100%; color:#fff; background-color:#fff; font-size:4px">e</p>
 
-								<tr class="content-1">
 
-									<td width="80%"><p style="color:#67758D; font-size:14px"><b>Arrival: </b> <span>' . $trip->trip_location_from . '</span></p></td>
+			<tr style="background-color: rgb(185, 187, 189); color: rgb(0, 0, 0);">
 
-									<td width="20%"><p style="color:#F39F32; font-size:14px; text-align:right">' . $trip->trip_location_dater_arrtime . ' (' . $acronym_from . ')</p></td>
+			<td><font size="10">Arrival Date</font> : <span class="pad-left item_details">' . $return_ari_date . '</span></td>
 
-								</tr>		   						   		
+			<td><font size="10">Arrival Time</font> : <span class="pad-left item_details">' . $return_dep_time . '</span></td>
 
-								<div></div>
+			</tr>
 
-							</table>
-
-						</td>
-
-					</tr>
-
-				</table>		
+			</table>
 
 			';
-
-        }
-
-    }
-
+		}
+	}
 }
 
 $html .= '
+
+
+
+<style>
+
+.table{
+
+	padding: 7px;	
+
+	background-color:#d1d1d1;
+
+	font-size:14px;
+
+    border-radius: 5px;
+
+    -moz-border-radius: 5px; 	   	
+
+}
+
+.item_details{
+
+	font-weight: 200;
+
+	vertical-align: middle;
+
+}
+
+
+
+.divider{
+
+	background-color: rgb(255, 255, 255);		
+
+	font-size:8px !important;
+
+}
+
+
+
+</style>
+
+
 
     <div class="section">
 
 		<br><br><br><br>
 
-        ' . $departure_information . ' 
+        ' . $departure_information . ' 		
 
         ' . $retrun_information . ' 
 
@@ -1926,251 +1518,194 @@ $trip->setProgressing($idtrip, 20);
 
 if (!empty($trip->trip_location_to_flightportion) || !empty($trip->trip_location_to_drivingportion) || !empty($trip->trip_location_to_trainportion)) {
 
-    $pdf->AddPage('P', 'A4');
+	$pdf->AddPage('P', 'A4');
 
-    $flightportion = '';
+	$flightportion = '';
 
-    $carportion = '';
+	$carportion = '';
 
-    $trainportion = '';
+	$trainportion = '';
 
-    $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+	$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-    $flight_image = K_PATH_IMAGES . 'flight.png';
+	$flight_image = K_PATH_IMAGES . 'flight.png';
 
-    $car_image = K_PATH_IMAGES . 'car.png';
+	$car_image = K_PATH_IMAGES . 'car.png';
 
-    $train_image = K_PATH_IMAGES . 'train.png';
+	$train_image = K_PATH_IMAGES . 'train.png';
 
-    $b_left = K_PATH_IMAGES . 'bottom_left.png';
+	$b_left = K_PATH_IMAGES . 'bottom_left.png';
 
-    $b_left_text = K_PATH_IMAGES . 'bottom_left_text.png';
+	$b_left_text = K_PATH_IMAGES . 'bottom_left_text.png';
 
-    $b_right = K_PATH_IMAGES . 'bottom_right_img.png';
+	$b_right = K_PATH_IMAGES . 'bottom_right_img.png';
 
-    $dark_back = K_PATH_IMAGES . 'dark_back.png';
+	$dark_back = K_PATH_IMAGES . 'dark_back.png';
 
-    $left_card = K_PATH_IMAGES . 'left_card.png';
+	$left_card = K_PATH_IMAGES . 'left_card.png';
 
-    $right_card = K_PATH_IMAGES . 'right_card.png';
+	$right_card = K_PATH_IMAGES . 'right_card.png';
 
-    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-    $section_2 = new top_bar('Your Itinerary', 'The travel plan of tomorrow done right today');
+	$section_2 = new top_bar('Your Itinerary', 'The travel plan of tomorrow done right today');
 
-    $html = $section_2->html_content();
+	$html = $section_2->html_content();
 
-    if (($trip->trip_location_to_flightportion != NULL || $trip->trip_location_to_flightportion != '')) {
+	if (($trip->trip_location_to_flightportion != NULL || $trip->trip_location_to_flightportion != '')) {
 
-        $flightportion .= '
+		$flightportion .= '
 
-			<br><br><br>
+		
 
-			<table class="body">
+		<table class="table">								
 
-				<tr>
+		<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
 
-					<td width="2%">
+		<th colspan="2"> Flight portion</th>
 
-
-
-					</td>
-
-					<td width="95%" rowspan="2">
-
-						
-
-						   <table width="100%">
+		</tr>
 
 
 
-							<tr class="content-1">
+		<tr nobr="true" width="100%">
 
-							<td><p style="color:#0D256E; font-size:22px; font-weight:bold;">Flight portion</p></td>								
+		<th colspan="2">From : <span class="pad-left item_details">' . $trip->trip_location_from_flightportion . '</span></th>
 
-							</tr>
-
-							
-
-							<tr class="content-1">
-
-							<td width="100%"><hr style="width:100%; background-color:#3E4754; font-size:2px;line-height:10px"/></td>					
-
-							</tr>						   
-
-						   
-
-							<tr class="content-1">
-
-								   <td><p style="color:#67758D; font-size:14px"><b><span style="color:#0D256E;">From: </span></b> <span>' . $trip->trip_location_from_flightportion . '</span></p></td>
-
-							</tr>
+		</tr>		
 
 
 
-							<tr class="content-1">
+		<tr nobr="true" width="100%">
 
-							<td><p style="color:#67758D; font-size:14px"><b><span style="color:#0D256E;">To: </span></b> <span>' . $trip->trip_location_to_flightportion . '</span></p></td>
+		<th colspan="2">To : <span class="pad-left item_details">' . $trip->trip_location_to_flightportion . '</span></th>
 
-							</tr>		   						   		
+		</tr>
 
-							
+		</table>
 
-							
-
-						   </table>
-
-					</td>
-
-				</tr>
-
-			</table>		
+	
 
 		';
+	}
 
-    }
+	if (($trip->trip_location_to_drivingportion != NULL || $trip->trip_location_to_drivingportion != '')) {
 
-    if (($trip->trip_location_to_drivingportion != NULL || $trip->trip_location_to_drivingportion != '')) {
+		$carportion .= '
 
-        $carportion .= '
+		<table><tr class="divider"><td></td></tr></table>
 
-			<br><br><br>
+		<table class="table">								
 
-			<table class="body">
+		<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
 
-				<tr>
+		<th colspan="2"> Vehicle portion</th>
 
-					<td width="2%">
-
-						
-
-					</td>
-
-					<td width="95%" rowspan="2">
-
-						
-
-						   <table width="100%">
+		</tr>
 
 
 
-						   <tr class="content-1">
+		<tr nobr="true" width="100%">
 
-						   <td><p style="color:#0D256E; font-size:22px; font-weight:bold;">Vehicle portion</p></td>								
+		<th colspan="2">From : <span class="pad-left item_details">' . $trip->trip_location_from_drivingportion . '</span></th>
 
-						   </tr>
-
-						   
-
-						   <tr class="content-1">
-
-						   <td width="100%"><hr style="width:100%; background-color:#3E4754; font-size:2px;line-height:10px"/></td>					
-
-						   </tr>
+		</tr>		
 
 
 
-							<tr class="content-1">
+		<tr nobr="true" width="100%">
 
-								   <td><p style="color:#67758D; font-size:14px"><b><span style="color:#0D256E;">From: </span></b> <span>' . $trip->trip_location_from_drivingportion . '</span></p></td>
+		<th colspan="2">To : <span class="pad-left item_details">' . $trip->trip_location_to_drivingportion . '</span></th>
 
-							</tr>
+		</tr>
 
-
-
-							<tr class="content-1">
-
-							   <td><p style="color:#67758D; font-size:14px"><b><span style="color:#0D256E;">To: </span></b> <span>' . $trip->trip_location_to_drivingportion . '</span></p></td>
-
-							</tr>		   						   		
-
-							
-
-						   </table>
-
-					</td>
-
-				</tr>
-
-			</table>		
+		</table>	
 
 		';
+	}
 
-    }
+	if (($trip->trip_location_to_trainportion != NULL || $trip->trip_location_to_trainportion != '')) {
 
-    if (($trip->trip_location_to_trainportion != NULL || $trip->trip_location_to_trainportion != '')) {
-
-        $trainportion .= '
-
-			<br><br><br>
-
-			<table class="body">
-
-				<tr>
-
-					<td width="2%">
+		$trainportion .= '
 
 
 
-					</td>
+		<table><tr class="divider"><td></td></tr></table>
 
-					<td width="95%" rowspan="2">
+		<table class="table">								
 
-						
+		<tr nobr="true" style="background-color: rgb(41, 124, 188); color: rgb(255, 255, 255);">
 
-						   	<table width="100%">
+		<th colspan="2"> Vehicle portion</th>
 
-
-
-							   <tr class="content-1">
-
-							   <td><p style="color:#0D256E; font-size:22px; font-weight:bold;">Train portion</p></td>								
-
-							   </tr>
+		</tr>
 
 
 
-							   <tr class="content-1">
+		<tr nobr="true" width="100%">
 
-							   <td width="100%"><hr style="width:100%; background-color:#3E4754; font-size:2px;line-height:10px"/></td>					
+		<th colspan="2">From : <span class="pad-left item_details">' . $trip->trip_location_from_trainportion . '</span></th>
 
-							   </tr>							   
+		</tr>		
 
 
 
-							   	<tr class="content-1">
+		<tr nobr="true" width="100%">
 
-								   <td><p style="color:#67758D; font-size:14px"><b><span style="color:#0D256E;">From: </span></b> <span>' . $trip->trip_location_from_trainportion . '</span></p></td>
+		<th colspan="2">To : <span class="pad-left item_details">' . $trip->trip_location_to_trainportion . '</span></th>
 
-							   	</tr>
+		</tr>
 
-							   	<tr class="content-1">
-
-								   <td><p style="color:#67758D; font-size:14px"><b><span style="color:#0D256E;">To: </span></b> <span>' . $trip->trip_location_to_trainportion . '</span></p></td>
-
-							   	</tr>		   						   		
-
-								
-
-						   </table>
-
-					</td>
-
-				</tr>
-
-			</table>		
+		</table>	
 
 		';
+	}
 
-    }
+	$html .= '
 
-    $html .= '
+	<style>
+
+	.table{
+
+		padding: 7px;	
+
+		background-color:#d1d1d1;
+
+		font-size:14px;
+
+		border-radius: 5px;
+
+		-moz-border-radius: 5px; 	   	
+
+	}
+
+	.item_details{
+
+		font-weight: 200;
+
+		vertical-align: middle;
+
+	}
+
+	
+
+	.divider{
+
+		background-color: rgb(255, 255, 255);		
+
+		font-size:4px !important;
+
+	}
+
+	
+
+	</style>
 
 		<div class="section">
 
@@ -2186,19 +1721,22 @@ if (!empty($trip->trip_location_to_flightportion) || !empty($trip->trip_location
 
 	';
 
-    $pdf->writeHTML($html, true, false, true, false, '');
+	$pdf->writeHTML($html, true, false, true, false, '');
 
-    $pdf->SetXY(192, 285);
+	$pdf->SetXY(192, 285);
 
-    $pdf->SetTextColor(13, 37, 110);
+	$pdf->SetTextColor(13, 37, 110);
 
-    $pdf->writeHTML("$currentPage", true, false, true, false, '');
+	$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-    $currentPage = $currentPage + 1;
-
+	$currentPage = $currentPage + 1;
 }
 
 //////////////////////////////////////Traveling Portion End//////////////////////
+
+
+
+
 
 
 
@@ -2218,12 +1756,11 @@ $thewaypt = '';
 
 if ($trip->trip_location_waypoint_latlng != '') {
 
-    $thewaypt = str_replace('(', '', $trip->trip_location_waypoint_latlng);
+	$thewaypt = str_replace('(', '', $trip->trip_location_waypoint_latlng);
 
-    $thewaypt = str_replace(')', '', $thewaypt);
+	$thewaypt = str_replace(')', '', $thewaypt);
 
-    $destination = $destination_r = $thewaypt;
-
+	$destination = $destination_r = $thewaypt;
 }
 
 $key = 'AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y';
@@ -2252,39 +1789,37 @@ $html .= '<div class="section">
 
 if ($xml->status == 'OK') {
 
-    foreach ($xml->result->address_component as $value) {
+	foreach ($xml->result->address_component as $value) {
 
-        if ($value->type == 'country') {
+		if ($value->type == 'country') {
 
-            $country_long_name = $value->long_name;
+			$country_long_name = $value->long_name;
 
-            $country_short_name = $value->short_name;
+			$country_short_name = $value->short_name;
+		}
+	}
 
-        }
+	$url = "https://travel.state.gov/_res/rss/TAsTWs.xml";
 
-    }
+	$xml_Advisories = $trip->getXmlFromUrl($url);
 
-    $url = "https://travel.state.gov/_res/rss/TAsTWs.xml";
+	if ($xml_Advisories) {
 
-    $xml_Advisories = $trip->getXmlFromUrl($url);
+		$country_long_name = trim($country_long_name);
 
-    if ($xml_Advisories) {
+		foreach ($xml_Advisories->channel->item as $val) {
 
-        $country_long_name = trim($country_long_name);
+			$currtitle = $val->title;
 
-        foreach ($xml_Advisories->channel->item as $val) {
-
-            $currtitle = $val->title;
-
-            if (strstr($val->title, $country_long_name)) {
+			if (strstr($val->title, $country_long_name)) {
 
 
 
-                if (strstr($val->title, ':')) {
+				if (strstr($val->title, ':')) {
 
-                    $title_all = explode(":", $val->title);
+					$title_all = explode(":", $val->title);
 
-                    $html .= '<table>
+					$html .= '<table>
 
 				            <tr style="width:100%; text-align:center;">
 
@@ -2294,7 +1829,7 @@ if ($xml->status == 'OK') {
 
 						<p style="font-size:26px; text-align:left">' . $title_all[0] . ':';
 
-                    $html .= '<span style="color:#eb9c34;">' . $title_all[1] . '</span></p>
+					$html .= '<span style="color:#eb9c34;">' . $title_all[1] . '</span></p>
 
                                 </td>
 
@@ -2313,10 +1848,9 @@ if ($xml->status == 'OK') {
                             </tr>
 
                         </table>';
+				} else {
 
-                } else {
-
-                    $html .= '
+					$html .= '
 
                     <table>
 
@@ -2347,14 +1881,13 @@ if ($xml->status == 'OK') {
 			        </table>                    
 
                     ';
+				}
 
-                }
+				$desc = strip_tags($val->description);
 
-                $desc = strip_tags($val->description);
+				$desc = substr($desc, 0, 1400);
 
-                $desc = substr($desc, 0, 1400);
-
-                $html .= '<div></div>
+				$html .= '<div></div>
 
 			            <p style="text-align:left">' . $val->pubDate . '</p>
 
@@ -2364,42 +1897,37 @@ if ($xml->status == 'OK') {
 
                         ';
 
-                $have_advice = 1;
-
-            }
-
-        }
-
-    }
-
+				$have_advice = 1;
+			}
+		}
+	}
 }
 
 if ($have_advice) {
 
-    $pdf->AddPage('P', 'A4');
+	$pdf->AddPage('P', 'A4');
 
-    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->SetMargins(10, 12, 10);
+	$pdf->SetMargins(10, 12, 10);
 
-    $html .= '</div>';
+	$html .= '</div>';
 
-    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->writeHTML($html, true, false, true, false, '');
+	$pdf->writeHTML($html, true, false, true, false, '');
 
-    $pdf->SetXY(192, 285);
+	$pdf->SetXY(192, 285);
 
-    $pdf->SetTextColor(13, 37, 110);
+	$pdf->SetTextColor(13, 37, 110);
 
-    $pdf->writeHTML("$currentPage", true, false, true, false, '');
+	$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-    $currentPage = $currentPage + 1;
-
+	$currentPage = $currentPage + 1;
 }
 
 //////////////////////////////////////Travel advisory end//////////////////////
@@ -2424,90 +1952,84 @@ $tmp = $stmt->execute();
 
 if ($tmp && $stmt->rowCount() > 0) {
 
-    $documents = $stmt->fetchAll(PDO::FETCH_OBJ);
+	$documents = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-    $j = 0;
+	$j = 0;
 
-    foreach ($documents as $document) {
+	foreach ($documents as $document) {
 
-        if (strstr($document->name, '.pdf')) {
+		if (strstr($document->name, '.pdf')) {
 
-            $file = './ajaxfiles/uploads/' . $document->name;
+			$file = './ajaxfiles/uploads/' . $document->name;
 
 
 
-            try {
+			try {
 
-                $pageCount = $pdf->setSourceFile($file);
+				$pageCount = $pdf->setSourceFile($file);
 
-                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+				for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
 
-                    // import a page
+					// import a page
 
-                    $templateId = $pdf->importPage($pageNo);
+					$templateId = $pdf->importPage($pageNo);
 
-                    // get the size of the imported page
+					// get the size of the imported page
 
-                    $pdf->getTemplateSize($templateId);
+					$pdf->getTemplateSize($templateId);
 
-                    //$fpdi_pdf->AddPage('L');
+					//$fpdi_pdf->AddPage('L');
 
-                    $pdf->AddPage('P', 'A4');
+					$pdf->AddPage('P', 'A4');
 
-                    // use the imported page
+					// use the imported page
 
-                    $pdf->useTemplate($templateId);
+					$pdf->useTemplate($templateId);
+				}
+			} catch (Exception $e) {
 
-                }
+				//echo $e->getMessage();
 
-            } catch (Exception $e) {
+			}
+		} else {
 
-                //echo $e->getMessage();
+			$pdf->AddPage('P', 'A4');
 
-            }
+			$pdf->SetMargins(10, 12, 10);
 
-        } else {
+			$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->AddPage('P', 'A4');
+			$section_2 = new top_bar('Flight Itinerary', 'The travel plan of tomorrow done right today');
 
-            $pdf->SetMargins(10, 12, 10);
+			$html = $section_2->html_content();
 
-            $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+			$pdf->writeHTML($html, true, false, true, false, '');
 
-            $section_2 = new top_bar('Flight Itinerary', 'The travel plan of tomorrow done right today');
-
-            $html = $section_2->html_content();
-
-            $pdf->writeHTML($html, true, false, true, false, '');
-
-            $html = '<div style="text-align:center;">
+			$html = '<div style="text-align:center;">
 
 				<br><br><br><br><br><br><br>
 
-				<img src="./ajaxfiles/uploads/' . $document->name . '" width="580px" />
+				<img src="./ajaxfiles/uploads/' . $document->name . '" style="max-width: 100%;height: auto;"/>
 
 			</div>';
 
-            $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->writeHTML($html, true, false, true, false, '');
+			$pdf->writeHTML($html, true, false, true, false, '');
 
-            $pdf->SetXY(192, 285);
+			$pdf->SetXY(192, 285);
 
-            $pdf->SetTextColor(13, 37, 110);
+			$pdf->SetTextColor(13, 37, 110);
 
-            $pdf->writeHTML("$currentPage", true, false, true, false, '');
+			$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-            $currentPage = $currentPage + 1;
-
-        }
-
-    }
-
+			$currentPage = $currentPage + 1;
+		}
+	}
 }
 
 ///////////////////////////////////////Flight Itinerary end////////////////////////
@@ -2526,103 +2048,92 @@ $tmp = $stmt->execute();
 
 if ($tmp && $stmt->rowCount() > 0) {
 
-    $documents = $stmt->fetchAll(PDO::FETCH_OBJ);
+	$documents = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-    $j = 0;
+	$j = 0;
 
-    foreach ($documents as $document) {
+	foreach ($documents as $document) {
 
-        if (strstr($document->name, '.pdf')) {
+		if (strstr($document->name, '.pdf')) {
 
-            $file = './ajaxfiles/uploads/' . $document->name;
-
-
-
-            try {
+			$file = './ajaxfiles/uploads/' . $document->name;
 
 
 
-                $pageCount = $pdf->setSourceFile($file);
+			try {
 
 
 
-                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+				$pageCount = $pdf->setSourceFile($file);
 
-                    // import a page
 
-                    $templateId = $pdf->importPage($pageNo);
 
-                    // get the size of the imported page
+				for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
 
-                    $pdf->getTemplateSize($templateId);
+					// import a page
 
-                    //$fpdi_pdf->AddPage('L');
+					$templateId = $pdf->importPage($pageNo);
 
-                    $pdf->AddPage('P', 'A4');
+					// get the size of the imported page
 
-                    // use the imported page
+					$pdf->getTemplateSize($templateId);
 
-                    $pdf->useTemplate($templateId);
+					//$fpdi_pdf->AddPage('L');
 
-                }
+					$pdf->AddPage('P', 'A4');
 
-            } catch (Exception $e) {
+					// use the imported page
 
-                echo $e->getMessage();
+					$pdf->useTemplate($templateId);
+				}
+			} catch (Exception $e) {
 
-            }
+				echo $e->getMessage();
+			}
+		} else {
 
-        } else {
+			$pdf->AddPage('P', 'A4');
 
-            $pdf->AddPage('P', 'A4');
+			$pdf->SetMargins(10, 12, 10);
 
-            $pdf->SetMargins(10, 12, 10);
+			$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+			$section_2 = new top_bar('Hotel Itinerary', 'The travel plan of tomorrow done right today');
 
-            $section_2 = new top_bar('Hotel Itinerary', 'The travel plan of tomorrow done right today');
+			$html = $section_2->html_content();
 
-            $html = $section_2->html_content();
+			$pdf->writeHTML($html, true, false, true, false, '');
 
-            $pdf->writeHTML($html, true, false, true, false, '');
-
-            $html = '<div style="text-align:center;">
+			$html = '<div style="text-align:center;">
 
 				<br><br><br><br><br><br><br>
 
-				<img src="./ajaxfiles/uploads/' . $document->name . '" width="580px" />
+				<img src="./ajaxfiles/uploads/' . $document->name . '" style="max-width: 100%;height: auto;"/>
 
 			</div>';
 
-            $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->writeHTML($html, true, false, true, false, '');
+			$pdf->writeHTML($html, true, false, true, false, '');
 
-            $pdf->SetXY(192, 285);
+			$pdf->SetXY(192, 285);
 
-            $pdf->SetTextColor(13, 37, 110);
+			$pdf->SetTextColor(13, 37, 110);
 
-            $pdf->writeHTML("$currentPage", true, false, true, false, '');
+			$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-            $currentPage = $currentPage + 1;
-
-        }
-
-    }
-
+			$currentPage = $currentPage + 1;
+		}
+	}
 }
 
 ///////////////////////////////////////Hotel Itinerary end////////////////////////
 
 $trip->setProgressing($idtrip, 30);
-
-
-
-
 
 
 
@@ -2650,23 +2161,23 @@ $i = 1;
 
 if ($tmp && $stmt->rowCount() > 0) { //$mpdf->WriteHTML($html);  
 
-    $pdf->AddPage('P', 'A4');
+	$pdf->AddPage('P', 'A4');
 
-    $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+	$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-    $calendar_image = K_PATH_IMAGES . 'calendar.png';
+	$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-    $section_2 = new top_bar('Schedule Itinerary', 'The travel plan of tomorrow done right today');
+	$section_2 = new top_bar('Schedule Itinerary', 'The travel plan of tomorrow done right today');
 
-    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->SetMargins(10, 12, 10);
+	$pdf->SetMargins(10, 12, 10);
 
-    $html = "";
+	$html = "";
 
-    $html = $section_2->html_content();
+	$html = $section_2->html_content();
 
-    $html .= '<div>
+	$html .= '<div>
 
 		<br><br><br><br><br><br>
 
@@ -2694,21 +2205,21 @@ if ($tmp && $stmt->rowCount() > 0) { //$mpdf->WriteHTML($html);
 
 	';
 
-    // $stmt = $dbh->prepare("SELECT * FROM timeline WHERE id_trip=? ORDER BY date");
+	// $stmt = $dbh->prepare("SELECT * FROM timeline WHERE id_trip=? ORDER BY date");
 
-    // $stmt->bindValue(1, $idtrip, PDO::PARAM_INT);
+	// $stmt->bindValue(1, $idtrip, PDO::PARAM_INT);
 
-    // $tmp = $stmt->execute();
-
-
-
-    $all_timelines = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-    foreach ($all_timelines as $timeline) {
+	// $tmp = $stmt->execute();
 
 
 
-        $html .= '
+	$all_timelines = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+	foreach ($all_timelines as $timeline) {
+
+
+
+		$html .= '
 
 			<tr>
 
@@ -2737,35 +2248,33 @@ if ($tmp && $stmt->rowCount() > 0) { //$mpdf->WriteHTML($html);
 			<p style="width:90%; background-color:#67758D; font-size:0.5px">e</p>
 
 			<div></div>';
-
-    }
-
-
-
-    $html .= '</table></div>';
-
-    $pdf->writeHTML($html, true, false, true, false, '');
-
-    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
-
-    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
-
-    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+	}
 
 
 
-    $pdf->SetXY(192, 285);
+	$html .= '</table></div>';
 
-    $pdf->SetTextColor(13, 37, 110);
+	$pdf->writeHTML($html, true, false, true, false, '');
 
-    $pdf->writeHTML("$currentPage", true, false, true, false, '');
+	$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-    $currentPage = $currentPage + 1;
+	$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-    ///////////////////////////////////////Schedule end//////////////////////////
+	$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-    $trip->setProgressing($idtrip, 35);
 
+
+	$pdf->SetXY(192, 285);
+
+	$pdf->SetTextColor(13, 37, 110);
+
+	$pdf->writeHTML("$currentPage", true, false, true, false, '');
+
+	$currentPage = $currentPage + 1;
+
+	///////////////////////////////////////Schedule end//////////////////////////
+
+	$trip->setProgressing($idtrip, 35);
 }
 
 
@@ -2788,49 +2297,49 @@ $html = $section_2->html_content();
 
 if ($tmp && $stmt->rowCount() > 0) {
 
-    $pdf->AddPage('P', 'A4');
+	$pdf->AddPage('P', 'A4');
 
-    $pdf->SetMargins(10, 12, 10);
+	$pdf->SetMargins(10, 12, 10);
 
-    $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+	$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-    $calendar_image = K_PATH_IMAGES . 'calendar.png';
+	$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-    //$section_2 = new top_bar('Trip Notes', 'The travel plan of tomorrow done right today');
+	//$section_2 = new top_bar('Trip Notes', 'The travel plan of tomorrow done right today');
 
-    $note_number_image = K_PATH_IMAGES . 'note_number.png';
+	$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-    $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+	$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-    $html .= '<div>
+	$html .= '<div>
 
 		<br><br><br><br><br><br>
 
 	';
 
-    $notes = $stmt->fetchAll(PDO::FETCH_OBJ);
+	$notes = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-    $len = count($notes);
+	$len = count($notes);
 
-    $i = 0;
+	$i = 0;
 
-    echo $len;
+	echo $len;
 
-    foreach ($notes as $note) {
+	foreach ($notes as $note) {
 
-        $i++;
+		$i++;
 
-        if ($i != $len) { // list of end
+		if ($i != $len) { // list of end
 
-            $html .= '
+			$html .= '
 
 				<table cellspacing="0" cellpadding="0">
 
@@ -2859,10 +2368,9 @@ if ($tmp && $stmt->rowCount() > 0) {
 				</table>
 
 			';
+		} else {
 
-        } else {
-
-            $html .= '
+			$html .= '
 
 				<table cellspacing="0" cellpadding="0">
 
@@ -2891,13 +2399,10 @@ if ($tmp && $stmt->rowCount() > 0) {
 				</table>
 
 			';
+		}
+	}
 
-        }
-
-    }
-
-    $html .= '</div>';
-
+	$html .= '</div>';
 }
 
 $pdf->writeHTML($html, true, false, true, false, '');
@@ -2934,22 +2439,19 @@ $trip_has_train = false;
 
 if ($trip->trip_transport == 'plane') {
 
-    if ($trip->trip_location_to_latlng_drivingportion) {
+	if ($trip->trip_location_to_latlng_drivingportion) {
 
-        $trip_location_to_latlng = $trip->trip_location_to_latlng_drivingportion;
-
-    }
-
+		$trip_location_to_latlng = $trip->trip_location_to_latlng_drivingportion;
+	}
 
 
-    if ($trip->trip_location_to_latlng_trainportion) {
 
-        $trip_location_to_latlng = $trip->trip_location_to_latlng_trainportion;
+	if ($trip->trip_location_to_latlng_trainportion) {
 
-        $trip_has_train = true;
+		$trip_location_to_latlng = $trip->trip_location_to_latlng_trainportion;
 
-    }
-
+		$trip_has_train = true;
+	}
 }
 
 
@@ -2958,20 +2460,17 @@ if ($trip->trip_transport == 'plane') {
 
 if ($trip->trip_transport == 'vehicle') {
 
-    if ($trip->trip_location_to_latlng_flightportion) {
+	if ($trip->trip_location_to_latlng_flightportion) {
 
-        $trip_location_to_latlng = $trip->trip_location_to_latlng_flightportion;
+		$trip_location_to_latlng = $trip->trip_location_to_latlng_flightportion;
+	}
 
-    }
+	if ($trip->trip_location_to_latlng_trainportion) {
 
-    if ($trip->trip_location_to_latlng_trainportion) {
+		$trip_location_to_latlng = $trip->trip_location_to_latlng_trainportion;
 
-        $trip_location_to_latlng = $trip->trip_location_to_latlng_trainportion;
-
-        $trip_has_train = true;
-
-    }
-
+		$trip_has_train = true;
+	}
 }
 
 
@@ -2980,20 +2479,17 @@ if ($trip->trip_transport == 'vehicle') {
 
 if ($trip->trip_transport == 'train') {
 
-    if ($trip->trip_location_to_latlng_flightportion) {
+	if ($trip->trip_location_to_latlng_flightportion) {
 
-        $trip_location_to_latlng = $trip->trip_location_to_latlng_flightportion;
+		$trip_location_to_latlng = $trip->trip_location_to_latlng_flightportion;
+	}
 
-    }
+	if ($trip->trip_location_to_latlng_drivingportion) {
 
-    if ($trip->trip_location_to_latlng_drivingportion) {
+		$trip_location_to_latlng = $trip->trip_location_to_latlng_drivingportion;
+	}
 
-        $trip_location_to_latlng = $trip->trip_location_to_latlng_drivingportion;
-
-    }
-
-    $trip_has_train = true;
-
+	$trip_has_train = true;
 }
 
 
@@ -3044,45 +2540,45 @@ $html = $section_2->html_content();
 
 if ($tmp && $ptd->rowCount() > 0) {
 
-    $plans = $ptd->fetchAll(PDO::FETCH_OBJ);
+	$plans = $ptd->fetchAll(PDO::FETCH_OBJ);
 
 
 
-    $pdf->AddPage('P', 'A4');
+	$pdf->AddPage('P', 'A4');
 
-    $pdf->SetMargins(10, 12, 10);
+	$pdf->SetMargins(10, 12, 10);
 
-    $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+	$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-    $calendar_image = K_PATH_IMAGES . 'calendar.png';
+	$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-    $note_number_image = K_PATH_IMAGES . 'note_number.png';
+	$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-    $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+	$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-    // $html .= '<div>
+	// $html .= '<div>
 
-    // 	<br><br><br><br><br><br>
+	// 	<br><br><br><br><br><br>
 
-    // ';
+	// ';
 
-    $len = count($plans);
+	$len = count($plans);
 
-    $i = 0;
+	$i = 0;
 
-    $len;
+	$len;
 
 
 
-    $html .= '
+	$html .= '
 
     <div>
 
@@ -3112,25 +2608,25 @@ if ($tmp && $ptd->rowCount() > 0) {
 
 
 
-    foreach ($plans as $plan) {
+	foreach ($plans as $plan) {
 
-        $i++;
+		$i++;
 
-        $compare_address = $plan->lat . "," . $plan->lng;
+		$compare_address = $plan->lat . "," . $plan->lng;
 
-        $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($des_address) . "&destinations=" . urlencode($compare_address) . "&key=" . $key;
+		$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($des_address) . "&destinations=" . urlencode($compare_address) . "&key=" . $key;
 
-        $api = $trip->curlRequest($apiurl);
+		$api = $trip->curlRequest($apiurl);
 
-        $data1 = json_decode($api, true);
+		$data1 = json_decode($api, true);
 
-        $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+		$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
 
 
-        if ($i != $len) { // list of end
+		if ($i != $len) { // list of end
 
-            $td_part .= '				
+			$td_part .= '				
 
                         <div></div><tr>
 
@@ -3147,10 +2643,9 @@ if ($tmp && $ptd->rowCount() > 0) {
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>                        				
 
 			';
+		} else {
 
-        } else {
-
-            $td_part .= '
+			$td_part .= '
 
             <div></div><tr>
 
@@ -3167,16 +2662,14 @@ if ($tmp && $ptd->rowCount() > 0) {
             <p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>   				
 
 			';
+		}
+	}
 
-        }
-
-    }
-
-    //$html .= '</div>';
+	//$html .= '</div>';
 
 
 
-    $html .= '
+	$html .= '
 
     ' . $td_part . '
 
@@ -3185,7 +2678,6 @@ if ($tmp && $ptd->rowCount() > 0) {
             </div>
 
     ';
-
 }
 
 
@@ -3232,94 +2724,87 @@ $tmp = $stmt->execute();
 
 if ($tmp && $stmt->rowCount() > 0) {
 
-    $documents = $stmt->fetchAll(PDO::FETCH_OBJ);
+	$documents = $stmt->fetchAll(PDO::FETCH_OBJ);
 
 
 
-    $j = 0;
+	$j = 0;
 
-    foreach ($documents as $document) {
+	foreach ($documents as $document) {
 
-        if (strstr($document->name, '.pdf')) {
-
-
-
-            try {
+		if (strstr($document->name, '.pdf')) {
 
 
 
-                $file = './ajaxfiles/uploads/' . $document->name;
+			try {
 
-                $pageCount = $pdf->setSourceFile($file);
 
-                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
 
-                    // import a page
+				$file = './ajaxfiles/uploads/' . $document->name;
 
-                    $templateId = $pdf->importPage($pageNo);
+				$pageCount = $pdf->setSourceFile($file);
 
-                    // get the size of the imported page
+				for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
 
-                    $pdf->getTemplateSize($templateId);
+					// import a page
 
-                    //$fpdi_pdf->AddPage('L');
+					$templateId = $pdf->importPage($pageNo);
 
-                    $pdf->AddPage('P', 'A4');
+					// get the size of the imported page
 
-                    // use the imported page
+					$pdf->getTemplateSize($templateId);
 
-                    $pdf->useTemplate($templateId);
+					//$fpdi_pdf->AddPage('L');
 
-                }
+					$pdf->AddPage('P', 'A4');
 
-            } catch (Exception $e) {
+					// use the imported page
 
-                echo $e->getMessage();
+					$pdf->useTemplate($templateId);
+				}
+			} catch (Exception $e) {
 
-            }
+				echo $e->getMessage();
+			}
+		} else {
 
-        } else {
+			$pdf->AddPage('P', 'A4');
 
-            $pdf->AddPage('P', 'A4');
+			$pdf->SetMargins(10, 12, 10);
 
-            $pdf->SetMargins(10, 12, 10);
+			$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+			$section_2 = new top_bar('Passport', 'The travel plan of tomorrow done right today');
 
-            $section_2 = new top_bar('Passport', 'The travel plan of tomorrow done right today');
+			$html = $section_2->html_content();
 
-            $html = $section_2->html_content();
+			$pdf->writeHTML($html, true, false, true, false, '');
 
-            $pdf->writeHTML($html, true, false, true, false, '');
-
-            $html = '<div style="text-align:center;">
+			$html = '<div style="text-align:center;">
 
 				<br><br><br><br>
 
-				<img src="./ajaxfiles/uploads/' . $document->name . '" width="580px" />
+				<img src="./ajaxfiles/uploads/' . $document->name . '" style="max-width: 100%;height: auto;"/>
 
 			</div>';
 
-            $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->writeHTML($html, true, false, true, false, '');
+			$pdf->writeHTML($html, true, false, true, false, '');
 
-            $pdf->SetXY(192, 285);
+			$pdf->SetXY(192, 285);
 
-            $pdf->SetTextColor(13, 37, 110);
+			$pdf->SetTextColor(13, 37, 110);
 
-            $pdf->writeHTML("$currentPage", true, false, true, false, '');
+			$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-            $currentPage = $currentPage + 1;
-
-        }
-
-    }
-
+			$currentPage = $currentPage + 1;
+		}
+	}
 }
 
 ///////////////////////////////////////Passport End////////////////////////
@@ -3342,88 +2827,81 @@ $tmp = $stmt->execute();
 
 if ($tmp && $stmt->rowCount() > 0) {
 
-    $documents = $stmt->fetchAll(PDO::FETCH_OBJ);
+	$documents = $stmt->fetchAll(PDO::FETCH_OBJ);
 
-    $j = 0;
+	$j = 0;
 
-    foreach ($documents as $document) {
+	foreach ($documents as $document) {
 
-        if (strstr($document->name, '.pdf')) {
+		if (strstr($document->name, '.pdf')) {
 
-            $file = './ajaxfiles/uploads/' . $document->name;
+			$file = './ajaxfiles/uploads/' . $document->name;
 
-            try {
+			try {
 
-                $pageCount = $pdf->setSourceFile($file);
+				$pageCount = $pdf->setSourceFile($file);
 
-                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+				for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
 
-                    // import a page
+					// import a page
 
-                    $templateId = $pdf->importPage($pageNo);
+					$templateId = $pdf->importPage($pageNo);
 
-                    // get the size of the imported page
+					// get the size of the imported page
 
-                    $pdf->getTemplateSize($templateId);
+					$pdf->getTemplateSize($templateId);
 
-                    //$fpdi_pdf->AddPage('L');
+					//$fpdi_pdf->AddPage('L');
 
-                    $pdf->AddPage('P', 'A4');
+					$pdf->AddPage('P', 'A4');
 
-                    // use the imported page
+					// use the imported page
 
-                    $pdf->useTemplate($templateId);
+					$pdf->useTemplate($templateId);
+				}
+			} catch (Exception $e) {
 
-                }
+				echo $e->getMessage();
+			}
+		} else {
 
-            } catch (Exception $e) {
+			$pdf->AddPage('P', 'A4');
 
-                echo $e->getMessage();
+			$pdf->SetMargins(10, 12, 10);
 
-            }
+			$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-        } else {
+			$section_2 = new top_bar('Driver\'s License', 'The travel plan of tomorrow done right today');
 
-            $pdf->AddPage('P', 'A4');
+			$html = $section_2->html_content();
 
-            $pdf->SetMargins(10, 12, 10);
+			$pdf->writeHTML($html, true, false, true, false, '');
 
-            $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
-
-            $section_2 = new top_bar('Driver\'s License', 'The travel plan of tomorrow done right today');
-
-            $html = $section_2->html_content();
-
-            $pdf->writeHTML($html, true, false, true, false, '');
-
-            $html = '<div style="text-align:center;">
+			$html = '<div style="text-align:center;">
 
 				<br><br><br><br><br><br><br>
 
-				<img src="./ajaxfiles/uploads/' . $document->name . '" width="580px" />
+				<img src="./ajaxfiles/uploads/' . $document->name . '" style="max-width: 100%;height: auto;"/>
 
 			</div>';
 
-            $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->writeHTML($html, true, false, true, false, '');
+			$pdf->writeHTML($html, true, false, true, false, '');
 
-            $pdf->SetXY(192, 285);
+			$pdf->SetXY(192, 285);
 
-            $pdf->SetTextColor(13, 37, 110);
+			$pdf->SetTextColor(13, 37, 110);
 
-            $pdf->writeHTML("$currentPage", true, false, true, false, '');
+			$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-            $currentPage = $currentPage + 1;
-
-        }
-
-    }
-
+			$currentPage = $currentPage + 1;
+		}
+	}
 }
 
 ///////////////////////////////////////License End////////////////////////
@@ -3448,92 +2926,85 @@ $tmp = $stmt->execute();
 
 if ($tmp && $stmt->rowCount() > 0) {
 
-    $documents = $stmt->fetchAll(PDO::FETCH_OBJ);
+	$documents = $stmt->fetchAll(PDO::FETCH_OBJ);
 
 
 
-    $j = 0;
+	$j = 0;
 
-    foreach ($documents as $document) {
+	foreach ($documents as $document) {
 
-        if (strstr($document->name, '.pdf')) {
+		if (strstr($document->name, '.pdf')) {
 
-            $file = './ajaxfiles/uploads/' . $document->name;
+			$file = './ajaxfiles/uploads/' . $document->name;
 
 
 
-            try {
+			try {
 
-                $pageCount = $pdf->setSourceFile($file);
+				$pageCount = $pdf->setSourceFile($file);
 
-                for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+				for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
 
-                    // import a page
+					// import a page
 
-                    $templateId = $pdf->importPage($pageNo);
+					$templateId = $pdf->importPage($pageNo);
 
-                    // get the size of the imported page
+					// get the size of the imported page
 
-                    $pdf->getTemplateSize($templateId);
+					$pdf->getTemplateSize($templateId);
 
-                    //$fpdi_pdf->AddPage('L');
+					//$fpdi_pdf->AddPage('L');
 
-                    $pdf->AddPage('P', 'A4');
+					$pdf->AddPage('P', 'A4');
 
-                    // use the imported page
+					// use the imported page
 
-                    $pdf->useTemplate($templateId);
+					$pdf->useTemplate($templateId);
+				}
+			} catch (Exception $e) {
 
-                }
+				echo $e->getMessage();
+			}
+		} else {
 
-            } catch (Exception $e) {
+			$pdf->AddPage('P', 'A4');
 
-                echo $e->getMessage();
+			$pdf->SetMargins(10, 12, 10);
 
-            }
+			$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-        } else {
+			$section_2 = new top_bar('Addtional Documents', 'The travel plan of tomorrow done right today');
 
-            $pdf->AddPage('P', 'A4');
+			$html = $section_2->html_content();
 
-            $pdf->SetMargins(10, 12, 10);
+			$pdf->writeHTML($html, true, false, true, false, '');
 
-            $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
-
-            $section_2 = new top_bar('Addtional Documents', 'The travel plan of tomorrow done right today');
-
-            $html = $section_2->html_content();
-
-            $pdf->writeHTML($html, true, false, true, false, '');
-
-            $html = '<div style="text-align:center;">
+			$html = '<div style="text-align:center;">
 
 				<br><br><br><br><br><br><br>
 
-				<img src="./ajaxfiles/uploads/' . $document->name . '" width="580px" />
+				<img src="./ajaxfiles/uploads/' . $document->name . '" style="max-width: 100%;height: auto;"/>
 
 			</div>';
 
-            $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->writeHTML($html, true, false, true, false, '');
+			$pdf->writeHTML($html, true, false, true, false, '');
 
-            $pdf->SetXY(192, 285);
+			$pdf->SetXY(192, 285);
 
-            $pdf->SetTextColor(13, 37, 110);
+			$pdf->SetTextColor(13, 37, 110);
 
-            $pdf->writeHTML("$currentPage", true, false, true, false, '');
+			$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-            $currentPage = $currentPage + 1;
-
-        }
-
-    }
-
+			$currentPage = $currentPage + 1;
+		}
+	}
 }
 
 ///////////////////////////////////////Additional Documents End////////////////////////
@@ -3546,105 +3017,99 @@ if ($tmp && $stmt->rowCount() > 0) {
 
 if ($trip->trip_option_weather) {
 
-    $origin_r = str_replace('(', '', $trip->trip_location_from_latlng);
+	$origin_r = str_replace('(', '', $trip->trip_location_from_latlng);
 
-    $origin_r = str_replace(')', '', $origin_r);
+	$origin_r = str_replace(')', '', $origin_r);
 
-    $destination_r = str_replace('(', '', $trip->trip_location_to_latlng);
+	$destination_r = str_replace('(', '', $trip->trip_location_to_latlng);
 
-    $destination_r = str_replace(')', '', $destination_r);
+	$destination_r = str_replace(')', '', $destination_r);
 
-    $destination = $destination_r;
+	$destination = $destination_r;
 
-    $locality_long_name = "";
+	$locality_long_name = "";
 
-    $url = "https://maps.googleapis.com/maps/api/geocode/xml?latlng=" . $destination . "&sensor=false&key=" . $key;
+	$url = "https://maps.googleapis.com/maps/api/geocode/xml?latlng=" . $destination . "&sensor=false&key=" . $key;
 
-    $xml = $trip->getXmlFromUrl($url);
+	$xml = $trip->getXmlFromUrl($url);
 
-    if ($xml->status == 'OK') {
+	if ($xml->status == 'OK') {
 
-        foreach ($xml->result[1]->address_component as $value) {
+		foreach ($xml->result[1]->address_component as $value) {
 
-            if ($value->type == 'locality') {
+			if ($value->type == 'locality') {
 
-                $locality_long_name = trim($value->long_name);
+				$locality_long_name = trim($value->long_name);
 
-                $locality_short_name = $value->short_name;
+				$locality_short_name = $value->short_name;
+			}
 
-            }
+			if ($value->type == 'political') {
 
-            if ($value->type == 'political') {
+				$political_long_name = trim($value->long_name);
 
-                $political_long_name = trim($value->long_name);
+				$political_short_name = $value->short_name;
+			}
+		}
+	}
 
-                $political_short_name = $value->short_name;
+	$weatherData = $trip->getWeatherInformation(1);
 
-            }
+	if ($weatherData[1]["Code"] == "Unauthorized") {
+	} else {
 
-        }
+		$headerWeatherInfo = $weatherData[0];
 
-    }
+		$weatherInfo = $weatherData[1];
 
-    $weatherData = $trip->getWeatherInformation(1);
+		$pdf->AddPage('P', 'A4');
 
-    if ($weatherData[1]["Code"] == "Unauthorized") {
+		$pdf->SetMargins(10, 12, 10);
 
-    } else {
+		$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-        $headerWeatherInfo = $weatherData[0];
+		$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-        $weatherInfo = $weatherData[1];
+		$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-        $pdf->AddPage('P', 'A4');
+		$sunrise_image = K_PATH_IMAGES . 'sunrise.png';
 
-        $pdf->SetMargins(10, 12, 10);
+		$sunrise_bg = K_PATH_IMAGES . 'sunrise_bg.png';
 
-        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+		$bottom_bg = K_PATH_IMAGES . 'bottom_bg.png';
 
-        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+		$table_bg =  K_PATH_IMAGES . 'table_bg.png';
 
-        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+		$cloud =  K_PATH_IMAGES . 'cloud.png';
 
-        $sunrise_image = K_PATH_IMAGES . 'sunrise.png';
+		$rain =  K_PATH_IMAGES . 'rain.png';
 
-        $sunrise_bg = K_PATH_IMAGES . 'sunrise_bg.png';
+		$sun =  K_PATH_IMAGES . 'sun.png';
 
-        $bottom_bg = K_PATH_IMAGES . 'bottom_bg.png';
+		$sun_raise =  K_PATH_IMAGES . 'sun_raise.png';
 
-        $table_bg =  K_PATH_IMAGES . 'table_bg.png';
+		$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-        $cloud =  K_PATH_IMAGES . 'cloud.png';
+		$pdf->Image($sunrise_bg, 0, 100, 0, 100, '', '', '', false, 300, '', false, false, 0);
 
-        $rain =  K_PATH_IMAGES . 'rain.png';
+		$pdf->Image($bottom_bg, -2, 132, 0, 300, '', '', '', false, 300, '', false, false, 0);
 
-        $sun =  K_PATH_IMAGES . 'sun.png';
+		$pdf->Image($b_left1, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-        $sun_raise =  K_PATH_IMAGES . 'sun_raise.png';
+		$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+		$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-        $pdf->Image($sunrise_bg, 0, 100, 0, 100, '', '', '', false, 300, '', false, false, 0);
+		for ($i = 0; $i <= 4; $i++) {
 
-        $pdf->Image($bottom_bg, -2, 132, 0, 300, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($table_bg, 40 + ($i * 27.1), 121, 27.5, 53, '', '', '', false, 300, '', false, false, 0);
+		}
 
-        $pdf->Image($b_left1, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+		$section_2 = new top_bar("Weather at $locality_long_name", 'The travel plan of tomorrow done right today');
 
-        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+		$html = $section_2->html_content();
 
-        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
-
-        for ($i = 0; $i <= 4; $i++) {
-
-            $pdf->Image($table_bg, 40 + ($i * 27.1), 121, 27.5, 53, '', '', '', false, 300, '', false, false, 0);
-
-        }
-
-        $section_2 = new top_bar("Weather at $locality_long_name", 'The travel plan of tomorrow done right today');
-
-        $html = $section_2->html_content();
-
-        $html .= '
+		$html .= '
 
 			<div>
 
@@ -3662,77 +3127,77 @@ if ($trip->trip_option_weather) {
 
 		';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $pdf->SetTextColor(103, 117, 141);
+		$pdf->SetTextColor(103, 117, 141);
 
-        $pdf->SetXY(10, 55);
+		$pdf->SetXY(10, 55);
 
-        $pdf->writeHTML($headerWeatherInfo[6], true, false, true, false, '');
+		$pdf->writeHTML($headerWeatherInfo[6], true, false, true, false, '');
 
-        $pdf->SetFont($fontname, '', 12, '', false);
+		$pdf->SetFont($fontname, '', 12, '', false);
 
-        $pdf->SetXY(10, 62);
+		$pdf->SetXY(10, 62);
 
-        $pdf->writeHTML($headerWeatherInfo[7], true, false, true, false, '');
+		$pdf->writeHTML($headerWeatherInfo[7], true, false, true, false, '');
 
-        $pdf->SetFont($fontname, '', 12, '', false);
+		$pdf->SetFont($fontname, '', 12, '', false);
 
-        $pdf->SetXY(10, 69);
+		$pdf->SetXY(10, 69);
 
-        $pdf->writeHTML(explode(",", $headerWeatherInfo[0])[0], true, false, true, false, '');
+		$pdf->writeHTML(explode(",", $headerWeatherInfo[0])[0], true, false, true, false, '');
 
-        $pdf->SetXY(10, 76);
+		$pdf->SetXY(10, 76);
 
-        $pdf->writeHTML(explode(",", $headerWeatherInfo[0])[1], true, false, true, false, '');
+		$pdf->writeHTML(explode(",", $headerWeatherInfo[0])[1], true, false, true, false, '');
 
-        $pdf->SetFont($fontname, '', 12, '', false);
+		$pdf->SetFont($fontname, '', 12, '', false);
 
-        $pdf->SetTextColor(243, 159, 50);
+		$pdf->SetTextColor(243, 159, 50);
 
-        $pdf->SetXY(160, 55);
+		$pdf->SetXY(160, 55);
 
-        $pdf->SetFont($fontname, '', 24, '', false);
+		$pdf->SetFont($fontname, '', 24, '', false);
 
-        //$pdf->writeHTML(round((float) explode('&', $headerWeatherInfo[1])[0], 0) . "ьз╕C", true, false, true, false, '');
+		//$pdf->writeHTML(round((float) explode('&', $headerWeatherInfo[1])[0], 0) . "ьз╕C", true, false, true, false, '');
 
-        $pdf->writeHTML(round((float) explode('&', $headerWeatherInfo[1])[0], 0) . "°C", true, false, true, false, '');
+		$pdf->writeHTML(round((float) explode('&', $headerWeatherInfo[1])[0], 0) . "°C", true, false, true, false, '');
 
-        $pdf->SetFont($fontname, '', 12, '', false);
+		$pdf->SetFont($fontname, '', 12, '', false);
 
-        $pdf->SetTextColor(103, 117, 141);
+		$pdf->SetTextColor(103, 117, 141);
 
-        $pdf->SetXY(148, 68);
+		$pdf->SetXY(148, 68);
 
-        $pdf->writeHTML("Current: $headerWeatherInfo[2]", true, false, true, false, '');
+		$pdf->writeHTML("Current: $headerWeatherInfo[2]", true, false, true, false, '');
 
-        $pdf->SetXY(148, 75);
+		$pdf->SetXY(148, 75);
 
-        $pdf->writeHTML("Wind: " . explode(' ', $headerWeatherInfo[3])[0] . round((float) explode(' ', $headerWeatherInfo[3])[1], 0) . '  ' . explode(' ', $headerWeatherInfo[3])[2], true, false, true, false, '');
+		$pdf->writeHTML("Wind: " . explode(' ', $headerWeatherInfo[3])[0] . round((float) explode(' ', $headerWeatherInfo[3])[1], 0) . '  ' . explode(' ', $headerWeatherInfo[3])[2], true, false, true, false, '');
 
-        $pdf->SetXY(148, 82);
+		$pdf->SetXY(148, 82);
 
-        $pdf->writeHTML("Humidity: $headerWeatherInfo[4]", true, false, true, false, '');
+		$pdf->writeHTML("Humidity: $headerWeatherInfo[4]", true, false, true, false, '');
 
-        $pdf->SetXY(80, 123);
+		$pdf->SetXY(80, 123);
 
-        $html = '<div style="text-align:center;"><table><tr>';
+		$html = '<div style="text-align:center;"><table><tr>';
 
-        $html .= '<td width="105px"></td>';
+		$html .= '<td width="105px"></td>';
 
-        for ($i = 0; $i <= 4; $i++) {
+		for ($i = 0; $i <= 4; $i++) {
 
-            $temp_max = number_format($weatherInfo['DailyForecasts'][$i]['Temperature']['Maximum']['Value'], 0) . '&#176;' . $weatherInfo['DailyForecasts'][$i]['Temperature']['Maximum']['Unit'];
+			$temp_max = number_format($weatherInfo['DailyForecasts'][$i]['Temperature']['Maximum']['Value'], 0) . '&#176;' . $weatherInfo['DailyForecasts'][$i]['Temperature']['Maximum']['Unit'];
 
-            $temp_min = number_format($weatherInfo['DailyForecasts'][$i]['Temperature']['Minimum']['Value'], 0) . '&#176;' . $weatherInfo['DailyForecasts'][$i]['Temperature']['Minimum']['Unit'];
+			$temp_min = number_format($weatherInfo['DailyForecasts'][$i]['Temperature']['Minimum']['Value'], 0) . '&#176;' . $weatherInfo['DailyForecasts'][$i]['Temperature']['Minimum']['Unit'];
 
-            $date_from = str_replace('T', ' ', $weatherInfo['DailyForecasts'][$i]['Date']);
+			$date_from = str_replace('T', ' ', $weatherInfo['DailyForecasts'][$i]['Date']);
 
-            $from = date('D', strtotime($date_from));
+			$from = date('D', strtotime($date_from));
 
-            $imgname = $weatherInfo['DailyForecasts'][$i]['Day']['Icon'];
+			$imgname = $weatherInfo['DailyForecasts'][$i]['Day']['Icon'];
 
-            $html .= '<td style="color:#fff; text-align:center;" width="97px">
+			$html .= '<td style="color:#fff; text-align:center;" width="97px">
 
 							<p>' . $from . '</p>
 
@@ -3743,23 +3208,20 @@ if ($trip->trip_option_weather) {
 							<p>' . $temp_min . '</p>
 
 						</td>';
+		}
 
-        }
+		$html .= '</tr></table></div>';
 
-        $html .= '</tr></table></div>';
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
-
-        $currentPage = $currentPage + 1;
-
-    }
-
+		$currentPage = $currentPage + 1;
+	}
 }
 
 ///////////////////////////////////////weather end//////////////////////////
@@ -3796,195 +3258,180 @@ if ($trip->trip_transport == "vehicle") {
 
 
 
-    $full_route = "";
+	$full_route = "";
 
 
 
-    if (empty($trip->location_multi_waypoint)) {
+	if (empty($trip->location_multi_waypoint)) {
 
-        $multi_waypoint = [];
+		$multi_waypoint = [];
+	} else {
 
-    } else {
+		$multi_waypoint = json_decode($trip->location_multi_waypoint);
+	}
 
-        $multi_waypoint = json_decode($trip->location_multi_waypoint);
 
-    }
 
+	$make_text = array("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
 
+	$i = 1;
 
-    $make_text = array("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
+	$mark_position_text = "";
 
-    $i = 1;
 
-    $mark_position_text = "";
 
+	if ($multi_waypoint) {
 
+		$multi_data = [];
 
-    if ($multi_waypoint) {
+		foreach ($multi_waypoint as $address) {
 
-        $multi_data = [];
+			if ($address != "") {
 
-        foreach ($multi_waypoint as $address) {
+				$addressLocation = $trip->curlRequest('https://maps.google.com/maps/api/geocode/json?address=' . $address . '&sensor=false&key=' . $key);
 
-            if ($address != "") {
+				$multi_data = json_decode($addressLocation);
 
-                $addressLocation = $trip->curlRequest('https://maps.google.com/maps/api/geocode/json?address=' . $address . '&sensor=false&key=' . $key);
+				$latitudeFrom = $multi_data->results[0]->geometry->location->lat;
 
-                $multi_data = json_decode($addressLocation);
+				$longitudeFrom = $multi_data->results[0]->geometry->location->lng;
 
-                $latitudeFrom = $multi_data->results[0]->geometry->location->lat;
+				$mark_position_text .= ",pin-s-$make_text[$i]+007acc($longitudeFrom,$latitudeFrom)";
 
-                $longitudeFrom = $multi_data->results[0]->geometry->location->lng;
+				$i++;
+			}
+		}
+	}
 
-                $mark_position_text .= ",pin-s-$make_text[$i]+007acc($longitudeFrom,$latitudeFrom)";
 
-                $i++;
 
-            }
+	$array_list = [];
 
-        }
+	if ($trip->location_multi_waypoint_latlng) {
 
-    }
+		$array_hold = json_decode($trip->location_multi_waypoint_latlng);
 
 
 
-    $array_list = [];
+		foreach ($array_hold as $f => $val) {
 
-    if ($trip->location_multi_waypoint_latlng) {
+			$multi_lon = trim(explode(',', $val->location_multi_waypoint_latlng)[1]);
 
-        $array_hold = json_decode($trip->location_multi_waypoint_latlng);
+			$multi_lat = trim(explode(',', $val->location_multi_waypoint_latlng)[0]);
 
+			$d_array[] = [(float) $multi_lon, (float) $multi_lat];
+		}
 
+		$location_multi_waypoint_latlng = $d_array;
+	} else {
 
-        foreach ($array_hold as $f => $val) {
+		$location_multi_waypoint_latlng = $array_list;
+	}
 
-            $multi_lon = trim(explode(',', $val->location_multi_waypoint_latlng)[1]);
 
-            $multi_lat = trim(explode(',', $val->location_multi_waypoint_latlng)[0]);
 
-            $d_array[] = [(float) $multi_lon, (float) $multi_lat];
+	if ($trip->trip_via_waypoints) {
 
-        }
+		$array_hold = json_decode($trip->trip_via_waypoints);
 
-        $location_multi_waypoint_latlng = $d_array;
 
-    } else {
 
-        $location_multi_waypoint_latlng = $array_list;
+		foreach ($array_hold as $f => $val) {
 
-    }
+			$data_array[] = [(float) $val->lng, (float) $val->lat];
+		}
 
+		$via_waypoints = $data_array;
+	} else {
 
+		$via_waypoints = $array_list;
+	}
 
-    if ($trip->trip_via_waypoints) {
 
-        $array_hold = json_decode($trip->trip_via_waypoints);
 
 
 
-        foreach ($array_hold as $f => $val) {
+	$mSlice = array_merge($location_multi_waypoint_latlng, $via_waypoints);
 
-            $data_array[] = [(float) $val->lng, (float) $val->lat];
+	rsort($mSlice);
 
-        }
+	$slice = "";
 
-        $via_waypoints = $data_array;
+	$clength = count($mSlice);
 
-    } else {
+	for ($x = 0; $x < $clength; $x++) {
 
-        $via_waypoints = $array_list;
+		$slice .= "%3B" . $mSlice[$x][0] . "%2C" . $mSlice[$x][1];
+	}
 
-    }
 
 
+	$waypoint = "$origin_lon%2C$origin_lat$slice%3B$destination_lon%2C$destination_lat";
 
 
 
-    $mSlice = array_merge($location_multi_waypoint_latlng, $via_waypoints);
+	//if (count($multi_waypoint)) {
 
-    rsort($mSlice);
+	if (!$trip->location_full_path) {
 
-    $slice = "";
+		$distance = "";
 
-    $clength = count($mSlice);
+		$duration = "";
 
-    for ($x = 0; $x < $clength; $x++) {
 
-        $slice .= "%3B" . $mSlice[$x][0] . "%2C" . $mSlice[$x][1];
 
-    }
+		$drivingDirectionApi = "https://api.mapbox.com/directions/v5/mapbox/driving/$waypoint?alternatives=true&geometries=geojson&steps=false&access_token=$mapBoxKey";
 
 
 
-    $waypoint = "$origin_lon%2C$origin_lat$slice%3B$destination_lon%2C$destination_lat";
+		$api = $trip->curlRequest($drivingDirectionApi);
 
+		$drivingDirectionResult = json_decode($api, true);
 
+		if ($drivingDirectionResult["code"] == "Ok") {
 
-    //if (count($multi_waypoint)) {
+			$distance = end($drivingDirectionResult["routes"])["distance"] / 1000;
 
-    if (!$trip->location_full_path) {
+			$distance = round((float) $distance, 0);
 
-        $distance = "";
+			$duration = end($drivingDirectionResult["routes"])["duration"] / 60;
 
-        $duration = "";
+			$duration = round((float) $duration, 0);
 
+			$full_route = json_encode($drivingDirectionResult['routes'][0]["geometry"]["coordinates"]);
+		}
+	} else {
 
+		$full_route = $trip->location_full_path;
+	}
 
-        $drivingDirectionApi = "https://api.mapbox.com/directions/v5/mapbox/driving/$waypoint?alternatives=true&geometries=geojson&steps=false&access_token=$mapBoxKey";
 
 
+	$pdf->AddPage('P', 'A4');
 
-        $api = $trip->curlRequest($drivingDirectionApi);
+	$pdf->SetMargins(10, 12, 10);
 
-        $drivingDirectionResult = json_decode($api, true);
+	$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-        if ($drivingDirectionResult["code"] == "Ok") {
 
-            $distance = end($drivingDirectionResult["routes"])["distance"] / 1000;
 
-            $distance = round((float) $distance, 0);
+	$route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . $full_route . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat)$mark_position_text,pin-s-$make_text[$i]+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
 
-            $duration = end($drivingDirectionResult["routes"])["duration"] / 60;
 
-            $duration = round((float) $duration, 0);
 
-            $full_route = json_encode($drivingDirectionResult['routes'][0]["geometry"]["coordinates"]);
+	$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-        }
+	$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-    } else {
+	$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-        $full_route = $trip->location_full_path;
+	$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-    }
+	$section_2 = new top_bar('Route by Vehicle', 'The travel plan of tomorrow done right today');
 
+	$html = $section_2->html_content();
 
-
-    $pdf->AddPage('P', 'A4');
-
-    $pdf->SetMargins(10, 12, 10);
-
-    $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
-
-
-
-    $route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . $full_route . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat)$mark_position_text,pin-s-$make_text[$i]+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
-
-
-
-    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
-
-    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
-
-    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
-
-    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
-
-    $section_2 = new top_bar('Route by Vehicle', 'The travel plan of tomorrow done right today');
-
-    $html = $section_2->html_content();
-
-    $html .= '
+	$html .= '
 
 			<br><br><br><br>
 
@@ -3992,97 +3439,92 @@ if ($trip->trip_transport == "vehicle") {
 
 		';
 
-    $pdf->writeHTML($html, true, false, true, false, '');
+	$pdf->writeHTML($html, true, false, true, false, '');
 
-    // }
+	// }
 
 }
 
 if ($trip->trip_transport == "train") {
 
-    $full_route = "";
+	$full_route = "";
 
-    $multi_waypoint = json_decode($trip->location_multi_waypoint);
+	$multi_waypoint = json_decode($trip->location_multi_waypoint);
 
-    $make_text = array("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
+	$make_text = array("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
 
-    $i = 1;
+	$i = 1;
 
-    $mark_position_text = "";
+	$mark_position_text = "";
 
-    foreach ($multi_waypoint as $address) {
+	foreach ($multi_waypoint as $address) {
 
-        if ($address != "") {
+		if ($address != "") {
 
-            $addressLocation = $trip->curlRequest('https://maps.google.com/maps/api/geocode/json?address=' . $address . '&sensor=false&key=' . $key);
+			$addressLocation = $trip->curlRequest('https://maps.google.com/maps/api/geocode/json?address=' . $address . '&sensor=false&key=' . $key);
 
-            $outputFrom = json_decode($addressLocation);
+			$outputFrom = json_decode($addressLocation);
 
-            $latitudeFrom = $outputFrom->results[0]->geometry->location->lat;
+			$latitudeFrom = $outputFrom->results[0]->geometry->location->lat;
 
-            $longitudeFrom = $outputFrom->results[0]->geometry->location->lng;
+			$longitudeFrom = $outputFrom->results[0]->geometry->location->lng;
 
-            $mark_position_text .= ",pin-s-$make_text[$i]+007acc($longitudeFrom,$latitudeFrom)";
+			$mark_position_text .= ",pin-s-$make_text[$i]+007acc($longitudeFrom,$latitudeFrom)";
 
-            $i++;
+			$i++;
+		}
+	}
 
-        }
+	if (count($multi_waypoint) == 1 && $multi_waypoint[0]  == "") {
 
-    }
+		$distance = "";
 
-    if (count($multi_waypoint) == 1 && $multi_waypoint[0]  == "") {
+		$duration = "";
 
-        $distance = "";
+		$drivingDirectionApi = "https://api.mapbox.com/directions/v5/mapbox/driving/$origin_lon%2C$origin_lat%3B$destination_lon%2C$destination_lat?alternatives=true&geometries=geojson&steps=true&access_token=$mapBoxKey";
 
-        $duration = "";
+		$api = $trip->curlRequest($drivingDirectionApi);
 
-        $drivingDirectionApi = "https://api.mapbox.com/directions/v5/mapbox/driving/$origin_lon%2C$origin_lat%3B$destination_lon%2C$destination_lat?alternatives=true&geometries=geojson&steps=true&access_token=$mapBoxKey";
+		$drivingDirectionResult = json_decode($api, true);
 
-        $api = $trip->curlRequest($drivingDirectionApi);
+		if ($drivingDirectionResult["code"] == "Ok") {
 
-        $drivingDirectionResult = json_decode($api, true);
+			$distance = end($drivingDirectionResult["routes"])["distance"] / 1000;
 
-        if ($drivingDirectionResult["code"] == "Ok") {
+			$distance = round((float) $distance, 0);
 
-            $distance = end($drivingDirectionResult["routes"])["distance"] / 1000;
+			$duration = end($drivingDirectionResult["routes"])["duration"] / 60;
 
-            $distance = round((float) $distance, 0);
+			$duration = round((float) $duration, 0);
 
-            $duration = end($drivingDirectionResult["routes"])["duration"] / 60;
+			$full_route = json_encode($drivingDirectionResult['routes'][0]["geometry"]["coordinates"]);
+		}
+	} else {
 
-            $duration = round((float) $duration, 0);
+		$full_route = $trip->location_full_path;
+	}
 
-            $full_route = json_encode($drivingDirectionResult['routes'][0]["geometry"]["coordinates"]);
+	$pdf->AddPage('P', 'A4');
 
-        }
+	$pdf->SetMargins(10, 12, 10);
 
-    } else {
+	$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-        $full_route = $trip->location_full_path;
+	$route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . $full_route . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat)$mark_position_text,pin-s-$make_text[$i]+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
 
-    }
+	$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->AddPage('P', 'A4');
+	$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->SetMargins(10, 12, 10);
+	$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-    $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+	$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-    $route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . $full_route . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat)$mark_position_text,pin-s-$make_text[$i]+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
+	$section_2 = new top_bar('Route by TRAIN', 'The travel plan of tomorrow done right today');
 
-    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+	$html = $section_2->html_content();
 
-    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
-
-    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
-
-    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
-
-    $section_2 = new top_bar('Route by TRAIN', 'The travel plan of tomorrow done right today');
-
-    $html = $section_2->html_content();
-
-    $html .= '
+	$html .= '
 
 		<br><br><br><br>
 
@@ -4090,8 +3532,7 @@ if ($trip->trip_transport == "train") {
 
 	';
 
-    $pdf->writeHTML($html, true, false, true, false, '');
-
+	$pdf->writeHTML($html, true, false, true, false, '');
 }
 
 if ($trip->trip_transport == "plane") {
@@ -4100,109 +3541,104 @@ if ($trip->trip_transport == "plane") {
 
 
 
-    $full_route = "";
+	$full_route = "";
 
-    $multi_waypoint = json_decode($trip->location_multi_waypoint);
+	$multi_waypoint = json_decode($trip->location_multi_waypoint);
 
-    $make_text = array("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
+	$make_text = array("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");
 
-    $i = 1;
+	$i = 1;
 
-    $mark_position_text = "";
+	$mark_position_text = "";
 
-    foreach ($multi_waypoint as $address) {
+	foreach ($multi_waypoint as $address) {
 
-        if ($address != "") {
+		if ($address != "") {
 
-            $addressLocation = $trip->curlRequest('https://maps.google.com/maps/api/geocode/json?address=' . $address . '&sensor=false&key=' . $key);
+			$addressLocation = $trip->curlRequest('https://maps.google.com/maps/api/geocode/json?address=' . $address . '&sensor=false&key=' . $key);
 
-            $outputFrom = json_decode($addressLocation);
+			$outputFrom = json_decode($addressLocation);
 
-            $latitudeFrom = $outputFrom->results[0]->geometry->location->lat;
+			$latitudeFrom = $outputFrom->results[0]->geometry->location->lat;
 
-            $longitudeFrom = $outputFrom->results[0]->geometry->location->lng;
+			$longitudeFrom = $outputFrom->results[0]->geometry->location->lng;
 
-            $mark_position_text .= ",pin-s-$make_text[$i]+007acc($longitudeFrom,$latitudeFrom)";
+			$mark_position_text .= ",pin-s-$make_text[$i]+007acc($longitudeFrom,$latitudeFrom)";
 
-            $i++;
-
-        }
-
-    }
+			$i++;
+		}
+	}
 
 
 
-    $array_list = [];
+	$array_list = [];
 
-    if ($trip->location_multi_waypoint_latlng) {
+	if ($trip->location_multi_waypoint_latlng) {
 
-        $array_hold = json_decode($trip->location_multi_waypoint_latlng);
+		$array_hold = json_decode($trip->location_multi_waypoint_latlng);
 
-        $location_multi_waypoint_latlng = $array_hold;
+		$location_multi_waypoint_latlng = $array_hold;
+	} else {
 
-    } else {
-
-        $location_multi_waypoint_latlng = $array_list;
-
-    }
+		$location_multi_waypoint_latlng = $array_list;
+	}
 
 
 
 
 
-    $data_array = [];
+	$data_array = [];
 
-    $data_array[] = [(float) $origin_lon, (float) $origin_lat];
+	$data_array[] = [(float) $origin_lon, (float) $origin_lat];
 
-    foreach ($location_multi_waypoint_latlng as $k => $val) {
+	foreach ($location_multi_waypoint_latlng as $k => $val) {
 
-        $multi_lon = trim(explode(',', $val->location_multi_waypoint_latlng)[1]);
+		$multi_lon = trim(explode(',', $val->location_multi_waypoint_latlng)[1]);
 
-        $multi_lat = trim(explode(',', $val->location_multi_waypoint_latlng)[0]);
+		$multi_lat = trim(explode(',', $val->location_multi_waypoint_latlng)[0]);
 
-        $data_array[] = [(float) $multi_lon, (float) $multi_lat];
+		$data_array[] = [(float) $multi_lon, (float) $multi_lat];
+	}
 
-    }
+	$data_array[] = [(float) $destination_lon, (float) $destination_lat];
 
-    $data_array[] = [(float) $destination_lon, (float) $destination_lat];
-
-    $data_route = json_encode($data_array);
-
+	$data_route = json_encode($data_array);
 
 
 
 
-    $pdf->AddPage('P', 'A4');
 
-    $pdf->SetMargins(10, 12, 10);
+	$pdf->AddPage('P', 'A4');
 
-    $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+	$pdf->SetMargins(10, 12, 10);
 
-
-
-    $route_list = "%22coordinates%22:" . $data_route . "%7D";
-
-    $route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22," . $route_list . ",%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat)$mark_position_text,pin-s-$make_text[$i]+007acc($destination_lon,$destination_lat)/auto/520x640@2x?access_token=$mapBoxKey";
+	$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
 
 
-    //$route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:[[$origin_lon,$origin_lat],[$destination_lon,$destination_lat]]%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat),pin-s-b+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
+	$route_list = "%22coordinates%22:" . $data_route . "%7D";
+
+	$route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22," . $route_list . ",%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat)$mark_position_text,pin-s-$make_text[$i]+007acc($destination_lon,$destination_lat)/auto/520x640@2x?access_token=$mapBoxKey";
 
 
 
-    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+	//$route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:[[$origin_lon,$origin_lat],[$destination_lon,$destination_lat]]%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat),pin-s-b+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
 
-    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-    $section_2 = new top_bar('Route by PLANE', 'The travel plan of tomorrow done right today');
+	$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-    $html = $section_2->html_content();
+	$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-    $html .= '
+	$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+
+	$section_2 = new top_bar('Route by PLANE', 'The travel plan of tomorrow done right today');
+
+	$html = $section_2->html_content();
+
+	$html .= '
 
 		<br><br><br><br>
 
@@ -4210,8 +3646,7 @@ if ($trip->trip_transport == "plane") {
 
 	';
 
-    $pdf->writeHTML($html, true, false, true, false, '');
-
+	$pdf->writeHTML($html, true, false, true, false, '');
 }
 
 $pdf->SetXY(192, 285);
@@ -4236,32 +3671,28 @@ $currentPage = $currentPage + 1;
 
 if ($trip->trip_hotel_address != NULL || $trip->trip_hotel_address != '') {
 
-    $hotelLocation = $trip->curlRequest('https://maps.google.com/maps/api/geocode/json?address=' . $trip->trip_hotel_address . '&sensor=false&key=' . $key);
+	$hotelLocation = $trip->curlRequest('https://maps.google.com/maps/api/geocode/json?address=' . $trip->trip_hotel_address . '&sensor=false&key=' . $key);
 
-    $outputFrom = json_decode($hotelLocation);
+	$outputFrom = json_decode($hotelLocation);
 
-    $latitudeFrom = $outputFrom->results[0]->geometry->location->lat;
+	$latitudeFrom = $outputFrom->results[0]->geometry->location->lat;
 
-    $longitudeFrom = $outputFrom->results[0]->geometry->location->lng;
+	$longitudeFrom = $outputFrom->results[0]->geometry->location->lng;
 
-    $destinataion_update = "$longitudeFrom,$latitudeFrom";
-
+	$destinataion_update = "$longitudeFrom,$latitudeFrom";
 } else {
 
-    if ($trip->trip_location_to_latlng_drivingportion != NULL || $trip->trip_location_to_latlng_drivingportion != '') {
+	if ($trip->trip_location_to_latlng_drivingportion != NULL || $trip->trip_location_to_latlng_drivingportion != '') {
 
-        $origin_r = str_replace('(', '', $trip->trip_location_to_latlng_drivingportion);
+		$origin_r = str_replace('(', '', $trip->trip_location_to_latlng_drivingportion);
 
-        $origin_r = str_replace(')', '', $origin_r);
+		$origin_r = str_replace(')', '', $origin_r);
 
-        $destinataion_update = explode(",", $origin_r)[1] . ',' . explode(",", $origin_r)[0];
+		$destinataion_update = explode(",", $origin_r)[1] . ',' . explode(",", $origin_r)[0];
+	} else {
 
-    } else {
-
-        $destinataion_update = explode(",", $destination)[1] . ',' . explode(",", $destination)[0];
-
-    }
-
+		$destinataion_update = explode(",", $destination)[1] . ',' . explode(",", $destination)[0];
+	}
 }
 
 
@@ -4446,32 +3877,28 @@ $currentPage = $currentPage + 1;
 
 if ($trip->trip_hotel_address != NULL || $trip->trip_hotel_address != '') {
 
-    $hotelLocation = $trip->curlRequest('https://maps.google.com/maps/api/geocode/json?address=' . $trip->trip_hotel_address . '&sensor=false&key=' . $key);
+	$hotelLocation = $trip->curlRequest('https://maps.google.com/maps/api/geocode/json?address=' . $trip->trip_hotel_address . '&sensor=false&key=' . $key);
 
-    $outputFrom = json_decode($hotelLocation);
+	$outputFrom = json_decode($hotelLocation);
 
-    $latitudeFrom = $outputFrom->results[0]->geometry->location->lat;
+	$latitudeFrom = $outputFrom->results[0]->geometry->location->lat;
 
-    $longitudeFrom = $outputFrom->results[0]->geometry->location->lng;
+	$longitudeFrom = $outputFrom->results[0]->geometry->location->lng;
 
-    $destinataion_update = "$longitudeFrom,$latitudeFrom";
-
+	$destinataion_update = "$longitudeFrom,$latitudeFrom";
 } else {
 
-    if ($trip->trip_location_to_latlng_drivingportion != NULL || $trip->trip_location_to_latlng_drivingportion != '') {
+	if ($trip->trip_location_to_latlng_drivingportion != NULL || $trip->trip_location_to_latlng_drivingportion != '') {
 
-        $origin_r = str_replace('(', '', $trip->trip_location_to_latlng_drivingportion);
+		$origin_r = str_replace('(', '', $trip->trip_location_to_latlng_drivingportion);
 
-        $origin_r = str_replace(')', '', $origin_r);
+		$origin_r = str_replace(')', '', $origin_r);
 
-        $destinataion_update = explode(",", $origin_r)[1] . ',' . explode(",", $origin_r)[0];
+		$destinataion_update = explode(",", $origin_r)[1] . ',' . explode(",", $origin_r)[0];
+	} else {
 
-    } else {
-
-        $destinataion_update = explode(",", $destination)[1] . ',' . explode(",", $destination)[0];
-
-    }
-
+		$destinataion_update = explode(",", $destination)[1] . ',' . explode(",", $destination)[0];
+	}
 }
 
 $pdf->AddPage('P', 'A4');
@@ -4540,8 +3967,7 @@ $plans = [];
 
 if ($tmp && $dtd->rowCount() > 0) {
 
-    $plans = $dtd->fetchAll(PDO::FETCH_OBJ);
-
+	$plans = $dtd->fetchAll(PDO::FETCH_OBJ);
 }
 
 
@@ -4552,107 +3978,103 @@ if ($tmp && $dtd->rowCount() > 0) {
 
 
 
-    function iconSelect($value)
+	function iconSelect($value)
 
-    {
+	{
 
-        $hold = null;
+		$hold = null;
 
-        switch ($value) {
+		switch ($value) {
 
-            case "Place to eat":
+			case "Place to eat":
 
-                $hold = "restaurant_40.png";
+				$hold = "restaurant_40.png";
 
-                break;
+				break;
 
-            case "Things to do":
+			case "Things to do":
 
-                $hold = "place_40.png";
+				$hold = "place_40.png";
 
-                break;
+				break;
 
-            case "People to see":
+			case "People to see":
 
-                $hold = "people_40.png";
+				$hold = "people_40.png";
 
-                break;
+				break;
 
-            default:
+			default:
 
-                $hold = "restaurant_40.png";
-
-        }
-
+				$hold = "restaurant_40.png";
+		}
 
 
-        return $hold;
 
-    }
+		return $hold;
+	}
 
 
 
 
 
-    $mark_position_text = "";
+	$mark_position_text = "";
 
 
 
 
 
-    $i = 0;
+	$i = 0;
 
 
 
-    foreach ($plans as $addplan) {
+	foreach ($plans as $addplan) {
 
-        if ($addplan != "") {
+		if ($addplan != "") {
 
-            $icon = iconSelect($addplan->type);
+			$icon = iconSelect($addplan->type);
 
-            $mark_position_text .= ",url-https%3A%2F%2Fplaniversity.com%2Fassets%2Fimages%2Ficon-pack%2F" . $icon . "($addplan->lng,$addplan->lat)";
+			$mark_position_text .= ",url-https%3A%2F%2Fplaniversity.com%2Fassets%2Fimages%2Ficon-pack%2F" . $icon . "($addplan->lng,$addplan->lat)";
 
-            $i++;
-
-        }
-
-    }
-
-
-
-
-
-    $pdf->AddPage('P', 'A4');
-
-    $pdf->SetMargins(10, 12, 10);
-
-    $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
-
-
-
-    $destinataion_update = $filter_lng_to . ',' . $filter_lat_to;
-
-
-
-    $destination_route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+0688e9(" . $destinataion_update . ")" . $mark_position_text . "/" . trim($destinataion_update, " ") . ",12,0/740x940?access_token=$mapBoxKey";
+			$i++;
+		}
+	}
 
 
 
 
 
-    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+	$pdf->AddPage('P', 'A4');
 
-    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+	$pdf->SetMargins(10, 12, 10);
 
-    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+	$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-    $section_2 = new top_bar('Plan Route Destination', 'The travel plan of tomorrow done right today');
 
-    $html = $section_2->html_content();
+	$destinataion_update = $filter_lng_to . ',' . $filter_lat_to;
 
-    $html .= '
+
+
+	$destination_route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s+0688e9(" . $destinataion_update . ")" . $mark_position_text . "/" . trim($destinataion_update, " ") . ",12,0/740x940?access_token=$mapBoxKey";
+
+
+
+
+
+	$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+
+	$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+
+	$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+
+	$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+
+	$section_2 = new top_bar('Plan Route Destination', 'The travel plan of tomorrow done right today');
+
+	$html = $section_2->html_content();
+
+	$html .= '
 
 	<br><br><br><br>
 
@@ -4660,16 +4082,15 @@ if ($tmp && $dtd->rowCount() > 0) {
 
 ';
 
-    $pdf->writeHTML($html, true, false, true, false, '');
+	$pdf->writeHTML($html, true, false, true, false, '');
 
-    $pdf->SetXY(192, 285);
+	$pdf->SetXY(192, 285);
 
-    $pdf->SetTextColor(13, 37, 110);
+	$pdf->SetTextColor(13, 37, 110);
 
-    $pdf->writeHTML("$currentPage", true, false, true, false, '');
+	$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-    $currentPage = $currentPage + 1;
-
+	$currentPage = $currentPage + 1;
 }
 
 ///////////////////////////////////////Map Plan Route Destination end////////////////////////
@@ -4680,45 +4101,45 @@ if ($tmp && $dtd->rowCount() > 0) {
 
 if (!empty($trip->trip_location_from_latlng_flightportion) && !empty($trip->trip_location_to_latlng_flightportion)) {
 
-    $origin_r = str_replace('(', '', $trip->trip_location_from_latlng_flightportion);
+	$origin_r = str_replace('(', '', $trip->trip_location_from_latlng_flightportion);
 
-    $origin_r = str_replace(')', '', $origin_r);
+	$origin_r = str_replace(')', '', $origin_r);
 
-    $destination_r = str_replace('(', '', $trip->trip_location_to_latlng_flightportion);
+	$destination_r = str_replace('(', '', $trip->trip_location_to_latlng_flightportion);
 
-    $destination_r = str_replace(')', '', $destination_r);
+	$destination_r = str_replace(')', '', $destination_r);
 
-    $destination = $destination_r;
+	$destination = $destination_r;
 
-    $origin_lon = trim(explode(',', $origin_r)[1]);
+	$origin_lon = trim(explode(',', $origin_r)[1]);
 
-    $origin_lat = trim(explode(',', $origin_r)[0]);
+	$origin_lat = trim(explode(',', $origin_r)[0]);
 
-    $destination_lon = trim(explode(',', $destination)[1]);
+	$destination_lon = trim(explode(',', $destination)[1]);
 
-    $destination_lat = trim(explode(',', $destination)[0]);
+	$destination_lat = trim(explode(',', $destination)[0]);
 
-    $pdf->AddPage('P', 'A4');
+	$pdf->AddPage('P', 'A4');
 
-    $pdf->SetMargins(10, 12, 10);
+	$pdf->SetMargins(10, 12, 10);
 
-    $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+	$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-    $route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:[[$origin_lon,$origin_lat],[$destination_lon,$destination_lat]]%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat),pin-s-b+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
+	$route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:[[$origin_lon,$origin_lat],[$destination_lon,$destination_lat]]%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat),pin-s-b+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
 
-    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-    $section_2 = new top_bar('Route by FLIGHT', 'The travel plan of tomorrow done right today');
+	$section_2 = new top_bar('Route by FLIGHT', 'The travel plan of tomorrow done right today');
 
-    $html = $section_2->html_content();
+	$html = $section_2->html_content();
 
-    $html .= '
+	$html .= '
 
 		<br><br><br><br>
 
@@ -4726,16 +4147,15 @@ if (!empty($trip->trip_location_from_latlng_flightportion) && !empty($trip->trip
 
 	';
 
-    $pdf->writeHTML($html, true, false, true, false, '');
+	$pdf->writeHTML($html, true, false, true, false, '');
 
-    $pdf->SetXY(192, 285);
+	$pdf->SetXY(192, 285);
 
-    $pdf->SetTextColor(13, 37, 110);
+	$pdf->SetTextColor(13, 37, 110);
 
-    $pdf->writeHTML("$currentPage", true, false, true, false, '');
+	$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-    $currentPage = $currentPage + 1;
-
+	$currentPage = $currentPage + 1;
 }
 
 ///////////////////////////////////////Flight Portion end////////////////////////
@@ -4744,101 +4164,95 @@ if (!empty($trip->trip_location_from_latlng_flightportion) && !empty($trip->trip
 
 if (!empty($trip->trip_location_from_latlng_drivingportion) && !empty($trip->trip_location_to_latlng_drivingportion)) {
 
-    $origin_r = str_replace('(', '', $trip->trip_location_from_latlng_drivingportion);
+	$origin_r = str_replace('(', '', $trip->trip_location_from_latlng_drivingportion);
 
-    $origin_r = str_replace(')', '', $origin_r);
+	$origin_r = str_replace(')', '', $origin_r);
 
-    $destination_r = str_replace('(', '', $trip->trip_location_to_latlng_drivingportion);
+	$destination_r = str_replace('(', '', $trip->trip_location_to_latlng_drivingportion);
 
-    $destination_r = str_replace(')', '', $destination_r);
+	$destination_r = str_replace(')', '', $destination_r);
 
-    $destination = $destination_r;
+	$destination = $destination_r;
 
-    $origin_lon = trim(explode(',', $origin_r)[1]);
+	$origin_lon = trim(explode(',', $origin_r)[1]);
 
-    $origin_lat = trim(explode(',', $origin_r)[0]);
+	$origin_lat = trim(explode(',', $origin_r)[0]);
 
-    $destination_lon = trim(explode(',', $destination)[1]);
+	$destination_lon = trim(explode(',', $destination)[1]);
 
-    $destination_lat = trim(explode(',', $destination)[0]);
+	$destination_lat = trim(explode(',', $destination)[0]);
 
-    $distance = "";
+	$distance = "";
 
-    $duration = "";
+	$duration = "";
 
-    $drivingDirectionApi = "https://api.mapbox.com/directions/v5/mapbox/driving/$origin_lon%2C$origin_lat%3B$destination_lon%2C$destination_lat?alternatives=true&geometries=geojson&steps=true&access_token=$mapBoxKey";
+	$drivingDirectionApi = "https://api.mapbox.com/directions/v5/mapbox/driving/$origin_lon%2C$origin_lat%3B$destination_lon%2C$destination_lat?alternatives=true&geometries=geojson&steps=true&access_token=$mapBoxKey";
 
-    $api = $trip->curlRequest($drivingDirectionApi);
+	$api = $trip->curlRequest($drivingDirectionApi);
 
-    $drivingDirectionResult = json_decode($api, true);
+	$drivingDirectionResult = json_decode($api, true);
 
-    if ($drivingDirectionResult["code"] == "Ok") {
+	if ($drivingDirectionResult["code"] == "Ok") {
 
-        $distance = end($drivingDirectionResult["routes"])["distance"] / 1000;
+		$distance = end($drivingDirectionResult["routes"])["distance"] / 1000;
 
-        $distance = round((float) $distance, 0);
+		$distance = round((float) $distance, 0);
 
-        $duration = end($drivingDirectionResult["routes"])["duration"] / 60;
+		$duration = end($drivingDirectionResult["routes"])["duration"] / 60;
 
-        $duration = round((float) $duration, 0);
+		$duration = round((float) $duration, 0);
 
-        if ($trip->trip_option_directions) {
+		if ($trip->trip_option_directions) {
 
-            $pdf->AddPage('P', 'A4');
+			$pdf->AddPage('P', 'A4');
 
-            $pdf->SetMargins(10, 12, 10);
+			$pdf->SetMargins(10, 12, 10);
 
-            $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+			$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-            $i = 0;
+			$i = 0;
 
-            $routeJson = "";
+			$routeJson = "";
 
-            foreach ($drivingDirectionResult["routes"] as $item) {
+			foreach ($drivingDirectionResult["routes"] as $item) {
 
-                $i = $i + 1;
+				$i = $i + 1;
 
-                if (count($drivingDirectionResult["routes"]) == 1) {
+				if (count($drivingDirectionResult["routes"]) == 1) {
 
-                    $routeJson .= "geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . json_encode($item["geometry"]["coordinates"]) . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D)";
+					$routeJson .= "geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . json_encode($item["geometry"]["coordinates"]) . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D)";
+				} else {
 
-                } else {
+					if ($i == 1) {
 
-                    if ($i == 1) {
+						$routeJson .= "geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . json_encode($item["geometry"]["coordinates"]) . "%7D,%22properties%22:%7B%22stroke%22:%22%2332B765%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D)";
+					}
 
-                        $routeJson .= "geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . json_encode($item["geometry"]["coordinates"]) . "%7D,%22properties%22:%7B%22stroke%22:%22%2332B765%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D)";
+					if (count($drivingDirectionResult["routes"]) == $i) {
 
-                    }
+						$routeJson .= ",geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . json_encode($item["geometry"]["coordinates"]) . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D)";
+					} else {
 
-                    if (count($drivingDirectionResult["routes"]) == $i) {
+						$routeJson .= ",geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . json_encode($item["geometry"]["coordinates"]) . "%7D,%22properties%22:%7B%22stroke%22:%22%2332B765%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D)";
+					}
+				}
+			}
 
-                        $routeJson .= ",geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . json_encode($item["geometry"]["coordinates"]) . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D)";
+			$route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/$routeJson,pin-s-a+007acc($origin_lon,$origin_lat),pin-s-b+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
 
-                    } else {
+			$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $routeJson .= ",geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . json_encode($item["geometry"]["coordinates"]) . "%7D,%22properties%22:%7B%22stroke%22:%22%2332B765%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D)";
+			$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                    }
+			$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                }
+			$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-            }
+			$section_2 = new top_bar('Route by Vehicle', 'The travel plan of tomorrow done right today');
 
-            $route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/$routeJson,pin-s-a+007acc($origin_lon,$origin_lat),pin-s-b+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
+			$html = $section_2->html_content();
 
-            $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
-
-            $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
-
-            $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
-
-            $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
-
-            $section_2 = new top_bar('Route by Vehicle', 'The travel plan of tomorrow done right today');
-
-            $html = $section_2->html_content();
-
-            $html .= '
+			$html .= '
 
 				<br><br><br><br>
 
@@ -4846,49 +4260,48 @@ if (!empty($trip->trip_location_from_latlng_drivingportion) && !empty($trip->tri
 
 			';
 
-            $pdf->writeHTML($html, true, false, true, false, '');
+			$pdf->writeHTML($html, true, false, true, false, '');
 
-            $pdf->SetXY(85, 40);
+			$pdf->SetXY(85, 40);
 
-            $pdf->SetTextColor(13, 37, 110);
+			$pdf->SetTextColor(13, 37, 110);
 
-            $pdf->writeHTML("Distance: $distance km", true, false, true, false, '');
+			$pdf->writeHTML("Distance: $distance km", true, false, true, false, '');
 
-            $pdf->SetXY(85, 47);
+			$pdf->SetXY(85, 47);
 
-            $pdf->writeHTML("Duration: $duration mins", true, false, true, false, '');
+			$pdf->writeHTML("Duration: $duration mins", true, false, true, false, '');
 
-            $pdf->SetXY(192, 285);
+			$pdf->SetXY(192, 285);
 
-            $pdf->SetTextColor(13, 37, 110);
+			$pdf->SetTextColor(13, 37, 110);
 
-            $pdf->writeHTML("$currentPage", true, false, true, false, '');
+			$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-            $currentPage = $currentPage + 1;
+			$currentPage = $currentPage + 1;
+		} else {
 
-        } else {
+			$pdf->AddPage('P', 'A4');
 
-            $pdf->AddPage('P', 'A4');
+			$pdf->SetMargins(10, 12, 10);
 
-            $pdf->SetMargins(10, 12, 10);
+			$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-            $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+			$route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . json_encode(end($drivingDirectionResult["routes"])["geometry"]['coordinates']) . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat),pin-s-b+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
 
-            $route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . json_encode(end($drivingDirectionResult["routes"])["geometry"]['coordinates']) . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat),pin-s-b+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
+			$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+			$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-            $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+			$section_2 = new top_bar('Route by Vehicle', 'The travel plan of tomorrow done right today');
 
-            $section_2 = new top_bar('Route by Vehicle', 'The travel plan of tomorrow done right today');
+			$html = $section_2->html_content();
 
-            $html = $section_2->html_content();
-
-            $html .= '
+			$html .= '
 
 				<br><br><br><br>
 
@@ -4896,20 +4309,17 @@ if (!empty($trip->trip_location_from_latlng_drivingportion) && !empty($trip->tri
 
 			';
 
-            $pdf->writeHTML($html, true, false, true, false, '');
+			$pdf->writeHTML($html, true, false, true, false, '');
 
-            $pdf->SetXY(192, 285);
+			$pdf->SetXY(192, 285);
 
-            $pdf->SetTextColor(13, 37, 110);
+			$pdf->SetTextColor(13, 37, 110);
 
-            $pdf->writeHTML("$currentPage", true, false, true, false, '');
+			$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-            $currentPage = $currentPage + 1;
-
-        }
-
-    }
-
+			$currentPage = $currentPage + 1;
+		}
+	}
 }
 
 ///////////////////////////////////////Vehicle Portion end////////////////////////
@@ -4918,51 +4328,51 @@ if (!empty($trip->trip_location_from_latlng_drivingportion) && !empty($trip->tri
 
 if (!empty($trip->trip_location_from_latlng_trainportion) && !empty($trip->trip_location_to_latlng_trainportion)) {
 
-    $origin_r = str_replace('(', '', $trip->trip_location_from_latlng_trainportion);
+	$origin_r = str_replace('(', '', $trip->trip_location_from_latlng_trainportion);
 
-    $origin_r = str_replace(')', '', $origin_r);
+	$origin_r = str_replace(')', '', $origin_r);
 
-    $destination_r = str_replace('(', '', $trip->trip_location_to_latlng_trainportion);
+	$destination_r = str_replace('(', '', $trip->trip_location_to_latlng_trainportion);
 
-    $destination_r = str_replace(')', '', $destination_r);
+	$destination_r = str_replace(')', '', $destination_r);
 
-    $destination = $destination_r;
+	$destination = $destination_r;
 
-    $origin_lon = trim(explode(',', $origin_r)[1]);
+	$origin_lon = trim(explode(',', $origin_r)[1]);
 
-    $origin_lat = trim(explode(',', $origin_r)[0]);
+	$origin_lat = trim(explode(',', $origin_r)[0]);
 
-    $destination_lon = trim(explode(',', $destination)[1]);
+	$destination_lon = trim(explode(',', $destination)[1]);
 
-    $destination_lat = trim(explode(',', $destination)[0]);
+	$destination_lat = trim(explode(',', $destination)[0]);
 
-    $drivingDirectionApi = "https://api.mapbox.com/directions/v5/mapbox/driving/$origin_lon%2C$origin_lat%3B$destination_lon%2C$destination_lat?alternatives=true&geometries=geojson&steps=true&access_token=$mapBoxKey";
+	$drivingDirectionApi = "https://api.mapbox.com/directions/v5/mapbox/driving/$origin_lon%2C$origin_lat%3B$destination_lon%2C$destination_lat?alternatives=true&geometries=geojson&steps=true&access_token=$mapBoxKey";
 
-    $api = $trip->curlRequest($drivingDirectionApi);
+	$api = $trip->curlRequest($drivingDirectionApi);
 
-    $drivingDirectionResult = json_decode($api, true);
+	$drivingDirectionResult = json_decode($api, true);
 
-    $pdf->AddPage('P', 'A4');
+	$pdf->AddPage('P', 'A4');
 
-    $pdf->SetMargins(10, 12, 10);
+	$pdf->SetMargins(10, 12, 10);
 
-    $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+	$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-    $route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . json_encode(end($drivingDirectionResult["routes"])["geometry"]['coordinates']) . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat),pin-s-b+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
+	$route_map = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/geojson(%7B%22type%22:%22FeatureCollection%22,%22features%22:[%7B%22type%22:%22Feature%22,%22geometry%22:%7B%22type%22:%22LineString%22,%22coordinates%22:" . json_encode(end($drivingDirectionResult["routes"])["geometry"]['coordinates']) . "%7D,%22properties%22:%7B%22stroke%22:%22%23007ACC%22,%22stroke-opacity%22:1,%22stroke-width%22:5%7D%7D]%7D),pin-s-a+007acc($origin_lon,$origin_lat),pin-s-b+007acc($destination_lon,$destination_lat)/auto/720x940@2x?access_token=$mapBoxKey";
 
-    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-    $section_2 = new top_bar('Route by TRAIN', 'The travel plan of tomorrow done right today');
+	$section_2 = new top_bar('Route by TRAIN', 'The travel plan of tomorrow done right today');
 
-    $html = $section_2->html_content();
+	$html = $section_2->html_content();
 
-    $html .= '
+	$html .= '
 
 		<br><br><br><br>
 
@@ -4970,16 +4380,15 @@ if (!empty($trip->trip_location_from_latlng_trainportion) && !empty($trip->trip_
 
 	';
 
-    $pdf->writeHTML($html, true, false, true, false, '');
+	$pdf->writeHTML($html, true, false, true, false, '');
 
-    $pdf->SetXY(192, 285);
+	$pdf->SetXY(192, 285);
 
-    $pdf->SetTextColor(13, 37, 110);
+	$pdf->SetTextColor(13, 37, 110);
 
-    $pdf->writeHTML("$currentPage", true, false, true, false, '');
+	$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-    $currentPage = $currentPage + 1;
-
+	$currentPage = $currentPage + 1;
 }
 
 ///////////////////////////////////////Train Portion end////////////////////////
@@ -4990,63 +4399,63 @@ if (!empty($trip->trip_location_from_latlng_trainportion) && !empty($trip->trip_
 
 if ($trip->trip_option_directions) {
 
-    if ($trip->trip_location_to_latlng_drivingportion != NULL || $trip->trip_location_to_latlng_drivingportion != '') {
+	if ($trip->trip_location_to_latlng_drivingportion != NULL || $trip->trip_location_to_latlng_drivingportion != '') {
 
-        $origin_r1 = str_replace('(', '', $trip->trip_location_from_latlng_drivingportion);
+		$origin_r1 = str_replace('(', '', $trip->trip_location_from_latlng_drivingportion);
 
-        $origin_r1 = str_replace(')', '', $origin_r1);
+		$origin_r1 = str_replace(')', '', $origin_r1);
 
-        $destination_r1 = str_replace('(', '', $trip->trip_location_to_latlng_drivingportion);
+		$destination_r1 = str_replace('(', '', $trip->trip_location_to_latlng_drivingportion);
 
-        $destination_r1 = str_replace(')', '', $destination_r1);
+		$destination_r1 = str_replace(')', '', $destination_r1);
 
-        $destination1 = $destination_r1;
+		$destination1 = $destination_r1;
 
-        $origin_lon1 = trim(explode(',', $origin_r1)[1]);
+		$origin_lon1 = trim(explode(',', $origin_r1)[1]);
 
-        $origin_lat1 = trim(explode(',', $origin_r1)[0]);
+		$origin_lat1 = trim(explode(',', $origin_r1)[0]);
 
-        $destination_lon1 = trim(explode(',', $destination1)[1]);
+		$destination_lon1 = trim(explode(',', $destination1)[1]);
 
-        $destination_lat1 = trim(explode(',', $destination1)[0]);
+		$destination_lat1 = trim(explode(',', $destination1)[0]);
 
-        $drivingDirectionApi = "https://api.mapbox.com/directions/v5/mapbox/driving/$origin_lon1%2C$origin_lat1%3B$destination_lon1%2C$destination_lat1?alternatives=true&geometries=geojson&steps=true&access_token=$mapBoxKey";
+		$drivingDirectionApi = "https://api.mapbox.com/directions/v5/mapbox/driving/$origin_lon1%2C$origin_lat1%3B$destination_lon1%2C$destination_lat1?alternatives=true&geometries=geojson&steps=true&access_token=$mapBoxKey";
 
-        $api = $trip->curlRequest($drivingDirectionApi);
+		$api = $trip->curlRequest($drivingDirectionApi);
 
-        $drivingDirectionResult = json_decode($api, true);
+		$drivingDirectionResult = json_decode($api, true);
 
-        $tmp = '';
+		$tmp = '';
 
-        if ($drivingDirectionResult['code'] == 'Ok') {
+		if ($drivingDirectionResult['code'] == 'Ok') {
 
-            $data_arr = end($drivingDirectionResult["routes"])["legs"][0]["steps"];
+			$data_arr = end($drivingDirectionResult["routes"])["legs"][0]["steps"];
 
-            for ($i = 0; $i < count($data_arr); $i++) {
+			for ($i = 0; $i < count($data_arr); $i++) {
 
-                if ($i % 20 == 0) {
+				if ($i % 20 == 0) {
 
-                    $pdf->AddPage('P', 'A4');
+					$pdf->AddPage('P', 'A4');
 
-                    $pdf->SetMargins(10, 12, 10);
+					$pdf->SetMargins(10, 12, 10);
 
-                    $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+					$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                    $top_logo_img = K_PATH_IMAGES . 'hotel_filter_map.png';
+					$top_logo_img = K_PATH_IMAGES . 'hotel_filter_map.png';
 
-                    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+					$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+					$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+					$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+					$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                    $section_2 = new top_bar('Driving directions', '');
+					$section_2 = new top_bar('Driving directions', '');
 
-                    $html = $section_2->html_content();
+					$html = $section_2->html_content();
 
-                    $html .= '
+					$html .= '
 
 							<div>
 
@@ -5057,10 +4466,9 @@ if ($trip->trip_option_directions) {
 									' . $tmp . '									
 
 					';
+				}
 
-                }
-
-                $tmp .= '<tr>
+				$tmp .= '<tr>
 
 						<td style="width:10%; font-size:12px; color:#0688E9; text-align:left;">' . ($i + 1) . '</td>
 
@@ -5072,9 +4480,9 @@ if ($trip->trip_option_directions) {
 
 					';
 
-                if ($i % 20 == 19) {
+				if ($i % 20 == 19) {
 
-                    $html .= '
+					$html .= '
 
 					' . $tmp . '
 
@@ -5084,27 +4492,24 @@ if ($trip->trip_option_directions) {
 
 					';
 
-                    $pdf->writeHTML($html, true, false, true, false, '');
+					$pdf->writeHTML($html, true, false, true, false, '');
 
-                    $pdf->SetXY(192, 285);
+					$pdf->SetXY(192, 285);
 
-                    $pdf->SetTextColor(13, 37, 110);
+					$pdf->SetTextColor(13, 37, 110);
 
-                    $pdf->writeHTML("$currentPage", true, false, true, false, '');
+					$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                    $currentPage = $currentPage + 1;
+					$currentPage = $currentPage + 1;
 
-                    $tmp = "";
+					$tmp = "";
 
-                    $html = "";
+					$html = "";
+				}
+			}
+		}
 
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -5114,24 +4519,22 @@ if ($trip->trip_option_directions) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 
@@ -5144,77 +4547,75 @@ if ($trip->trip_option_directions) {
 
 if ($trip->trip_option_embassis) {
 
-    $resultData = $trip->getMapEmbassis($destination, $key, $trip->trip_list_embassis);
+	$resultData = $trip->getMapEmbassis($destination, $key, $trip->trip_list_embassis);
 
-    $userdata = $resultData["userData"];
+	$userdata = $resultData["userData"];
 
-    $scale = $resultData["scale"];
+	$scale = $resultData["scale"];
 
-    $distance = "";
+	$distance = "";
 
-    $lat = "";
+	$lat = "";
 
-    $lng = "";
+	$lng = "";
 
-    $mode = 'driving';
+	$mode = 'driving';
 
-    if (!empty($trip->trip_list_embassis)) {
+	if (!empty($trip->trip_list_embassis)) {
 
-        $embassiesList = explode(',', $trip->trip_list_embassis);
+		$embassiesList = explode(',', $trip->trip_list_embassis);
 
-        foreach ($embassiesList as $item) {
+		foreach ($embassiesList as $item) {
 
-            $routeApi = "https://maps.googleapis.com/maps/api/place/details/json?placeid=$item&key=$key";
+			$routeApi = "https://maps.googleapis.com/maps/api/place/details/json?placeid=$item&key=$key";
 
-            $api = $trip->curlRequest($routeApi);
+			$api = $trip->curlRequest($routeApi);
 
-            $embassyData = json_decode($api, true);
+			$embassyData = json_decode($api, true);
 
-            if ($embassyData["status"] == "OK") {
+			if ($embassyData["status"] == "OK") {
 
-                $lat = $embassyData["result"]["geometry"]["location"]["lat"];
+				$lat = $embassyData["result"]["geometry"]["location"]["lat"];
 
-                $lng = $embassyData["result"]["geometry"]["location"]["lng"];
+				$lng = $embassyData["result"]["geometry"]["location"]["lng"];
 
-                if ($mode) {
+				if ($mode) {
 
-                    $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $userdata['scale'] . "&mode=" . $mode . "&origins=" . urlencode($trip->trip_location_from) . "&destinations=" . urlencode($embassyData['result']['vicinity']) . "&key=" . $key;
+					$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $userdata['scale'] . "&mode=" . $mode . "&origins=" . urlencode($trip->trip_location_from) . "&destinations=" . urlencode($embassyData['result']['vicinity']) . "&key=" . $key;
 
-                    $api = $trip->curlRequest($apiurl);
+					$api = $trip->curlRequest($apiurl);
 
-                    $data = json_decode($api, true);
+					$data = json_decode($api, true);
 
-                    $distance = $data['rows'][0]['elements'][0]['distance']['text'];
+					$distance = $data['rows'][0]['elements'][0]['distance']['text'];
+				} else {
 
-                } else {
+					$distance = $trip->getDistance($trip->trip_location_to, $embassyData['result']['vicinity'], $scale, $key);
+				}
 
-                    $distance = $trip->getDistance($trip->trip_location_to, $embassyData['result']['vicinity'], $scale, $key);
+				$pdf->AddPage('P', 'A4');
 
-                }
+				$pdf->SetMargins(10, 12, 10);
 
-                $pdf->AddPage('P', 'A4');
+				$html = '';
 
-                $pdf->SetMargins(10, 12, 10);
+				$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                $html = '';
+				$embassyMap = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l-town-hall+0688e9($lng,$lat)/$lng,$lat,16,0/720x780@2x?access_token=$mapBoxKey";
 
-                $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+				$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                $embassyMap = "https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-l-town-hall+0688e9($lng,$lat)/$lng,$lat,16,0/720x780@2x?access_token=$mapBoxKey";
+				$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+				$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+				$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+				$section_2 = new top_bar('Embassy', 'The travel plan of tomorrow done right today');
 
-                $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+				$html = $section_2->html_content();
 
-                $section_2 = new top_bar('Embassy', 'The travel plan of tomorrow done right today');
-
-                $html = $section_2->html_content();
-
-                $html .= '
+				$html .= '
 
 					<br><br><br><br>
 
@@ -5250,22 +4651,18 @@ if ($trip->trip_option_embassis) {
 
 				';
 
-                $pdf->writeHTML($html, true, false, true, false, '');
+				$pdf->writeHTML($html, true, false, true, false, '');
 
-                $pdf->SetXY(192, 285);
+				$pdf->SetXY(192, 285);
 
-                $pdf->SetTextColor(13, 37, 110);
+				$pdf->SetTextColor(13, 37, 110);
 
-                $pdf->writeHTML("$currentPage", true, false, true, false, '');
+				$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                $currentPage = $currentPage + 1;
-
-            }
-
-        }
-
-    }
-
+				$currentPage = $currentPage + 1;
+			}
+		}
+	}
 }
 
 ///////////////////////////////////////emabassy map end////////////////////////
@@ -5276,92 +4673,85 @@ if ($trip->trip_option_embassis) {
 
 if ($trip->trip_option_subway) {
 
-    $html = '';
+	$html = '';
 
-    $pdf->AddPage('P', 'A4');
+	$pdf->AddPage('P', 'A4');
 
-    $pdf->SetMargins(10, 12, 10);
+	$pdf->SetMargins(10, 12, 10);
 
-    $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+	$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-    $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-    $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+	$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-    $section_2 = new top_bar('Subway Map', 'The travel plan of tomorrow done right today');
+	$section_2 = new top_bar('Subway Map', 'The travel plan of tomorrow done right today');
 
-    $html = $section_2->html_content();
+	$html = $section_2->html_content();
 
-    $dir =  WEB_HOSTING_URL . "subwaymap/";
+	$dir =  WEB_HOSTING_URL . "subwaymap/";
 
-    $indir = 0;
+	$indir = 0;
 
-    if (is_dir($dir)) {
+	if (is_dir($dir)) {
 
-        if ($dh = opendir($dir)) {
+		if ($dh = opendir($dir)) {
 
-            while (($file = readdir($dh)) !== false) {
+			while (($file = readdir($dh)) !== false) {
 
-                if (filetype($dir . $file) == 'file') {
+				if (filetype($dir . $file) == 'file') {
 
-                    $filename = substr($file, 0, -4);
+					$filename = substr($file, 0, -4);
 
-                    $filename = str_replace('-', ' ', $filename);
+					$filename = str_replace('-', ' ', $filename);
 
-                    if (stristr($trip->trip_location_to, $filename)) {
+					if (stristr($trip->trip_location_to, $filename)) {
 
-                        $html .= '
+						$html .= '
 
 						<br><br><br><br>
 
 						<img src="' . $dir . $file . '" width ="600px" height="800px" style="text-align:center;" />';
 
-                        $indir = 1;
+						$indir = 1;
 
-                        echo $filename;
+						echo $filename;
 
-                        break;
+						break;
+					}
+				}
+			}
 
-                    }
+			closedir($dh);
+		}
+	}
 
-                }
+	if (!$indir) {
 
-            }
+		$destination_route_map = "https://maps.googleapis.com/maps/api/staticmap?center=" . urlencode($des_address) . "&style=feature:transit.line|element:all|visibility:simplified|color:0xFF6319&zoom=13&size=740x920&scale=2&key=$key";
 
-            closedir($dh);
-
-        }
-
-    }
-
-    if (!$indir) {
-
-        $destination_route_map = "https://maps.googleapis.com/maps/api/staticmap?center=" . urlencode($des_address) . "&style=feature:transit.line|element:all|visibility:simplified|color:0xFF6319&zoom=13&size=740x920&scale=2&key=$key";
-
-        $html .= '
+		$html .= '
 
 			<br><br><br><br>
 
 			<img src="' . $destination_route_map . '" width ="740px" height="920px" />
 
 		';
+	}
 
-    }
+	$pdf->writeHTML($html, true, false, true, false, '');
 
-    $pdf->writeHTML($html, true, false, true, false, '');
+	$pdf->SetXY(192, 285);
 
-    $pdf->SetXY(192, 285);
+	$pdf->SetTextColor(13, 37, 110);
 
-    $pdf->SetTextColor(13, 37, 110);
+	$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-    $pdf->writeHTML("$currentPage", true, false, true, false, '');
-
-    $currentPage = $currentPage + 1;
-
+	$currentPage = $currentPage + 1;
 }
 
 /////////////////////////////////////////subway map end///////////////////////////////////////
@@ -5374,59 +4764,59 @@ $trip->setProgressing($idtrip, 55);
 
 if ($trip->trip_option_hotels) {
 
-    $filterResult = $trip->getMapFilters($destination, 'lodging', $key);
+	$filterResult = $trip->getMapFilters($destination, 'lodging', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'hotel_filter_map.png';
+						$top_logo_img = K_PATH_IMAGES . 'hotel_filter_map.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Hotels/Motels', '');
+						$section_2 = new top_bar('Hotels/Motels', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -5453,28 +4843,26 @@ if ($trip->trip_option_hotels) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -5487,14 +4875,13 @@ if ($trip->trip_option_hotels) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -5504,29 +4891,25 @@ if ($trip->trip_option_hotels) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -5536,24 +4919,22 @@ if ($trip->trip_option_hotels) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 ///////////////////////////////////////Map filter Hotel/Motel end////////////////////////
@@ -5566,59 +4947,59 @@ $goal_address = $trip->trip_location_to;
 
 if ($trip->trip_option_police) {
 
-    $filterResult = $trip->getMapFilters($destination, 'police', $key);
+	$filterResult = $trip->getMapFilters($destination, 'police', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'police_stations.png';
+						$top_logo_img = K_PATH_IMAGES . 'police_stations.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Police Stations', '');
+						$section_2 = new top_bar('Police Stations', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -5645,28 +5026,26 @@ if ($trip->trip_option_police) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -5679,14 +5058,13 @@ if ($trip->trip_option_police) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -5696,29 +5074,25 @@ if ($trip->trip_option_police) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -5728,24 +5102,22 @@ if ($trip->trip_option_police) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 
@@ -5756,59 +5128,59 @@ if ($trip->trip_option_police) {
 
 if ($trip->trip_option_hospitals) {
 
-    $filterResult = $trip->getMapFilters($destination, 'hospital', $key);
+	$filterResult = $trip->getMapFilters($destination, 'hospital', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'hospital_filtermap.png';
+						$top_logo_img = K_PATH_IMAGES . 'hospital_filtermap.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Hospitals', '');
+						$section_2 = new top_bar('Hospitals', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -5835,28 +5207,26 @@ if ($trip->trip_option_hospitals) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -5869,14 +5239,13 @@ if ($trip->trip_option_hospitals) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -5886,29 +5255,25 @@ if ($trip->trip_option_hospitals) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -5918,24 +5283,22 @@ if ($trip->trip_option_hospitals) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 ///////////////////////////////////////Map filter hospitals end////////////////////////
@@ -5944,59 +5307,59 @@ if ($trip->trip_option_hospitals) {
 
 if ($trip->trip_option_gas) {
 
-    $filterResult = $trip->getMapFilters($destination, 'gas_station', $key);
+	$filterResult = $trip->getMapFilters($destination, 'gas_station', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'gas_filtermap.png';
+						$top_logo_img = K_PATH_IMAGES . 'gas_filtermap.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Service Stations (Gas/Petrol/Diesel)', '');
+						$section_2 = new top_bar('Service Stations (Gas/Petrol/Diesel)', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -6023,28 +5386,26 @@ if ($trip->trip_option_gas) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -6057,14 +5418,13 @@ if ($trip->trip_option_gas) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -6074,29 +5434,25 @@ if ($trip->trip_option_gas) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -6106,24 +5462,22 @@ if ($trip->trip_option_gas) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 ///////////////////////////////////////Map filter gas station end////////////////////////
@@ -6136,59 +5490,59 @@ $goal_address = $trip->trip_location_to;
 
 if ($trip->trip_option_taxi) {
 
-    $filterResult = $trip->getMapFilters($destination, 'taxi_stand', $key);
+	$filterResult = $trip->getMapFilters($destination, 'taxi_stand', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'airport_filtermap.png';
+						$top_logo_img = K_PATH_IMAGES . 'airport_filtermap.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Taxi', '');
+						$section_2 = new top_bar('Taxi', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -6215,28 +5569,26 @@ if ($trip->trip_option_taxi) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -6249,14 +5601,13 @@ if ($trip->trip_option_taxi) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -6266,29 +5617,25 @@ if ($trip->trip_option_taxi) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -6298,24 +5645,22 @@ if ($trip->trip_option_taxi) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 ///////////////////////////////////////Map filter taxi end////////////////////////
@@ -6324,59 +5669,59 @@ if ($trip->trip_option_taxi) {
 
 if ($trip->trip_option_airfields) {
 
-    $filterResult = $trip->getMapFilters($destination, 'airport', $key);
+	$filterResult = $trip->getMapFilters($destination, 'airport', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'airport_filtermap.png';
+						$top_logo_img = K_PATH_IMAGES . 'airport_filtermap.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Airfields', '');
+						$section_2 = new top_bar('Airfields', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -6403,28 +5748,26 @@ if ($trip->trip_option_airfields) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -6437,14 +5780,13 @@ if ($trip->trip_option_airfields) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -6454,29 +5796,25 @@ if ($trip->trip_option_airfields) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -6486,24 +5824,22 @@ if ($trip->trip_option_airfields) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 ///////////////////////////////////////Map filter airport end////////////////////////
@@ -6514,57 +5850,57 @@ $trip->setProgressing($idtrip, 70);
 
 if ($trip->trip_option_parking) {
 
-    $filterResult = $trip->getMapFilters($destination, 'parking', $key);
+	$filterResult = $trip->getMapFilters($destination, 'parking', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'parking_filtermap.png';
+						$top_logo_img = K_PATH_IMAGES . 'parking_filtermap.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Parking', '');
+						$section_2 = new top_bar('Parking', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -6591,28 +5927,26 @@ if ($trip->trip_option_parking) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -6625,14 +5959,13 @@ if ($trip->trip_option_parking) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -6642,29 +5975,25 @@ if ($trip->trip_option_parking) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -6674,24 +6003,22 @@ if ($trip->trip_option_parking) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 ///////////////////////////////////////Map filter Parking end////////////////////////
@@ -6700,59 +6027,59 @@ if ($trip->trip_option_parking) {
 
 if ($trip->trip_option_university) {
 
-    $filterResult = $trip->getMapFilters($destination, 'school', $key);
+	$filterResult = $trip->getMapFilters($destination, 'school', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'library_filtermap.png';
+						$top_logo_img = K_PATH_IMAGES . 'library_filtermap.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Universities', '');
+						$section_2 = new top_bar('Universities', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -6779,28 +6106,26 @@ if ($trip->trip_option_university) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -6813,14 +6138,13 @@ if ($trip->trip_option_university) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -6830,29 +6154,25 @@ if ($trip->trip_option_university) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -6862,24 +6182,22 @@ if ($trip->trip_option_university) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 
@@ -6894,59 +6212,59 @@ $goal_address = $trip->trip_location_to;
 
 if ($trip->trip_option_atm) {
 
-    $filterResult = $trip->getMapFilters($destination, 'atm', $key);
+	$filterResult = $trip->getMapFilters($destination, 'atm', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'atm_filtermap.png';
+						$top_logo_img = K_PATH_IMAGES . 'atm_filtermap.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('ATM', '');
+						$section_2 = new top_bar('ATM', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -6973,28 +6291,26 @@ if ($trip->trip_option_atm) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -7007,14 +6323,13 @@ if ($trip->trip_option_atm) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -7024,29 +6339,25 @@ if ($trip->trip_option_atm) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -7056,24 +6367,22 @@ if ($trip->trip_option_atm) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 ///////////////////////////////////////Map filter ATM end////////////////////////
@@ -7082,59 +6391,59 @@ if ($trip->trip_option_atm) {
 
 if ($trip->trip_option_playground) {
 
-    $filterResult = $trip->getMapFilters($destination, 'park', $key);
+	$filterResult = $trip->getMapFilters($destination, 'park', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'parks_filtermap.png';
+						$top_logo_img = K_PATH_IMAGES . 'parks_filtermap.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Parks', '');
+						$section_2 = new top_bar('Parks', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -7161,28 +6470,26 @@ if ($trip->trip_option_playground) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -7195,14 +6502,13 @@ if ($trip->trip_option_playground) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -7212,29 +6518,25 @@ if ($trip->trip_option_playground) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -7244,24 +6546,22 @@ if ($trip->trip_option_playground) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 
@@ -7274,59 +6574,59 @@ $trip->setProgressing($idtrip, 80);
 
 if ($trip->trip_option_museum) {
 
-    $filterResult = $trip->getMapFilters($destination, 'museum', $key);
+	$filterResult = $trip->getMapFilters($destination, 'museum', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'museum_filtermap.png';
+						$top_logo_img = K_PATH_IMAGES . 'museum_filtermap.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Museums', '');
+						$section_2 = new top_bar('Museums', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -7353,28 +6653,26 @@ if ($trip->trip_option_museum) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -7387,14 +6685,13 @@ if ($trip->trip_option_museum) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -7404,29 +6701,25 @@ if ($trip->trip_option_museum) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -7436,24 +6729,22 @@ if ($trip->trip_option_museum) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 
@@ -7464,59 +6755,59 @@ if ($trip->trip_option_museum) {
 
 if ($trip->trip_option_library) {
 
-    $filterResult = $trip->getMapFilters($destination, 'library', $key);
+	$filterResult = $trip->getMapFilters($destination, 'library', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'book_filtermap.png';
+						$top_logo_img = K_PATH_IMAGES . 'book_filtermap.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Libraries', '');
+						$section_2 = new top_bar('Libraries', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -7543,28 +6834,26 @@ if ($trip->trip_option_library) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -7577,14 +6866,13 @@ if ($trip->trip_option_library) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -7594,29 +6882,25 @@ if ($trip->trip_option_library) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -7626,24 +6910,22 @@ if ($trip->trip_option_library) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 
@@ -7658,59 +6940,59 @@ echo "90,";
 
 if ($trip->trip_option_pharmacy) {
 
-    $filterResult = $trip->getMapFilters($destination, 'pharmacy', $key);
+	$filterResult = $trip->getMapFilters($destination, 'pharmacy', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'pharmacy.png';
+						$top_logo_img = K_PATH_IMAGES . 'pharmacy.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Pharmacies', '');
+						$section_2 = new top_bar('Pharmacies', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -7737,28 +7019,26 @@ if ($trip->trip_option_pharmacy) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -7771,14 +7051,13 @@ if ($trip->trip_option_pharmacy) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -7788,29 +7067,25 @@ if ($trip->trip_option_pharmacy) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -7820,24 +7095,22 @@ if ($trip->trip_option_pharmacy) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 
@@ -7848,59 +7121,59 @@ if ($trip->trip_option_pharmacy) {
 
 if ($trip->trip_option_church) {
 
-    $filterResult = $trip->getMapFilters($destination, 'church', $key);
+	$filterResult = $trip->getMapFilters($destination, 'church', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'church.png';
+						$top_logo_img = K_PATH_IMAGES . 'church.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Religious Institutions', '');
+						$section_2 = new top_bar('Religious Institutions', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -7927,28 +7200,26 @@ if ($trip->trip_option_church) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -7961,14 +7232,13 @@ if ($trip->trip_option_church) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -7978,29 +7248,25 @@ if ($trip->trip_option_church) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -8010,24 +7276,22 @@ if ($trip->trip_option_church) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 
@@ -8042,59 +7306,59 @@ if ($trip->trip_option_church) {
 
 if ($trip->trip_option_covid) {
 
-    $filterResult = $trip->getMapFilters($destination, 'covid_testing_center', $key);
+	$filterResult = $trip->getMapFilters($destination, 'covid_testing_center', $key);
 
-    $data = $filterResult["googleData"];
+	$data = $filterResult["googleData"];
 
-    $scale = $filterResult["userdata"]["scale"];
+	$scale = $filterResult["userdata"]["scale"];
 
-    $unit = $filterResult["scale"];
+	$unit = $filterResult["scale"];
 
-    $mode = $filterResult["mode"];
+	$mode = $filterResult["mode"];
 
-    $goal_address = $filterResult["goalAddress"];
+	$goal_address = $filterResult["goalAddress"];
 
-    $tmp = "";
+	$tmp = "";
 
-    if (!empty($data)) {
+	if (!empty($data)) {
 
-        if ($data['status'] == 'OK') {
+		if ($data['status'] == 'OK') {
 
-            for ($i = 0; $i < 21; $i++) {
+			for ($i = 0; $i < 21; $i++) {
 
-                if ($i % 7 == 0) {
+				if ($i % 7 == 0) {
 
-                    if ($data['results'][$i]['name']) {
+					if ($data['results'][$i]['name']) {
 
-                        $pdf->AddPage('P', 'A4');
+						$pdf->AddPage('P', 'A4');
 
-                        $pdf->SetMargins(10, 12, 10);
+						$pdf->SetMargins(10, 12, 10);
 
-                        $top_bar_image = K_PATH_IMAGES . 'top_bar.png';
+						$top_bar_image = K_PATH_IMAGES . 'top_bar.png';
 
-                        $calendar_image = K_PATH_IMAGES . 'calendar.png';
+						$calendar_image = K_PATH_IMAGES . 'calendar.png';
 
-                        $note_number_image = K_PATH_IMAGES . 'note_number.png';
+						$note_number_image = K_PATH_IMAGES . 'note_number.png';
 
-                        $top_logo_img = K_PATH_IMAGES . 'hospital_filtermap.png';
+						$top_logo_img = K_PATH_IMAGES . 'hospital_filtermap.png';
 
-                        $style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
+						$style6 = array('width' => 0.5, 'cap' => 'butt', 'join' => 'miter', 'dash' => '10,10', 'color' => array(0, 128, 0));
 
-                        $pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_bar_image, 0, 0, 0, 0, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left, 3, 275, 23, 22, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_left_text, 28, 287, 50, 2.5, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($b_right, 174, 275, 37, 23, '', '', '', false, 300, '', false, false, 0);
 
-                        $pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
+						$pdf->Image($top_logo_img, 170, 18, 26, 25, '', '', '', false, 300, '', false, false, 0);
 
-                        $section_2 = new top_bar('Covid Testing Center', '');
+						$section_2 = new top_bar('Covid Testing Center', '');
 
-                        $html = $section_2->html_content();
+						$html = $section_2->html_content();
 
-                        $html .= '
+						$html .= '
 
 								<div>
 
@@ -8121,28 +7385,26 @@ if ($trip->trip_option_covid) {
 									
 
 						';
+					}
+				}
 
-                    }
+				$apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
 
-                }
+				$api = $trip->curlRequest($apiurl);
 
-                $apiurl = "https://maps.googleapis.com/maps/api/distancematrix/json?units=" . $scale . "&mode=" . $mode . "&origins=" . urlencode($goal_address) . "&destinations=" . urlencode($data['results'][$i]['vicinity']) . "&key=" . $key;
+				$data1 = json_decode($api, true);
 
-                $api = $trip->curlRequest($apiurl);
+				$distance = $data1['rows'][0]['elements'][0]['distance']['text'];
 
-                $data1 = json_decode($api, true);
+				if ($data['results'][$i]['name']) {
 
-                $distance = $data1['rows'][0]['elements'][0]['distance']['text'];
+					$address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
 
-                if ($data['results'][$i]['name']) {
+					$street = $address[0];
 
-                    $address = str_split($data['results'][$i]['vicinity'], strrpos($data['results'][$i]['vicinity'], ','));
+					$city = substr($address[1], 1);
 
-                    $street = $address[0];
-
-                    $city = substr($address[1], 1);
-
-                    $tmp .= '<div></div><tr>
+					$tmp .= '<div></div><tr>
 
 							<td style="font-size:12px; color:#67758D;">' . $data['results'][$i]['name'] . '</td>
 
@@ -8155,14 +7417,13 @@ if ($trip->trip_option_covid) {
 						</tr><div></div>
 
 						<p style="width:100%; background-color:#3E4754; font-size:0.5px">e</p>';
+				}
 
-                }
+				if ($i % 7 == 6) {
 
-                if ($i % 7 == 6) {
+					if ($data['results'][$i]['name']) {
 
-                    if ($data['results'][$i]['name']) {
-
-                        $html .= '
+						$html .= '
 
 						' . $tmp . '
 
@@ -8172,29 +7433,25 @@ if ($trip->trip_option_covid) {
 
 						';
 
-                        $pdf->writeHTML($html, true, false, true, false, '');
+						$pdf->writeHTML($html, true, false, true, false, '');
 
-                        $pdf->SetXY(192, 285);
+						$pdf->SetXY(192, 285);
 
-                        $pdf->SetTextColor(13, 37, 110);
+						$pdf->SetTextColor(13, 37, 110);
 
-                        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+						$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-                        $currentPage = $currentPage + 1;
+						$currentPage = $currentPage + 1;
 
-                        $tmp = "";
+						$tmp = "";
 
-                        $html = "";
+						$html = "";
+					}
+				}
+			}
+		}
 
-                    }
-
-                }
-
-            }
-
-        }
-
-        $html .= '
+		$html .= '
 
 			' . $tmp . '
 
@@ -8204,24 +7461,22 @@ if ($trip->trip_option_covid) {
 
 			';
 
-        $pdf->writeHTML($html, true, false, true, false, '');
+		$pdf->writeHTML($html, true, false, true, false, '');
 
-        $tmp = "";
+		$tmp = "";
 
-        $html = "";
+		$html = "";
 
-        $pdf->SetXY(192, 285);
+		$pdf->SetXY(192, 285);
 
-        $pdf->SetTextColor(13, 37, 110);
+		$pdf->SetTextColor(13, 37, 110);
 
-        $pdf->writeHTML("$currentPage", true, false, true, false, '');
+		$pdf->writeHTML("$currentPage", true, false, true, false, '');
 
-        $currentPage = $currentPage + 1;
+		$currentPage = $currentPage + 1;
 
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-    }
-
+		$pdf->writeHTML($html, true, false, true, false, '');
+	}
 }
 
 
@@ -8328,8 +7583,6 @@ echo "OK";
 
 
 
-
-
 // $pdfpath = 'D://Planiversity.pdf';
 
 // if (file_exists($pdfpath)){
@@ -8341,4 +7594,3 @@ echo "OK";
 // $pdf->Output('D://Planiversity.pdf',"F");
 
 // exit();
-

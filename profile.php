@@ -530,6 +530,7 @@ if ($userdata['picture']) $img = SITE . 'ajaxfiles/profile/' . $userdata['pictur
     <script src="<?php echo SITE; ?>assets/js/popper.min.js"></script>
     <script src="<?= SITE ?>dashboard/js/main.js"></script>
     <script src="<?= SITE ?>dashboard/js/jquery-ui.js"></script>
+    
 
     <script>
         $(function() {
@@ -849,6 +850,7 @@ if ($userdata['picture']) $img = SITE . 'ajaxfiles/profile/' . $userdata['pictur
                             //$('#upload-demo').croppie('destroy');
                             $('#formId').trigger("reset");
                             $('#cropImagePop').modal('hide');
+                            //$('.btn-close-modal').click();
                             toastr.success('Profile Picture Successfully Updated');
                         }
                     });

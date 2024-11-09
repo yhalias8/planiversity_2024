@@ -21,7 +21,7 @@ if ($_POST['flag'] != "" && $_POST['id']) {
 
     $error = '';
 
-    $query = "UPDATE trips SET cover_image = ?, cover_image_url = ?,cover_image_type = ?  WHERE id_trip = ?";
+        $query = "UPDATE trips SET cover_image = ?, cover_image_url = ?,cover_image_type = ?  WHERE id_trip = ?";
     $stmt = $dbh->prepare($query);
     $stmt->bindValue(1, $flag, PDO::PARAM_INT);
     $stmt->bindValue(2, $image_url, PDO::PARAM_STR);

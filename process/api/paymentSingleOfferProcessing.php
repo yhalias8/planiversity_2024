@@ -15,6 +15,24 @@ if (isset($_GET['offer_id'])) {
   $rData = json_decode($mData);
 
 
+
+
+
+  // echo "<pre/>";
+  // print_r($rData);
+
+  // if (!empty($rData->data)) {
+  //   $offersValue = $rData->data;
+  //   $request_id = $request_id;
+  //   $after = $rData->meta->after;
+  //   $before = $rData->meta->before;
+  // } else {
+  //   $offersValue = [];
+  //   $request_id = null;
+  //   $after = null;
+  //   $before = null;
+  // }
+
     if (!empty($rData->data->id)) {
 
     $total_amount = price_calculate($rData->data->total_amount);
@@ -33,30 +51,17 @@ if (isset($_GET['offer_id'])) {
 
     $sData = json_decode($pData);
 
-    if (!empty($sData->data->id)) {
+    $response = [
+      "status" => 200,
+      'offer_id' => $rData->data->id,
+      'payment_id' => $sData->data->id,
+      'total_amount' => $sData->data->amount,    
+      'client_token' => $sData->data->client_token,
+    ];
 
-      $response = [
-        "status" => 200,
-        'offer_id' => $rData->data->id,
-        'payment_id' => $sData->data->id,
-        'total_amount' => $sData->data->amount,
-        'client_token' => $sData->data->client_token,
-      ];
+    $response = array("data" => $response);
 
-      $response = array("data" => $response);
-
-      http_response_code(200);
-      
-    } else {
-
-      http_response_code(422);
-
-      $response = array(
-        'status' => 422,
-        'message' => "Higher amount limit alert",
-      );
-      
-    }
+    http_response_code(200);
 
     
   }else{    

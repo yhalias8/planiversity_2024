@@ -7,13 +7,18 @@ $category_parms = null;
 if (isset($_GET['wish'])) {
     $wish_clause = 1;
 }
+
 if (isset($_GET['category'])) {
     $category_parms = $_GET['category'];
 }
+
 if (isset($_GET['search'])) {
     $search_parms = $_GET['search'];
 }
 
+// if ($auth->isLogged()) {
+//     header('location: welcome');
+// }
 ?>
 
 <!DOCTYPE html>

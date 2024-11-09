@@ -1,5 +1,5 @@
 <?php
-include '../../../config.ini.php';
+//include '../../../config.ini.php';
 
 
 function notes($dbh, $user_id, $id_trip)
@@ -80,7 +80,6 @@ function timeline($dbh, $user_id, $id_trip)
 
     return $html;
 }
-
 
 
 function documents($dbh, $user_id, $id_trip)

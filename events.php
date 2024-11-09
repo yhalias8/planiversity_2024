@@ -199,8 +199,8 @@ $msg = '';
                     }
                     if ($userdata['account_type'] == 'Business' || $userdata['account_type'] == 'Admin') { ?>
                         <li>
-                            <a href="<?php echo SITE ?>employees" class="left-nav-button">
-                                <i class="mdi mdi-account-multiple"></i>Employee
+                            <a href="<?php echo SITE ?>people" class="left-nav-button">
+                                <i class="mdi mdi-account-multiple"></i>People
                             </a>
                         </li>
                         <li>

@@ -32,14 +32,18 @@ if (isset($_POST['uid'])) {
 			'db' => 'created_at',
 			'dt' => "created_at",
 			'formatter' => function ($d, $row) {
-				return date("Y/m/d h:i a", strtotime($d));
+				$created_at_date = new DateTime($d);
+				$dateFormatted = $created_at_date->format('M j, Y h.iA');
+				return $dateFormatted;
 			}
 		),
 		array(
 			'db' => 'updated_at',
 			'dt' => "updated_at",
 			'formatter' => function ($d, $row) {
-				return date("Y/m/d h:i a", strtotime($d));
+				$created_at_date = new DateTime($d);
+				$dateFormatted = $created_at_date->format('M j, Y h.iA');
+				return $dateFormatted;
 			}
 		),
 		//array('db' => 'updated_at',     'dt' => "updated_at"),

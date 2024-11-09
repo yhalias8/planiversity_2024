@@ -7,6 +7,7 @@ if (!$auth->isLogged()) {
 	header("Location:" . SITE . "login");
 }
 
+
 // DB table to use
 $table = 'employees';
 
@@ -20,6 +21,7 @@ $primaryKey = 'id_employee';
 // The `db` parameter represents the column name in the database, while the `dt`
 // parameter represents the DataTables column identifier. In this case simple
 // indexes
+
 $columns = array(
 	array('db' => 'photo', 'dt' => "photo"),
 	array('db' => 'photo_connect', 'dt' => "photo_connect"),
@@ -48,6 +50,7 @@ $sql_details = array(
 require('../ssp.extended.class.php');
 
 $extraWhere = "id_user=$uid";
+
 
 echo json_encode(
 	SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns, null, $extraWhere)

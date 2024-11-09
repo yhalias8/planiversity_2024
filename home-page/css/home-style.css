@@ -2641,7 +2641,6 @@ h2.order-heading {
   position: fixed;
   left: 50%;
   top: 50%;
-  display: none;
   transform: translate(-50%, -50%);
   z-index:999;
 }
@@ -2656,7 +2655,6 @@ h2.order-heading {
    max-height: 100%;
     width: 100% !important;
     overflow: auto;
-    display: none;
 }
 .discount-christmas__mob--button{
   position: absolute;

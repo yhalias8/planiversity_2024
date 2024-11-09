@@ -1,4 +1,4 @@
-<script src="<?= SITE; ?>js/flexcroll.js"></script>
+<script src="<?php echo SITE; ?>js/flexcroll.js"></script>
 
 <script type="text/javascript">
     /********************  weather begin  ****************************/
@@ -111,9 +111,9 @@
     }
 </style>
 <div class="filter-checks-wrapper  rounded p-0 h-100">
-    <h6 class="modal-sub-title"><img class="modal-sub-title-img" src="<?= SITE; ?>/images/filters.png"></img>Filters</h6>
+    <h6 class="modal-sub-title"><img class="modal-sub-title-img" src="<?php echo SITE; ?>/images/filters.png"></img>Filters</h6>
     <div class="modal-content rounded p-2 filter-modal-left-content border-grey">
-        <h6 class="main-color"><img class="modal-sub-title-img" src="<?= SITE; ?>/images/sun.png"></img>Weather</h6>
+        <h6 class="main-color"><img class="modal-sub-title-img" src="<?php echo SITE; ?>/images/sun.png"></img>Weather</h6>
         <div class="ml-2 checkbox checkbox-primary">
             <input name="filter_option[]" id="filter_weather" <?php if ($trip && $trip->trip_option_weather) echo 'checked="checked"'; ?> value="weather" onchange="getAccuWeather(this.checked)" type="checkbox">
             <label for="filter_weather">
@@ -121,11 +121,11 @@
             </label>
         </div>
         <div id="weather_result" style="display: none;" class="weather-wrapper">
-            <?= str_replace("Array", "", $trip->getAccuWeatherFilters()); ?>
+            <?PHP echo str_replace("Array", "", $trip->getAccuWeatherFilters()); ?>
         </div>
         <div class="filter-modal-left-devider"></div>
         <ul>
-            <li class="mb-10px"><a id="tgl-fascilities" href="#" class="main-color"><img class="modal-sub-title-img" src="<?= SITE; ?>/images/location.png"></img>Facilities <i class="facilities-arrow-right fa fa-chevron-right"></i></a></li>
+            <li class="mb-10px"><a id="tgl-fascilities" href="javascript:void(0)" class="main-color"><img class="modal-sub-title-img" src="<?php echo SITE; ?>/images/location.png"></img>Facilities <i class="facilities-arrow-right fa fa-chevron-right"></i></a></li>
             <!-- <li><a href = "" data-toggle="modal" data-target="#expanded-map-modal">Maps <i class = "fa fa-chevron-right"></i></a></li> -->
         </ul>
         <!--<h6>Facility</h6>-->
@@ -226,7 +226,7 @@
         <!--    </label>-->
         <!--</div>-->
         <div class="filter-modal-left-devider"></div>
-        <h6 class="main-color"><img class="modal-sub-title-img" src="<?= SITE; ?>/images/map_copy.png"></img>Map</h6>
+        <h6 class="main-color"><img class="modal-sub-title-img" src="<?php echo SITE; ?>/images/map_copy.png"></img>Map</h6>
         <div class="ml-2 checkbox checkbox-primary">
             <input name="filter_option[]" id="filter_embassis" type="checkbox" <?php if ($trip && $trip->trip_option_embassis) echo 'checked="checked"'; ?> value="embassis" onchange="NearbyPlacesHandler('embassy',this.checked)">
             <label for="filter_embassis">
@@ -244,7 +244,7 @@
         <!--    </label>-->
         <!--</div>-->
         <div id="busmap_result" style="display:none;">
-            <?= $busmapimg; ?>
+            <?PHP echo $busmapimg; ?>
         </div>
         <?php if ($trip->trip_transport == 'vehicle' || $trip->trip_location_from_drivingportion) { ?>
             <div class="ml-2 checkbox checkbox-primary">
@@ -270,8 +270,8 @@
         </div>
         <div id="subway_result" style="display:none;"></div>
         <input type="hidden" name="filter_click" id="filter_click" value="">
-        <input type="hidden" name="lat_click" id="lat_click" value="<?= $filter_lat_to; ?>">
-        <input type="hidden" name="lng_click" id="lng_click" value="<?= str_replace(' ', '', $filter_lng_to); ?>">
+        <input type="hidden" name="lat_click" id="lat_click" value="<?php echo $filter_lat_to; ?>">
+        <input type="hidden" name="lng_click" id="lng_click" value="<?php echo str_replace(' ', '', $filter_lng_to); ?>">
     </div>
 </div>
 <div data-backdrop="false" id="expanded-facilities-modal" class="modal fade bs-example-modal-lg show filter-details-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -288,7 +288,7 @@
                             <input name="filter_option[]" id="filter_hotels" type="checkbox" <?php if ($trip && $trip->trip_option_hotels) echo 'checked="checked"'; ?> value="hotels" onchange="NearbyPlacesHandler('lodging',this.checked)">
                             <label for="filter_hotels" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/lodging.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/lodging.png">
                                 </span>
                                 Hotels/Motels
                             </label>
@@ -297,7 +297,7 @@
                             <input name="filter_option[]" id="filter_police" type="checkbox" <?php if ($trip && $trip->trip_option_police) echo 'checked="checked"'; ?> value="police" onchange="NearbyPlacesHandler('police',this.checked)">
                             <label for="filter_police" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/police.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/police.png">
                                 </span>
                                 Police Stations
                             </label>
@@ -306,7 +306,7 @@
                             <input name="filter_option[]" id="filter_hospitals" type="checkbox" <?php if ($trip && $trip->trip_option_hospitals) echo 'checked="checked"'; ?> value="hospitals" onchange="NearbyPlacesHandler('hospital',this.checked)">
                             <label for="filter_hospitals" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/hospital.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/hospital.png">
                                 </span>
                                 Hospitals
                             </label>
@@ -315,7 +315,7 @@
                             <input name="filter_option[]" id="filter_airport" type="checkbox" <?php if ($trip && $trip->trip_option_airfields) echo 'checked="checked"'; ?> value="airports" onchange="NearbyPlacesHandler('airport',this.checked)">
                             <label for="filter_airport" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/airport.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/airport.png">
                                 </span>
                                 Airports/Heliports
                             </label>
@@ -324,7 +324,7 @@
                             <input name="filter_option[]" id="filter_parking" type="checkbox" <?php if ($trip && $trip->trip_option_parking) echo 'checked="checked"'; ?> value="parking" onchange="NearbyPlacesHandler('parking',this.checked)">
                             <label for="filter_parking" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/parking.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/parking.png">
                                 </span>
                                 Parking
                             </label>
@@ -333,7 +333,7 @@
                             <input name="filter_option[]" id="filter_subway_station" type="checkbox" <?php if ($trip && $trip->trip_option_subway_station) echo 'checked="checked"'; ?> value="subway_station" onchange="NearbyPlacesHandler('subway_station',this.checked)">
                             <label for="filter_subway_station" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/train_station.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/train_station.png">
                                 </span>
                                 Subway Stations
                             </label>
@@ -344,7 +344,7 @@
                             <input name="filter_option[]" id="filter_gas" type="checkbox" <?php if ($trip && $trip->trip_option_gas) echo 'checked="checked"'; ?> value="gas" onchange="NearbyPlacesHandler('gas_station',this.checked)">
                             <label for="filter_gas" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/gas_station.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/gas_station.png">
                                 </span>
                                 Service Station (Gas/Petrol/Diesel)
                             </label>
@@ -353,7 +353,7 @@
                             <input name="filter_option[]" id="filter_taxi" type="checkbox" <?php if ($trip && $trip->trip_option_taxi) echo 'checked="checked"'; ?> value="taxi" onchange="NearbyPlacesHandler('taxi_stand',this.checked)">
                             <label for="filter_taxi" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/taxi_stand.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/taxi_stand.png">
                                 </span>
                                 Taxi Services
                             </label>
@@ -362,7 +362,7 @@
                             <input name="filter_option[]" id="filter_university" type="checkbox" <?php if ($trip && $trip->trip_option_university) echo 'checked="checked"'; ?> value="university" onchange="NearbyPlacesHandler('university',this.checked)">
                             <label for="filter_university" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/university.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/university.png">
                                 </span>
                                 Universities
                             </label>
@@ -371,7 +371,7 @@
                             <input name="filter_option[]" id="filter_atm" type="checkbox" <?php if ($trip && $trip->trip_option_atm) echo 'checked="checked"'; ?> value="atm" onchange="NearbyPlacesHandler('atm',this.checked)">
                             <label for="filter_atm" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/atm.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/atm.png">
                                 </span>
                                 ATM
                             </label>
@@ -380,7 +380,7 @@
                             <input name="filter_option[]" id="filter_library" type="checkbox" <?php if ($trip && $trip->trip_option_library) echo 'checked="checked"'; ?> value="library" onchange="NearbyPlacesHandler('library',this.checked)">
                             <label for="filter_library" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/library.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/library.png">
                                 </span>
                                 Libraries
                             </label>
@@ -391,7 +391,7 @@
                             <input name="filter_option[]" id="filter_museum" type="checkbox" <?php if ($trip && $trip->trip_option_museum) echo 'checked="checked"'; ?> value="museum" onchange="NearbyPlacesHandler('museum',this.checked)">
                             <label for="filter_museum" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/museum.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/museum.png">
                                 </span>
                                 Museums
                             </label>
@@ -400,7 +400,7 @@
                             <input name="filter_option[]" id="filter_church" type="checkbox" <?php if ($trip && $trip->trip_option_church) echo 'checked="checked"'; ?> value="church" onchange="NearbyPlacesHandler('church',this.checked)">
                             <label for="filter_church" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/church.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/church.png">
                                 </span>
                                 Religious Institutions
                             </label>
@@ -409,7 +409,7 @@
                             <input name="filter_option[]" id="filter_metro" type="checkbox" <?php if ($trip && $trip->trip_option_metro) echo 'checked="checked"'; ?> value="metro" onchange="NearbyPlacesHandler('train_station',this.checked)">
                             <label for="filter_metro" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/train_station.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/train_station.png">
                                 </span>
                                 Metro Stations
                             </label>
@@ -418,7 +418,7 @@
                             <input name="filter_option[]" id="filter_playground" type="checkbox" <?php if ($trip && $trip->trip_option_playground) echo 'checked="checked"'; ?> value="playground" onchange="NearbyPlacesHandler('park',this.checked)">
                             <label for="filter_playground" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/park.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/park.png">
                                 </span>
                                 Parks
                             </label>
@@ -427,7 +427,7 @@
                             <input name="filter_option[]" id="filter_pharmacy" type="checkbox" <?php if ($trip && $trip->trip_option_pharmacy) echo 'checked="checked"'; ?> value="pharmacy" onchange="NearbyPlacesHandler('pharmacy',this.checked)">
                             <label for="filter_pharmacy" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/hospital.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/hospital.png">
                                 </span>
                                 Pharmacy
                             </label>
@@ -436,7 +436,7 @@
                             <input name="filter_option[]" id="filter_covid" type="checkbox" <?php if ($trip && $trip->trip_option_covid) echo 'checked="checked"'; ?> value="covid" onchange="NearbyPlacesHandler('covid_testing_center',this.checked)">
                             <label for="filter_covid" class="black-checkbox-label">
                                 <span class="map-icons">
-                                    <img src="<?= SITE; ?>images/map-icons/covid.png">
+                                    <img src="<?php echo SITE; ?>images/map-icons/covid.png">
                                 </span>
                                 Covid Testing
                             </label>

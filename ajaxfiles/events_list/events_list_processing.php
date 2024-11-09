@@ -7,6 +7,10 @@ if (!$auth->isLogged()) {
 	header("Location:" . SITE . "login");
 }
 
+// if ($userdata['account_type'] != 'Admin') {
+// 	header("Location:" . SITE . "welcome");
+// }
+
 
 // DB table to use
 $table = 'events';

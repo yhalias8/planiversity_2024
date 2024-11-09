@@ -25,6 +25,7 @@ function getFirstItemFocus() {
 
 }
 
+
 $(document).ready(function() {
     $('#keyword-input').keyup(function() {
 

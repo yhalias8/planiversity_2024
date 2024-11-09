@@ -335,7 +335,7 @@ background: none!important;
 }
 .fixed-sidebar .app-sidebar{
     min-width: 247px;
-    width: 232px!important;
+    width: 247px!important;
 }
 
 .menu_user_profile .menu_user_profile_img{
@@ -732,12 +732,8 @@ span.meeting_time {
     .app-header__logo{padding-left: 0px;}
     .hamburger-inner, .hamburger-inner::before, .hamburger-inner::after{background-color: #ffffff;}
     .hamburger.is-active .hamburger-inner, .hamburger.is-active .hamburger-inner::before, .hamburger.is-active .hamburger-inner::after{background-color: #fff;}
-    .start_a_plan_btn span{display: none;}
-    .dashboard_user_sec .start_a_plan_btn a{padding: 0;
-    width: 52px;
-    height: 52px;
-    line-height: 52px;
-    font-size: 22px;}
+
+
     /*.start_a_plan_btn {margin-top: -46px; display: block; text-align: right; float: right;}*/
     .right_content_colom9{padding-left: 0px!important;}
     .app-theme-white.app-container {background: #ffffff;}
@@ -795,14 +791,18 @@ span.meeting_time {
     max-height: 330px;
     overflow: auto;
 }
+  .app-header .app-header__mobile-menu {
+        display: flex;
+        order: 1
+    }
 }
-@media(max-width: 767.98px){
+@media(max-width: 991.98px){
        .show-mob { display: block; }
    .show-desktop{ display: none;}
       .app-sidebar.sidebar-shadow.left_menubar_sec {top: 0;}
    .fixed-sidebar .app-sidebar{ z-index: 999;top: 30px;}
 }
-@media(min-width: 768px) {
+@media(min-width: 992px) {
     .show-desktop{
         display: block;
     }
@@ -821,6 +821,16 @@ span.meeting_time {
 .ipad-show{
     background-color: transparent !important;
 }
+}
+@media(min-width: 479px) and (max-width: 991px){
+.ipad-ul{
+    width: 180px !important;
+    max-width: 300px;
+    display: inline-block;
+    background: white;
+    float: right;
+}
+
 }
 @media only screen and(max-width:767px) and (min-width:480px){
     .app-header__content{display: none;}
@@ -908,6 +918,22 @@ span.meeting_time {
     .trips_mobile_view_content{display: block!important;}
     .trips_meeting_righ_box_item_text {padding: 27px 16px;}
     .trips_search_item{margin-bottom: 20px;}
+}
+@media(min-width: 1024.98px) and (max-width: 1197px){
+    .fixed-sidebar .app-sidebar {
+    min-width: 247px;
+    width: 27% !important;
+}
+}
+@media(min-width: 1921px){
+    .fixed-sidebar .app-sidebar {
+    width: 356px !important;
+}
+}
+@media(min-width: 993px) and (max-width: 1023px){
+.right_content_colom9 {
+    padding-left: 0 !important;
+}
 }
 
 @media only screen and (max-width: 1920px) and (min-width: 1400px){
@@ -1451,7 +1477,7 @@ textarea.form-control {
 }
 /*------------- Changes ---------------*/
 
-@media(max-width: 767.98px){
+@media(max-width: 992px){
     .closed-sidebar .app-sidebar .app-sidebar__inner ul li a {
     text-indent: 0;
     padding: 0;
@@ -1459,14 +1485,16 @@ textarea.form-control {
 .plus-icon>img {
     top: -3px !important;
 }
+.right_content_colom9 {
+    padding-left: 0 !important;
 }
-@media(min-width: 768px){
+}
+@media(min-width: 992.98px){
     .only-mob{
         display: none !important;
     }
 .plus-icon {
     display: inline-block;
-    padding-left: 10px;
 }
 
 }
@@ -1570,4 +1598,11 @@ textarea.form-control {
 }
 .dropdown-menu.show {
     border: 0;
+}
+.plus-icon {
+    display: inline-block;
+}
+.ipad-show {
+    background-color: transparent !important;
+    box-shadow: none !important;
 }

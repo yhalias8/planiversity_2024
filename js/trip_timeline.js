@@ -48,9 +48,8 @@ function edit_element(id) {
 }
 
 $(document).ready(function () {
-
-    $('#timeline_add').click(function (event) { // add timeline to DB
-        //setTimeout(function() {
+    // add timeline to DB
+    $('#timeline_add').click(function (event) {
         $('#loading_list').show('fast');
         $('#error_list').hide('fast');
         $.post(SITE + "ajaxfiles/add_timeline.php", {
@@ -68,13 +67,13 @@ $(document).ready(function () {
                     $('#loading_list').hide('fast');
                     $('#data_list').append(data['txt']);
                     $('#data_list').fadeIn(1000);
+                    toastr.success('Successfully Schedule Added');                    
                     $('#timeline_name').val('');
                 }
             }, "json");
     });
 
     $('#timeline_edit').click(function (event) { // edit timeline
-        //setTimeout(function() {
         $('#loading_list').show('fast');
         $('#error_list').hide('fast');
         $.post(SITE + "ajaxfiles/edit_timeline.php", {

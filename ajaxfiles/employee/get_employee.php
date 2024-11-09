@@ -2,7 +2,6 @@
 
 include '../../config.ini.php';
 
-
 if ($userdata['id']){
 
 $id=$userdata['id'];

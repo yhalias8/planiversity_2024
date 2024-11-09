@@ -785,6 +785,7 @@ include('include_doctype.php');
                                         </div>
 
 
+<!--
                                         <div class="form-group custom-group">
                                             <label>Type of activity</label>
                                             <input type="hidden" id="plan_id" name="plan_id" readonly="">
@@ -795,11 +796,16 @@ include('include_doctype.php');
                                                 <option value="People to see">People to see</option>
                                             </select>
                                         </div>
+                                        -->
+
+                                            <input type="hidden" id="plan_id" name="plan_id" readonly="">
+                                            <input type="hidden" name="plan_type" value="Things to do">
+
                                         <?php } ?>
                                         <div class="form-group custom-group frm-grp">
                                             <?php if ($trip->getRole($id_trip) == TripPlan::ROLE_COLLABORATOR) { ?>
                                             <label>Address</label>
-                                            <input type="text" id="plan_address" name="plan_address" class="dashboard-form-control form-control input-lg clearable" required placeholder="Address" disabled>
+                                            <input type="text" id="plan_address" name="plan_address" class="dashboard-form-control form-control input-lg clearable" required placeholder="Address">
                                             <?php } ?>
                                             <input name="location_to_lat" id="location_to_lat" type="hidden" class="inp1 coordinate" value="<?= $filter_lat_to; ?>" readonly>
                                             <input name="location_to_lng" id="location_to_lng" type="hidden" class="inp1 coordinate" value="<?= $filter_lng_to; ?>" readonly>
@@ -977,9 +983,70 @@ include('include_doctype.php');
                                         </label>
                                     </div>
                                 </div>
-
-
                             </div>
+
+                            <div class="advanced_section advanced_step" data-step="3">
+
+                                <h3>Do you already have a reservation?</h3>
+                                <p>Select a option for your event.</p>
+
+                                <div class="advanced_body">
+
+                                    <div class="custom-control custom-checkbox option-control">
+                                        <input type="checkbox" class=" custom-control-input option-checkbox" id="plan_reservation_yes" value="yes" name="plan_reservation_yes">
+                                        <label class="custom-control-label" for="plan_reservation_yes">
+                                            <p>Yes</p>
+                                        </label>
+                                    </div>
+
+                                    <div class="custom-control custom-checkbox option-control">
+                                        <input type="checkbox" class=" custom-control-input option-checkbox" id="plan_reservation_not_required" value="not required" name="plan_reservation_not_required">
+                                        <label class="custom-control-label" for="plan_reservation_not_required">
+                                            <p>No, not required.</p>
+                                        </label>
+                                    </div>
+
+                                    <div class="custom-control custom-checkbox option-control">
+                                        <input type="checkbox" class=" custom-control-input option-checkbox" id="plan_reservation_no" value="no" name="plan_reservation_no">
+                                        <label class="custom-control-label" for="plan_reservation_no">
+                                            <p>No, I need one.</p>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div id="info-content-reservation" style="margin-top:50px;"></div>
+                            </div>
+
+                            <div class="advanced_section advanced_step" data-step="4">
+                                <h3>Do you already have transportation?</h3>
+
+                                <div class="advanced_body">
+
+                                    <div class="custom-control custom-checkbox option-control">
+                                        <input type="checkbox" class=" custom-control-input option-checkbox" id="plan_transportation_yes" value="yes" name="plan_transportation_yes">
+                                        <label class="custom-control-label" for="plan_transportation_yes">
+                                            <p>Yes</p>
+                                        </label>
+                                    </div>
+
+                                    <div class="custom-control custom-checkbox option-control">
+                                        <input type="checkbox" class=" custom-control-input option-checkbox" id="plan_transportation_not_required" value="not required" name="plan_transportation_not_required">
+                                        <label class="custom-control-label" for="plan_transportation_not_required">
+                                            <p>I don't need transportation.</p>
+                                        </label>
+                                    </div>
+
+                                    <div class="custom-control custom-checkbox option-control">
+                                        <input type="checkbox" class=" custom-control-input option-checkbox" id="plan_transportation_no" value="no" name="plan_transportation_no">
+                                        <label class="custom-control-label" for="plan_transportation_no">
+                                            <p>No, I need  transportation.</p>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div id="info-content-transportation" style="margin-top:50px;"></div>
+                            </div>
+
                         </div>
 
                     </div>
@@ -1099,20 +1166,7 @@ include('include_doctype.php');
 
         function iconSelect(value) {
             var hold;
-            switch (value) {
-                case "Place to eat":
-                    hold = "restaurant_new.png";
-                    break;
-                case "Things to do":
-                    hold = "place_new.png";
-                    break;
-                case "People to see":
-                    hold = "people_new.png";
-                    break;
-                default:
-                    hold = "restaurant_new.png";
-            }
-
+            hold = "place_new.png";
             return hold;
         }
 
@@ -1568,9 +1622,10 @@ include('include_doctype.php');
                 ${moment(plan_date).format('LLL')}
                 </p>`
             }
+            // <img src="${main_logo}" width="26px"><p>${type}</p> </strong>
             content += `
                                 <strong class="main_head">
-                                <img src="${main_logo}" width="26px"><p>${type}</p> </strong>
+
                                 <p class="main_body"> ${title} <span> <i class="fa fa-map-marker" aria-hidden="true"></i> ${address} </span></p>
                                 <div>
                                 ${date_content}
@@ -1691,8 +1746,13 @@ include('include_doctype.php');
                 orientation: "auto"
             });
 
+            $('#advanced_popup').on('hide.bs.modal', function () {
+                $('#info-content-reservation').empty();
+            });
+
             $("#checking").click(function() {
                 $('#advanced_popup').modal('show');
+                alert("ELO");
             });
 
             $('input[name="option_date_time"]').click(function() {
@@ -1759,6 +1819,63 @@ include('include_doctype.php');
 
         $(window).on('load', function() {
             $('#filter1-modal').modal('show');
+
+            $("#plan_transportation_no").change(function() {
+                if ($(this).is(":checked")) {
+                    fillTransportationData();
+                }
+            });
+
+            $("#plan_reservation_no").change(function() {
+                if ($(this).is(":checked")) {
+                    fillReservationData();
+                }
+            });
+
+            $("#plan_reservation_no, #plan_reservation_not_required, #plan_reservation_yes").change(function() {
+                var that = this;
+
+                $("#plan_reservation_no, #plan_reservation_not_required, #plan_reservation_yes").each(function() {
+                    if (that === this) {
+                        return;
+                    }
+                    if ($(this).is(":checked")) {
+                        $(this).click();
+                    }
+                });
+
+                if ($(this).attr('id') != 'plan_reservation_no') {
+                    document.getElementById('info-content-reservation').innerHTML = '';
+                } else {
+                    if ($(this).is(":checked")) {
+                        fillReservationData();
+                    }
+                }
+            });
+
+            $("#plan_transportation_no, #plan_transportation_not_required, #plan_transportation_yes").change(function() {
+                var that = this;
+
+                $("#plan_transportation_no, #plan_transportation_not_required, #plan_transportation_yes").each(function() {
+                    if (that === this) {
+                        return;
+                    }
+                    if ($(this).is(":checked")) {
+                        $(this).click();
+                    }
+                });
+
+                if ($(this).attr('id') != 'plan_transportationn_no') {
+                    document.getElementById('info-content-transportation').innerHTML = '';
+                } else {
+                    if ($(this).is(":checked")) {
+                        fillTransportationData();
+                    }
+                }
+            });
+
+
+
         });
 
 
@@ -1771,13 +1888,15 @@ include('include_doctype.php');
             $("#expanded-facilities-modal").hide();
             //$('#filter1-modal').modal('show');
         });
+
+
     </script>
 
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcMVuiPorZzfXIMmKu2Y2BVBgTFfdhJ2Y&libraries=places&callback=initMap" async defer></script>
 
-    <script src="<?php echo SITE; ?>js/utils/modal-stepper.js?v=20230815"></script>
-    <script src="<?php echo SITE; ?>js/trip_plan_next_update_plus.js?v=2230815aa"></script>
+    <script src="<?php echo SITE; ?>js/utils/modal-stepper.js?v=20230815<?=uniqid();?>"></script>
+    <script src="<?php echo SITE; ?>js/trip_plan_next_update_plus.js?v=2230815aaa1<?=uniqid();?>"></script>
 
     <?php include('new_backend_footer.php'); ?>
 

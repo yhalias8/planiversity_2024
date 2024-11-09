@@ -8,20 +8,6 @@ if ($userdata['account_type'] != 'Admin') {
     header("Location:" . SITE . "welcome");
 }
 
-$url = NULL;
-$str = explode('?', $_SERVER['REQUEST_URI']);
-
-if (count($str) > 0) {
-	$str = explode('&', $str[1]);
-	foreach ($str as $value) {
-		$str = explode('=', $value);
-		if ($str[0] != 'currentpage') {
-			$url = $value;
-		}
-	}
-}
-
-
 include('include_doctype.php');
 ?>
 <!DOCTYPE html>
@@ -119,9 +105,6 @@ include('include_doctype.php');
                                 </a>
                             <?php } ?>
 
-                            <a href="<?php echo SITE; ?>welcome" class="dropdown-item drop-menu-item">
-                                Home
-                            </a>
                             
                             <a href="<?php echo SITE; ?>contact-us" class="dropdown-item drop-menu-item" target="_blank">
                                 Contact Us
@@ -187,12 +170,15 @@ include('include_doctype.php');
                     <li>
                         <a href="<?php echo SITE; ?>apanel/transactions">Transactions</a>
                     </li>
+                    <li>
+                        <a href="<?php echo SITE; ?>apanel/affiliate">Affiliate</a>
+                    </li>
                     <li class="active-link">
                         <a href="<?php echo SITE; ?>apanel/users">Users</a>
                     </li>
                     <li>
                         <a href="<?php echo SITE; ?>apanel/coupon">Coupon</a>
-                    </li>                    
+                    </li>
                     
                     <li class="pull-right">
                         <!--href="<?php // echo SITE.'apanel/users?user=new'; ?>"-->
@@ -216,7 +202,7 @@ if (isset($_GET['user']) && $_GET['user'] == 'view' && !empty($_GET['uid']))
 if (isset($_COOKIE['Planiversity_ord_user']) && !empty($_COOKIE['Planiversity_ord_user']))
     $orderby = $_COOKIE['Planiversity_ord_user'];
 else
-    $orderby = ' ORDER BY `users`.`date_created` DESC';
+    $orderby = ' ORDER BY `users`.`email` ASC';
 
 if (isset($_GET['ord_e']) && !empty($_GET['ord_e'])) {
     if ($_GET['ord_e'] == 'ASC') $ord_e = 'DESC'; else $ord_e = 'ASC';
@@ -653,7 +639,6 @@ if (isset($_GET['user']) && $_GET['user'] == 'view' && !empty($_GET['uid'])) {
                                             <th scope="col">&nbsp;</th>
                                             <th scope="col">&nbsp;</th>
                                             <input type="hidden" id="dt-header-form-data">
-                                            <input type="hidden" name="currentpage" value="<?php if (isset($_GET['currentpage'])) { echo $_GET['currentpage']; } else { echo "1"; } ?>">
                                         </form>
                                     </tr>
                                 </thead>
@@ -879,13 +864,13 @@ if (isset($_GET['user']) && $_GET['user'] == 'view' && !empty($_GET['uid'])) {
                                     // if not on page 1, don't show back links
                                     if ($currentpage > 1) {
                                         // show << link to go back to page 1
-                                        echo '<li class="page-item"><a class="page-link" href="' . $_SERVER['PHP_SELF'] . '?currentpage=1&' . $url . '">First</a></li>';
+                                        echo '<li class="page-item"><a class="page-link" href="' . $_SERVER['PHP_SELF'] . '?currentpage=1">First</a></li>';
                                         //echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=1'><<</a> ";
                                         // get previous page num
                                         $prevpage = $currentpage - 1;
                                         // show < link to go back to 1 page
                                         echo '<li class="page-item">
-                                          <a class="page-link" href="' . $_SERVER['PHP_SELF'] . '?currentpage=' . $prevpage . '&' . $url . '" aria-label="Previous">
+                                          <a class="page-link" href="' . $_SERVER['PHP_SELF'] . '?currentpage=' . $prevpage . '" aria-label="Previous">
                                             <span aria-hidden="true">&laquo;</span>
                                             <span class="sr-only">Previous</span>
                                           </a>
@@ -903,7 +888,7 @@ if (isset($_GET['user']) && $_GET['user'] == 'view' && !empty($_GET['uid'])) {
                                                 // if not current page...
                                             } else {
                                                 // make it a link
-                                                echo '<li class="page-item"><a class="page-link" href="' . $_SERVER['PHP_SELF'] . '?currentpage=' . $x . '&' . $url . '">' . $x . '</a></li>';
+                                                echo '<li class="page-item"><a class="page-link" href="' . $_SERVER['PHP_SELF'] . '?currentpage=' . $x . '">' . $x . '</a></li>';
                                                 //echo " <a href='{$_SERVER['PHP_SELF']}?currentpage=$x'>$x</a> ";
                                             } // end else
                                         } // end if
@@ -914,13 +899,13 @@ if (isset($_GET['user']) && $_GET['user'] == 'view' && !empty($_GET['uid'])) {
                                         $nextpage = $currentpage + 1;
                                         // echo forward link for next page
                                         echo '<li class="page-item">
-                                          <a class="page-link" href="' . $_SERVER['PHP_SELF'] . '?currentpage=' . $nextpage . '&' . $url . '" aria-label="Next">
+                                          <a class="page-link" href="' . $_SERVER['PHP_SELF'] . '?currentpage=' . $nextpage . '" aria-label="Next">
                                             <span aria-hidden="true">&raquo;</span>
                                             <span class="sr-only">Next</span>
                                           </a>
                                         </li>';
                                         echo '<li class="page-item">
-                                          <a class="page-link" href="' . $_SERVER['PHP_SELF'] . '?currentpage=' . $totalpages . '&' . $url . '" aria-label="Next">
+                                          <a class="page-link" href="' . $_SERVER['PHP_SELF'] . '?currentpage=' . $totalpages . '" aria-label="Next">
                                             <span aria-hidden="true">Last</span>
                                             <span class="sr-only">Last</span>
                                           </a>

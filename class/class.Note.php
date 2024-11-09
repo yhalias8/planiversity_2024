@@ -46,6 +46,7 @@ class Note
         global $dbh;
         $stmt = $tmp = $query = '';
         $this->error = '';
+        
         if (!empty($note_id) && !empty($text)) {
             $query = "UPDATE " . $this->table . " SET text = ? WHERE id_note = ?";
             $stmt = $dbh->prepare($query);
