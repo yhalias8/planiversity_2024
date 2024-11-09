@@ -1,0 +1,99 @@
+
+
+#mobile-content {
+    display: none;
+}
+
+.mobile-header {
+    margin-top: 30px;
+}
+
+.mobile-header h4 {
+    font-size: 35px;
+    color: #2572A6;
+    font-weight: 700;
+}
+
+img.mobile-logo {
+    width: 120px;
+}
+
+.mobile-artwork {
+    text-align: center;
+}
+
+img.artwork-logo {
+    width: 40%;
+}
+
+.mobile-artwork h3 {
+    font-size: 32px;
+    font-weight: 500;
+    color: #17476B;
+}
+
+.mobile-artwork h4 {
+    font-size: 26px;
+    font-weight: 400;
+    color: #6C6B69;
+    padding-top: 20px;
+}
+
+@media(min-width: 1024.98px) and (max-width: 1197px){
+
+.launch_commision_item_sec {
+    margin-left: 25%;
+}
+
+
+.closed-sidebar:not(.sidebar-mobile-open) .app-sidebar .scrollbar-sidebar {
+    overflow-y: scroll !important;
+    display: block;
+    width: 100%;
+    z-index: 999999;
+}
+
+}
+
+
+@media (max-width: 768px) {
+    img.mobile-logo {
+        width: 90px;
+    }
+    .mobile-header h4 {
+        font-size: 28px;
+    }
+    .mobile-artwork h3 span {
+        display: block;
+    }
+    .mobile-artwork h4 span {
+        display: block;
+    }
+}
+
+@media (max-width: 576px) {
+    .mobile-header h4 {
+        font-size: 20px;
+    }
+    img.mobile-logo {
+        width: 70px;
+    }
+    img.artwork-logo {
+        width: 80%;
+    }
+    .mobile-artwork {
+        margin-top: 20px;
+    }
+    .mobile-artwork h3 {
+        font-size: 24px;
+    }
+    .mobile-artwork h3 span {
+        display: block;
+    }
+    .mobile-artwork h4 {
+        font-size: 20px;
+    }
+    .mobile-artwork h4 span {
+        display: block;
+    }
+}

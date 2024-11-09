@@ -1,0 +1,113 @@
+# *.zip
+# *.log
+# *.pyc
+# *.swp
+# .DS_Store
+# .vscode/
+
+# /.composer
+# /.git
+# /.well-known
+
+
+
+# /busmap
+# /cgi-bin
+# /class_11042020
+# /dev
+
+# /font_11042020_bkp
+
+# /gallery
+
+# /js/node_modules
+
+# /old
+# /pdf
+
+# /restapi
+# /src
+# /restapi
+
+# /styleadminpanel
+# /stylenew
+# /subwaymap
+
+# /vendor
+# /video
+
+
+# *.zip
+# *.log
+# *.pyc
+# *.swp
+# .DS_Store
+# .vscode/
+
+/.composer
+/.git
+/.well-known
+/ajaxfiles/profile
+/api
+/busmap
+/cgi-bin
+/class_11042020
+/dev
+/font
+/font_11042020_bkp
+/fonts
+/gallery
+/js/node_modules
+/newpage
+/old
+/pdf
+/PHPExcel-1.8
+/restapi
+/src
+/restapi
+/styleadminpanel
+/stylenew
+/subwaymap
+/tripitapi
+/twillioApi
+/vendor
+/video
+.ftpquota
+.htaccess
+# composer.json
+# composer.lock
+config.ini.php
+error_log
+config.ini.curl.php
+# package.json
+# package-lock.json
+# robots.txt
+# sitemap.xml
+
+# .ftpquota
+# .htaccess
+# composer.json
+# composer.lock
+# config.ini.php
+# config.ini.curl.php
+# package.json
+# package-lock.json
+# robots.txt
+# sitemap.xml
+
+# !/assets/css/app-style.css
+
+/admin/admin_2023_02.zip
+/affiliate/images/planiversity_video.mp4
+/assets/file/planiversity_intro.mp4
+/admin/old/v5/admin-26-2023.zip
+/assets/file/Landing_Video_V1.mp4
+/staging
+
+admin/admin_2023_02.zip
+affiliate/images/planiversity_video.mp4
+assets/file/planiversity_intro.mp4
+admin/old/v5/admin-26-2023.zip
+assets/file/Landing_Video_V1.mp4
+staging
+

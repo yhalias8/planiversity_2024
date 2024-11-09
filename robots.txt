@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: 
+Disallow: /users/
+Disallow: /welcome/
+Disallow: /login
+Disallow: /password-restore

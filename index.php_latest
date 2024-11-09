@@ -1,0 +1,669 @@
+<?php
+include_once("config.ini.php");
+if ($auth->isLogged()) {
+    header('location: welcome');
+}
+
+include_once("include_login_php.php");
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Planiversity</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="<?= SITE; ?>home-page/css/menuzord.css" rel="stylesheet" type="text/css" />
+    <link href="<?= SITE; ?>home-page/css/mystyle.css?v=1" rel="stylesheet">
+    <!-- <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"> -->
+    <link href="<?= SITE; ?>home-page/css/responsive.css?v=1" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script src="<?= SITE; ?>home-page/js/owl.carousel.js"></script> -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146873572-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-146873572-1');
+    </script>
+
+    <!-- Google Tag Manager -->
+    <script>
+        (function(w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start': new Date().getTime(),
+                event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-PBF3Z2D');
+    </script>
+    
+    <?php include_once("includes/reditus_tracking_script.php") ?>
+    
+    <script>
+        $(document).ready(function() {
+            $('.icon_baar').click(function() {
+                $('.drop-box').toggle();
+            })
+            $('.icon_baar').mouseover(function() {
+                $('.drop-box').show();
+            })
+            $('.drop-box').mouseleave(function() {
+                $('.drop-box').hide();
+            })
+        })
+    </script>
+    <!-- End Google Tag Manager -->
+    <style>
+        .drop-box {
+            top: 50px;
+            left: 200px;
+            z-index: 99;
+            width: auto;
+            height: auto;
+            padding: 5px 10px;
+            background: white;
+            border-radius: 5px;
+            position: absolute;
+        }
+
+        .drop-box>a {
+            text-decoration: none;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        @media only screen and (min-width: 1900px) {
+            .video_header_sec {
+                margin-top: -580px;
+            }
+        }
+    </style>
+    <script>
+        (function(w) {
+            var k = "nudgify",
+                n = w[k] || (w[k] = {});
+            n.uuid = "18a58770-0d86-497e-a136-5b439bf4ed8a";
+            var d = document,
+                s = d.createElement("script");
+            s.src = "https://pixel.nudgify.com/pixel.js";
+            s.async = 1;
+            s.charset = "utf-8";
+            d.getElementsByTagName("head")[0].appendChild(s)
+        })(window)
+    </script>
+    <!-- Start TradeDoubler Landing Page Tag Insert on all landing pages to handle first party cookie-->
+    <script language="JavaScript">
+        (function(i, s, o, g, r, a, m) {
+            i['TDConversionObject'] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://svht.tradedoubler.com/tr_sdk.js?org=2307051&prog=324547&dr=true&rand=' + Math.random(), 'tdconv');
+    </script>
+    <!-- End TradeDoubler tag-->
+    <!--Facebook Pixel Code-->
+    <script>
+        ! function(f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function() {
+                n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+
+        fbq('init', '871547440200746');
+        fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1" src="https://www.facebook.com/tr?id=871547440200746&ev=PageView&noscript=1" />
+    </noscript>
+    <!--End Facebook Pixel Code-->
+</head>
+
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PBF3Z2D" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <section class="header_slider_sec">
+        <header id="header">
+            <div class="container">
+                <div class="beauty">
+                    <div id="menuzord" class="menuzord">
+                        <a href="<?= SITE; ?>" title="" class="menuzord-brand"> Planiversity </a>
+                        
+                        <ul class="menuzord-menu menuzord-right">
+                            <li class=""> <a href="<?= SITE ?>about-us">About Us</a></li>
+                            <li><a href="<?= SITE ?>blog">Blog</a></li>
+                            <li><a href="<?= SITE ?>select-your-payment">What it Costs </a></li>
+                            <li><a href="<?= SITE ?>smart-map">Smart Travel </a></li>
+                            <li><a href="<?= SITE ?>travel-booking">Travel Booking </a></li>
+                            <?php
+                            if ($auth->isLogged() && $userdata['customer_number'] == '62f6d52f7e') { ?>
+                                <li><a href="apanel/users">Admin</a></li>
+                                <li><a class="btn free-trial-button" href="logout">Log Out</a>
+                                <?php } else if ($auth->isLogged()) { ?>
+                                <li><a class="btn free-trial-button" href="logout">Log Out</a>
+                                <?php   } else { ?>
+                                <li class="sign_in_btn"><a href="<?= SITE ?>login" id="show_loginform">Sign In</a>
+                                <?php } ?>
+                                </li>
+                        </ul>
+                    </div>
+                    <!--/#menuzord-->
+                </div>
+            </div>
+        </header>
+        <img src="<?= SITE; ?>assets/images/home-page/header_banner.jpg" class="header_banner">
+        <div class="banner_header_heading">
+            <h2 data-aos="zoom-in" data-aos-duration="2000">The Easy Way to Create and Manage<span>Your Travel Itinerary</span></h2>
+            <div class="pragraph">
+                <p data-aos="fade-up" data-aos-duration="3000"> A revolutionary travel logistics service, dedicated to consolidating so much of your <span>travel information.</span></p>
+            </div>
+        </div>
+    </section>
+    <div class="video_header_sec">
+        <a href="" data-toggle="modal" data-target="#video_popup">
+            <img id="starter" class="hide" src="<?= SITE; ?>assets/images/home-page/video_bg.jpg" alt="">
+            <div class="video_play_icon"> <i class="fa fa-play-circle" aria-hidden="true"></i> </div>
+        </a>
+    </div>
+    <section class="how_planning_text" style="margin-top: 30px;">
+        <div class="container">
+            <h2 data-aos="fade-left"><i class="fa fa-arrow-down"></i> How Planning Works <i class="fa fa-arrow-down"></i></h2>
+            <div class="btn_button_sec"> <a href="<?= SITE ?>registration" class="btn_button" data-aos="fade-right">Try Free Today!</a> </div>
+        </div>
+    </section>
+    <section class="create_your_toute_sec">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-5 col-lg-5 col-md-6 col-sm-6">
+                    <div class="create_your_toute_left_text">
+                        <h2 class="common_heading" data-aos="fade-down" data-aos-duration="1500">1. Create Your <span>Route</span></h2>
+                        <p data-aos="fade-up" data-aos-duration="2000">Start the process by <span>selecting your method of</span> <span>travel and creating your route.</span></p>
+                    </div>
+                </div>
+                <div class="col-xl-7 col-lg-7 col-md-6 col-sm-6 padding_right">
+                    <div class="create_your_toute_right_map" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="2000"> <img src="<?= SITE; ?>assets/images/home-page/map_banner_oval_img.jpg"> </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="create_a_schedule_sec">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 oorder_2">
+                    <div class="create_your_toute_right_map" data-aos="fade-right" data-aos-offset="300" data-aos-easing="ease-in-sine"> <img src="<?= SITE; ?>assets/images/home-page/create_a_schedule_img.png"> </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                    <div class="create_your_toute_left_text desktop_view_text" data-aos="fade-left" data-aos-offset="300" data-aos-easing="ease-in-sine">
+                        <h2 class="common_heading">02. Create a Schedule <span>and Add Trip Notes</span></h2>
+                        <p>Keep track of your time and trip details, not <span>leaving either to chance. Adding trip notes to your</span> plan is a simple way to keep yourself reminded of <span>the little things while on the go.</span></p>
+                    </div>
+                    <div class="mobile_view_text">
+                        <h2 class="common_heading">02. Create a <span>Schedule and</span> Add Trip Notes</h2>
+                        <p>Keep track of your time and <span>trip details, not leaving</span> <span>either to chance. Adding</span> <span>trip notes to your plan is a</span> simple way to keep yourself <span>reminded of the little things</span> while on the go.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="add_resource_filters_sec">
+        <div class="curcle_img1 text-right"> <img src="<?= SITE; ?>assets/images/home-page/curcle_img1.png"> </div>
+        <div class="container">
+            <div class="add_resource_filters_content">
+                <div class="add_resource_filters_heading desktop_view_text">
+                    <h2 class="common_heading" data-aos="zoom-in">03. Add Resource Filters</h2>
+                    <p data-aos="fade-left" data-aos-offset="300" data-aos-easing="ease-in-sine"> <span>In our filter section, choose what you deem critical. Resource</span> <span>information, such as weather, embassy location, hospitals, service</span> stations, parking garages, police stations, and more are selected here. </p>
+                </div>
+                <div class="mobile_view_text">
+                    <h2 class="common_heading" data-aos="zoom-in">03. Add <span>Resource Filters</span></h2>
+                    <p data-aos="fade-left" data-aos-offset="300" data-aos-easing="ease-in-sine"> <span> In our filter section, choose</span> what you deem critical. <span>Resource information, such</span> <span>as weather, embassy</span> <span>location, hospitals, service</span> <span>stations, parking garages,</span> <span>police stations, and more</span> are selected here. </p>
+                </div>
+                <img src="<?= SITE; ?>assets/images/home-page/add_resource_filters_img.jpg">
+            </div>
+        </div>
+    </section>
+    <section class="upload_travel_document_sec">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                    <div class="create_your_toute_left_text desktop_view_text">
+                        <h2 class="common_heading" data-aos="fade-right" data-aos-offset="300" data-aos-easing="ease-in-sine"> 04. Upload Travel <span>Documents</span></h2>
+                        <p data-aos="fade-down" data-aos-easing="linear" data-aos-duration="1500">One of the best features of this service is being able to consolidate your trip documentation. Forget having to sift through emails; keep the important information here instead.</p>
+                    </div>
+                    <div class="mobile_view_text">
+                        <h2 class="common_heading" data-aos="fade-right" data-aos-offset="300" data-aos-easing="ease-in-sine"> 04. Upload <span>Travel</span> Documents</h2>
+                        <p data-aos="fade-down" data-aos-easing="linear" data-aos-duration="1500"> <span>One of the best features of</span> this service is being able to <span>consolidate your trip</span> documentation. Forget <span>having to sift through</span> <span>emails; keep the important</span> information here instead.</p>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 padding_right">
+                    <div class="create_your_toute_right_map" data-aos="zoom-in"> <img src="<?= SITE; ?>assets/images/home-page/upload_travel_document_img.png" class="upload_travel_docume_desktop"> <img src="<?= SITE; ?>assets/images/home-page/upload_travel_document_img2.png" class="upload_travel_docume_mobile"> </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="export_your_packet_sec">
+        <div class="container">
+            <div class="export_your_packet_heading text-center">
+                <h2 class="common_heading" data-aos="fade-right">05. Export your <span>Packet</span></h2>
+                <p data-aos="fade-left">Export your packet for an <span>awesome travel experience.</span></p>
+            </div>
+            <div class="export_your_packet_item">
+                <div class="export_your_packet1" data-aos="zoom-out-up"> <img src="<?= SITE; ?>assets/images/home-page/export_your_packet1.png" class="export_packet_img1"> <img src="<?= SITE; ?>assets/images/home-page/export_your_packet2.png" class="export_packet_img2"> </div>
+                <div class="user_card2" data-aos="zoom-out-left"> <img src="<?= SITE; ?>assets/images/home-page/user-card.png"> </div>
+            </div>
+            <div class="btn_button_sec" data-aos="fade-up" data-aos-duration="2000"> <a href="<?= SITE ?>registration" class="btn_button">Try Free Today!</a> </div>
+        </div>
+        <div class="curcle_img2 text-right"> <img src="<?= SITE; ?>assets/images/home-page/curcle_img2.png"> </div>
+    </section>
+    <section class="product_slider_mobile_sec">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
+                    <div class="product_item_list">
+                        <div class="product_item_img"> <img src="<?= SITE; ?>assets/images/home-page/gadgets0.jpg" class="gadget-reel"> </div>
+                        <div class="sale_text"> <span>Coming Soon</span> </div>
+                        <div class="product_item_content">
+                            <h3>Travel Gear and Gadgets</h3>
+                            <p>Looking for Planiversity recommended travel gear to take you through the elements? Or maybe you're feeling a little geeky and want to check out the latest Planiversity suggested travel gadgets.</p>
+                            <div class="pro_cart_btn"> <a href="" class="view_more_btn">View More</a> </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="demos" class="product_slider_sec">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <div class="product_item_list">
+                        <div class="product_item_img"> <img src="<?= SITE; ?>assets/images/home-page/gadgets0.jpg" class="gadget-reel" height="250"> </div>
+                        <div class="sale_text"> <span>Coming Soon</span> </div>
+                        <div class="product_item_content">
+                            <h3>Travel Gear and Gadgets</h3>
+                            <p>Looking for Planiversity recommended travel gear to take you through the elements? Or maybe you're feeling a little geeky and want to check out the latest Planiversity suggested travel gadgets.</p>
+                            <div class="pro_cart_btn"> <a href="" class="view_more_btn">View More</a> </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="the_ultimate_travel" id="guide-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                    <div class="the_ultimate_travel_img"> <img src="<?= SITE; ?>assets/images/home-page/guide.jpg">
+                        <div class="the_ultimate_travel_img_heading">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                    <div class="the_ultimate_travel_right">
+                        <div class="free_btn"> <a href="javascript:void(0)">Free</a> </div>
+                        <div class="text">
+                            <h3 data-aos="fade-up" data-aos-anchor-placement="top-center" class="ultimate_head1">Planiversity Guide to<span>Travel Planning</span></h3>
+                            <h3 data-aos="fade-up" data-aos-anchor-placement="top-center" class="ultimate_head2">Planiversity Guide to<span>Travel Planning</span></h3>
+                            <p data-aos="fade-right" data-aos-offset="300" data-aos-easing="ease-in-sine">Planiversity has the travel planning down to a science. View our guide to learn a few planning tips and ideas for making the most thorough and detailed travel experience ahead of you.</p>
+                        </div>
+                        <form id="enquiryvalidation">
+                            <div class="the_ultimate_travel_input">
+                                <div class="row">
+                                    <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12 col-12 padding_right">
+                                        <input type="email" id="email-subscribe" class="form-control" name="email" placeholder="Email Address" required>
+                                    </div>
+                                    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 col-12 padding_left">
+                                        <button type="button" id="btn-subscribe" class="btn_submit">Download Now</button>
+                                    </div>
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                        <span id="error-msg" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="checkbox" name="news_updates" value="">
+                            &nbsp;
+                            <label for="news_updates"> Opt in to recieve news and updates.</label>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="footer_sec">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6">
+                    <div class="footer_item1">
+                        <h2 class="mobile_heading">Planiversity</h2>
+                        <p>A revolutionary travel logistics <span>service, dedicated to consolidating</span> so much of your travel information. </p>
+                        <ul class="social_media_footer list-unstyled">
+                            <li><a href="https://twitter.com/planiversity" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                            <li><a href="https://www.facebook.com/Planiversity" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                            <li><a href="https://www.instagram.com/planiversity" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                            <li><a href="https://www.linkedin.com/company/planiversity" target="_blank"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                    <div class="footer_item2">
+                        <h4>Site Map</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="<?= SITE ?>contact-us">Contact Us</a></li>
+                            <li><a href="<?= SITE; ?>faq">FAQs</a></li>
+                            <li><a href="<?= SITE; ?>data-security">Data Security </a></li>
+                            <li><a href="">What You'll Get</a></li>
+                            <li><a href="<?= SITE ?>sitemap.xml">Sitemap</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer_item2">
+                        <h4>Legal</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="https://getterms.io/view/98sYm/privacy/en-us">Privacy Policy</a></li>
+                            <li><a href="https://getterms.io/view/98sYm/tos/en-us">Terms of Service</a></li>
+                            <li><a href="https://getterms.io/view/98sYm/cookie/en-us">Cookies</a></li>
+                            <li><a href="https://getterms.io/view/98sYm/aup/en-us">AUP</a></li>
+                            
+                        </ul>
+                    </div>                    
+                    
+                    <div class="footer_item2">
+                        <h4>Quick Links</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="<?= SITE ?>registration">Free Demo</a></li>
+                            <li><a href="<?= SITE ?>affiliate">Become an Affiliate</a></li>
+                            <li><a href="">Partners</a></li>
+                            <li><a href="https://planivers.com" target="_blank">Planivers Magazine</a></li>
+                        </ul>
+                    </div>                    
+                </div>
+                
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6">
+                    <div class="footer_item3">
+                        <h4>Contact Us</h4>
+                        <p>Have a question? Need to get <span>something off your chest?</span> Email Us and we'll contact you...</p>
+                        <address>
+                            4023 Kennett Pike <span>Suite 690</span> Wilmington, DE 19807
+                        </address>
+                        <p><a href="mailto:plans@planiversity.com">plans@planiversity.com</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="copywrite_sec">
+                <p>© Copyright. 2015 - <?= date('Y'); ?>. Planiversity, LLC. All Rights Reserved.</p>
+            </div>
+        </div>
+        <div class="footer_curcle_bar"> <img src="<?= SITE; ?>assets/images/home-page/footer_curcle_bar.png"> </div>
+    </footer>
+    <div class="video_popusec">
+        <!-- The Modal -->
+        <div class="modal fade" id="video_popup">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <button type="button" class="close" id="pause-button" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <video width="100%" height="auto" id="video" controls>
+                            <source src="<?= SITE; ?>assets/images/home-page/planiversity_video.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="<?= SITE; ?>home-page/js/menuzord.js"></script>
+    <script src="<?= SITE; ?>home-page/js/jquery.validate.min.js"></script>
+
+    <script>
+        $('.image_download').click(function() {
+            location.reload();
+        });
+    </script>
+    <script>
+        $('#video_popup').on('shown.bs.modal', function() {})
+        $('#video_popup').on('hidden.bs.modal', function() {
+            $('#video')[0].pause();
+        })
+    </script>
+    <script>
+        //AOS.init();
+    </script>
+    <script>
+        (function($) {
+            "use strict";
+            var main_wind = $(window);
+            var wWidth = $(window).width();
+            jQuery(document).ready(function($) {
+                jQuery("#menuzord").menuzord({
+                    trigger: "hover",
+                    indicatorFirstLevel: '<i class="fa fa-angle-down"></i>',
+                    indicatorSecondLevel: '<i class="fa fa-angle-right"></i>'
+                });
+
+            });
+
+        }(jQuery));
+    </script>
+    <!-- <script>
+        (function(d) {
+            'use strict';
+
+            var str = d.getElementById('starter'),
+                pyr = d.getElementById('player');
+
+            str.classList.remove('hide');
+
+            str.addEventListener('click',
+                function() {
+                    pyr.play();
+                    str.classList.add('hide');
+                }, false);
+
+            pyr.addEventListener('ended',
+                function() {
+                    pyr.load();
+                    str.classList.remove('hide');
+                }, false);
+
+        }(document));
+    </script> -->
+    <script type="text/javascript">
+        $.validator.setDefaults({
+            submitHandler: function() {
+                form.submit();
+            }
+        });
+
+        $(document).ready(function() {
+            jQuery.validator.addMethod("lettersonly", function(value, element) {
+                return this.optional(element) || /^[a-z\s]+$/i.test(value);
+            }, "Only alphabetical characters");
+            $("#enquiryvalidation").validate({
+
+                rules: {
+                    name: {
+                        required: true,
+                        lettersonly: true
+                    },
+                    phone: {
+                        required: true,
+                        number: true
+                    },
+
+
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    subject: "required",
+                    country: "required"
+                },
+
+                errorElement: "em",
+                errorPlacement: function(error, element) {
+                    // Add the `help-block` class to the error element
+                    error.addClass("help-block");
+
+                    if (element.prop("type") === "checkbox") {
+                        error.insertAfter(element.parent("label"));
+                    } else {
+                        error.insertAfter(element);
+                    }
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).parents(".col-sm-5").addClass("has-error").removeClass("has-success");
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).parents(".col-sm-5").addClass("has-success").removeClass("has-error");
+                }
+            });
+
+        });
+        document.getElementById('query_page_url').value = window.location;
+    </script>
+    <!-- <script>
+        $(document).ready(function() {
+            $('.owl-carousel').owlCarousel({
+                loop: true,
+                margin: 10,
+                responsiveClass: true,
+                autoplay: true,
+                autoplayTimeout: 1000,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: {
+                        items: 2,
+                        nav: true
+                    },
+                    600: {
+                        items: 4,
+                        nav: false
+                    },
+                    1000: {
+                        items: 3,
+                        nav: true,
+                        loop: false,
+                        margin: 20
+                    }
+                }
+            })
+        })
+    </script> -->
+    <script type="text/javascript">
+        "use strict";
+
+        ! function() {
+            var t = window.driftt = window.drift = window.driftt || [];
+            if (!t.init) {
+                if (t.invoked) return void(window.console && console.error && console.error("Drift snippet included twice."));
+                t.invoked = !0, t.methods = ["identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on"],
+                    t.factory = function(e) {
+                        return function() {
+                            var n = Array.prototype.slice.call(arguments);
+                            return n.unshift(e), t.push(n), t;
+                        };
+                    }, t.methods.forEach(function(e) {
+                        t[e] = t.factory(e);
+                    }), t.load = function(t) {
+                        var e = 3e5,
+                            n = Math.ceil(new Date() / e) * e,
+                            o = document.createElement("script");
+                        o.type = "text/javascript", o.async = !0, o.crossorigin = "anonymous", o.src = "https://js.driftt.com/include/" + n + "/" + t + ".js";
+                        var i = document.getElementsByTagName("script")[0];
+                        i.parentNode.insertBefore(o, i);
+                    };
+            }
+        }();
+        drift.SNIPPET_VERSION = '0.3.1';
+        drift.load('99c7am4huua5');
+    </script>
+    <script>
+        var count = 0;
+        setInterval(function() {
+            if (count < 3) {
+                count++;
+            } else {
+                count = 0;
+            }
+        }, 5000)
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#btn-subscribe').click(function() {
+                $.ajax({
+                    type: "POST",
+                    data: $('#enquiryvalidation').serialize(),
+                    url: "<?= SITE ?>download_guide.php",
+                    dataType: "JSON",
+                    success: function(response) {
+                        if (response.status == "subscribed") {
+                            // Start file download.
+                            download("2022-Guide.pdf");
+                            $('#email-subscribe').val("");
+                        } else {
+                            $('#error-msg').html("<b>" + response.title + "</b>");
+                        }
+                    },
+                    error: function() {
+                        console.log('Something went wrong');
+                    }
+                })
+            })
+        })
+
+        function download(filename) {
+            var element = document.createElement('a');
+            element.setAttribute('href', '<?= SITE ?>home-page/' + filename);
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+    </script>
+</body>
+
+</html>

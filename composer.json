@@ -1,0 +1,13 @@
+{
+  "require": {
+    "phpauth/phpauth": "^1.1",
+    "mpdf/mpdf": "^7.0",
+    "stripe/stripe-php": "^7.66",
+    "ext-json": "*",
+    "ext-curl": "*",
+    "ext-simplexml": "*",
+    "google/apiclient": "^2.0",
+    "ext-pdo": "*",
+    "ext-dom": "*"
+  }
+}

@@ -1,0 +1,220 @@
+<?php
+$URL = ADMIN_URL;
+$FILE_PATH = ADMIN_URL_UPLOADS;
+
+
+function curlRequestGet($url)
+{
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
+    $headers = array(
+        "Content-type: application/json",
+    );
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
+}
+
+
+function curlRequestPost($url, $fields)
+{
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
+
+
+    $headers = array(
+        "Content-type: application/json",
+    );
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+
+    //curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
+}
+
+function processCategoryData($mdata, $path)
+{
+
+    if (!$mdata) {
+        return '<div class="not-found">
+        <i class="fa fa-window-close"></i> <p>No data found</p>
+        </div>';
+    }
+
+    $hold = "";
+    $parms = "images/category/";
+
+    foreach ($mdata as $item) {
+
+        $props = file_path_process($path, $parms, $item->category_image);
+        $hold .= '
+        <div class="category-item item" data-category-slug=' . $item->slug . '>
+        <div class="category-content">
+            <img src="' . $props . '" alt="" class="category_image">
+            <div class="category-body">
+                <p>' . $item->services_count . ' Courses</p>
+                <h3>' . $item->category_name . '</h3>
+            </div>
+        </div>
+    </div>
+    ';
+    }
+    return $hold;
+}
+
+
+function processServiceData($mdata, $path)
+{
+
+    if (!$mdata) {
+        return '<div class="not-found">
+        <i class="fa fa-window-close"></i> <p>No data found</p>
+        </div>';
+    }
+
+    $hold = "";
+    $parms = "images/service/";
+    foreach ($mdata as $item) {
+
+        $props = file_path_process($path, $parms, $item->service_image);
+        $title = limitServiceTitle($item->service_title);
+        $wishlist = wishlist_calculation($item->wishlist, $item->id);
+
+        $hold .= '
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 service-item">
+        <div class="service-wrapper" data-service-id=' . $item->id . '>
+            <img src="' . $props . '" alt="" class="service_image">
+
+            <div class="service-collect">
+            <button ' . $wishlist . '>
+            <i class="fa fa-heart-o" aria-hidden="true"></i>
+            </button>
+            </div>
+            
+            <div class="service-content">
+                <div class="service-header">
+                    <p>' . $item->category->category_name . '</p>
+                    <h4>' . $title . '</h4>
+                </div>
+
+                <div class="rating-section">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="ratings">
+                            <i class="fa fa-star rating-color"></i>
+                            <p>' . $item->service_rating . ' <span> | ' . $item->reviews_count . ' reviews </span></p>
+                        </div>                        
+                    </div>
+                </div>
+
+                <div class="service-footer">
+                    <div class="seller-info">
+                        <img src="https://www.planiversity.com/staging/ajaxfiles/profile/IMG_1466443467.png">
+                        <p>' . $item->author_name . '</p>
+                    </div>
+                    <div class="service-price">
+                        <p>Starting at <span>$' . $item->regular_price . '</span></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>        
+        ';
+    }
+    return $hold;
+}
+
+
+function processOrderData($mdata, $path)
+{
+
+    if (!$mdata) {
+        return '<div class="not-found">
+        <i class="fa fa-window-close"></i> <p>No data found</p>
+        </div>';
+    }
+
+    $hold = "";
+    $parms = "images/service/";
+    $props = file_path_process($path, $parms, $mdata->service_image);
+
+    $current_price = price_calculation($mdata);
+
+    $hold .= '
+    <div class="product">
+    <div class="row">
+    <div class="col-md-3">
+        <img class="img-fluid mx-auto d-block image" src="' . $props . '">
+    </div>
+    <div class=" col-md-8">
+        <div class="info">
+            <div class="row">
+                <div class="col-md-8 product-name">
+                    <div class="product-name">
+                        <a href="#">' . $mdata->service_title . '</a>
+                        <div class="product-info">
+                            <div>Category: <span class="value">' . $mdata->category->category_name . '</span></div>
+                            <div>Author: <span class="value">' . $mdata->author_name . '</span></div>
+                            <div>Reviews: <span class="value">' . $mdata->reviews_count . ' reviews</span></div>
+                            <div>Rating: <span class="value"> <i class="fa fa-star rating-color null"></i> ' . $mdata->service_rating . '</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 price">
+                    <span>$' . $current_price . '</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>       
+    </div>
+        ';
+
+    return $hold;
+}
+
+
+function limitServiceTitle($string)
+{
+    return substr_replace($string, "...", 50);
+}
+
+function file_path_process($path, $parms, $file)
+{
+    return $path . $parms . $file;
+}
+
+
+function wishlist_calculation($wish, $service_id)
+{
+    $id = '';
+    $status = "";
+    if (!empty($wish)) {
+        $id = $wish[0]->id;
+        $status = "added";
+    }
+
+    return 'class="wish-class ' . $status . '" value="' . $id . '" data-service-id=' . $service_id;
+}
+
+function price_calculation($mdata)
+{
+    $default_value = $mdata->regular_price;
+    if ($mdata->sale_price != 0) {
+        $default_value = $mdata->sale_price;
+    }
+    return $default_value;
+}

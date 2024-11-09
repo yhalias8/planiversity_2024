@@ -1,0 +1,23 @@
+.checkbox label {
+    padding-left: 3px !important;
+    font-size: 11px !important;
+}
+
+.map-icons img {
+    margin: 0px 3px !important;
+}
+
+.slimScrollDiv {
+    margin-bottom: 15px !important;
+    height: 251px !important;
+}
+
+
+h6.modal-sub-title {
+    font-weight: 400;
+    padding: 12px !important;
+}
+
+.facility_section {
+    padding: 15px 0 0 10px;
+}

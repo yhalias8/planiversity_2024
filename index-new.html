@@ -1,0 +1,306 @@
+
+<html>
+<head>
+
+<meta charset="utf-8">
+<title>Planiversity | Consolidated Travel Information Management</title>
+<meta name="description" content="Planiversity turns travelers into confident and well-prepared travel professionals, providing travel information beyond itinerary management.">
+<meta name="keywords" content="Consolidated Travel Information Management">
+
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="canonical" href="">
+<link href="stylenew/style.css" rel="stylesheet" type="text/css" />
+<link href="stylenew/responsive.css" rel="stylesheet" type="text/css" />
+<link href="stylenew/slider.css" rel="stylesheet" type="text/css" />
+<script src="stylenew/responsive-nav.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119611408-1"></script>
+<script type="text/javascript">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-119611408-1');
+</script>
+<script src="js/jquery-1.11.3.js"></script>
+<!--<script type="text/javascript" src="js/slider.js"></script>-->
+<script type="text/javascript" src="js/jquery.countdown.js"></script>
+<script src="src/skdslider.min.js"></script>
+<link href="src/skdslider.css" rel="stylesheet">
+</head>
+<body>
+<div class="content">
+
+    <style>
+        @-webkit-keyframes downarrow {
+             0% { -webkit-transform: translateY(0); opacity: 0.4 }
+             100% { -webkit-transform: translateY(0.4em); opacity: 0.9 }
+        }
+        .arrow {
+  border-color:transparent;
+  border-style:solid;
+  border-width:0 2em;
+  display:block;
+  height:0;
+  margin:10em auto;
+  opacity:0.4;
+  text-indent:-9999px;
+  transform-origin: 50% 50%;
+  width:0;
+}
+
+.down {
+  -webkit-animation: downarrow 0.8s infinite alternate ease-in-out;
+  /*border-top:2em solid #00b6f1;*/
+}
+        </style>
+<script type="text/javascript">
+function show_win(id)
+   { //$('#link_'+id).toggle();
+     $('#win_'+id).toggle('slow');     
+   }
+  $(document).ready(function() {
+	  $('#show_loginform').click(function(){
+		 $('.login_cont').show('fast');  
+	  });
+	   $('#login_cont_close').click(function(){
+         $('.login_cont').hide('fast');  
+      });
+      $('#showhidepassword').click(function(){
+          var x = document.getElementById("login_password");
+            if (x.type === "password") {
+                x.type = "text";
+                document.getElementById("showhidepassword").src="images/if_misc-_eye_vision_1276868.png";
+            } else {
+                x.type = "password";
+                document.getElementById("showhidepassword").src="images/if_misc-_eye_vision_1276868.png";
+            }
+		   
+	  });
+	  
+    //////// NEW CODE
+	var $elems = $('.animateblock');
+		  var winheight = $(window).height();
+		  var fullheight = $(document).height();
+		  
+		  $(window).scroll(function(){
+			animate_elems();
+		  });
+		  
+		  function animate_elems() {
+			wintop = $(window).scrollTop();
+		 
+			$elems.each(function(){
+			  $elm = $(this);
+			  
+			  if($elm.hasClass('animated')) { return true; }
+			  
+			  topcoords = $elm.offset().top;
+			  
+			  if(wintop > (topcoords - (winheight*.75))) {			
+				if ($elm.attr("title")) 
+				   $elm.addClass('animated '+$elm.attr("title"));
+				else if ($elm.attr("name")) 
+				   $elm.addClass('animated '+$elm.attr("name"));
+				else
+				   $elm.addClass('animated');   
+			  }		  
+			});
+		  }
+		  
+        $('#demo1').skdslider({
+          slideSelector: '.slide',
+          delay:5000,
+          animationSpeed:2000,
+          showNextPrev:true,
+          showPlayButton:false,
+          autoSlide:true,
+          pauseOnHover:true,
+          animationType:'fading'
+        });
+	//////// END NEW CODE	  
+  });  
+  
+</script>
+
+<header class="main_head">
+     <div class="cont_in">
+         <h1><a href=""><img src="images/logo.png" class="logo" alt="" />Planiversity</a></h1>
+         <nav class="nav-collapse">
+              <ul class="main">
+                                <li><a href="about-us">About Us</a></li>
+                <li><a href="faq">FAQ</a></li>
+                <li><a href="select-your-payment">Billing</a></li>
+                <li><a href="data-security">Data Security</a></li>
+                                  <li><a id="show_loginform" class="login_nav" >Log in</a></li>
+                              </ul>
+         </nav>
+        <script type="text/javascript">
+          var navigation = responsiveNav(".nav-collapse");
+        </script>
+    </div>
+</header>
+
+
+<div class="login_cont">  
+<div class="login_cont_in">     
+     <a id="login_cont_close" class="close">X</a>
+     <form name="login_form" method="POST">
+        <h2>SIGN IN</h2>
+        <div class="error_style"></div>            
+        <input name="login_username" id="login_username" type="text" value="" maxlength="100" placeholder="Email or Customer ID">
+        <input name="login_password" id="login_password" type="password" maxlength="50" value="" placeholder="Password">
+        <div class="showhidepassword showhidepassword2"><img title="toggle password visibility" id="showhidepassword" src="images/if_misc-_eye_vision_1276868.png" alt="showorhidepassword" /></div>
+        <input name="login_submit" id="login_submit" type="submit" value="Login">
+        <label><span class="rem_me"><input name="login_remember" id="login_remember" type="checkbox" value="1">Remember Me</span></label>
+        <a href="registration" class="forg_pass">No account yet?</a><br clear="all" />
+        <a href="password-restore" class="forg_pass">Forgot Password?</a> <br clear="all" />         
+    </form>
+</div>
+</div>
+
+<!--<ul class="cb-slideshow">
+    <li><span> </span><div class="slider_info"><div class="slider_info_in"><h1 class="style1">A revolutionary, unlimited travel logistics service dedicated to consolidating so much travel information.<a class="signup_nav" href="registration">Sign Up</a></h1><a href="about-us">READ MORE</a></div></div></li>
+   <li><span> </span><div class="slider_info"><div class="slider_info_in"><h1 class="style1">Consolidating travel information hasn't been done on such a level, until now<a class="signup_nav" href="registration">Sign Up</a></h1><a href="about-us">READ MORE</a></div></div></li>
+   <li><span> </span><div class="slider_info"><div class="slider_info_in"><h1 class="style1">Know the locations of critical resources at your destination - be it embassy, hospitals, subway stations, or police stations - before you leave<a class="signup_nav h1click" href="registration">Sign Up</a></h1><a href="about-us">READ MORE</a></div></div></li>
+   <li><span> </span><div class="slider_info"><div class="slider_info_in"><h1 class="style1">Designed with efficiency, organization, security, and safety as a priority<a class="signup_nav" href="registration">Sign Up</a></h1><a href="about-us">READ MORE</a></div></div></li>
+</ul> -->
+
+<div id="demo1">
+      <div class="slide">
+        <img src="images/1.jpg" />
+        <!--Slider Description example-->
+         <div class="slide-desc">
+            <!--<h2>Slider Title 1</h2>-->
+            <p>A revolutionary, unlimited travel logistics service dedicated to consolidating so much travel information.<a class="more" href="registration">Sign Up</a></p>
+            <a href="about-us">READ MORE</a>
+            <br>
+            <br>
+            <a href="#moredetails" class="more_det" style="width:30px;height: 30px;"><img src="images/sliderarrow.png" /></a>
+        </div>
+     </div>
+    <div class="slide">
+       <img src="images/2.jpg" />
+       <div class="slide-desc">
+        <!--<h2>Slider Title 2</h2>-->
+        <p>Consolidating travel information hasn't been done on such a level, until now<a class="more" href="registration">Sign Up</a></p>
+        <a href="about-us">READ MORE</a>
+        <br>
+            <br>
+            <a href="#moredetails" class="more_det" style="width:30px;height: 30px;"><img src="images/sliderarrow.png" /></a>
+      </div>
+   </div>
+   <div class="slide">
+      <img src="images/3.jpg" />
+      <!--NO Description Here-->
+      <div class="slide-desc">
+      <!--<h2>Slider Title 4</h2>-->
+      <p>Know the locations of critical resources at your destination - be it embassy, hospitals, subway stations, or police stations - before you leave<a class="more" href="registration">Sign Up</a></p>
+      <a href="about-us">READ MORE</a>
+      <br>
+            <br>
+            <a href="#moredetails" class="more_det" style="width:30px;height: 30px;"><img src="images/sliderarrow.png" /></a>
+     </div>
+   </div>
+   <div class="slide">
+     <img src="images/4.jpg" />
+     <div class="slide-desc">
+      <!--<h2>Slider Title 4</h2>-->
+      <p>Designed with efficiency, organization, security, and safety as a priority <a class="more" href="registration">Sign Up</a></p>
+      <a href="about-us">READ MORE</a>
+      <br>
+            <br>
+            <a href="#moredetails" class="more_det" style="width:30px;height: 30px;"><img src="images/sliderarrow.png" /></a>
+     </div>
+  </div>
+<!-- <div class="slide">
+    <img src="slides/5.jpg" />
+ </div>
+ <div class="slide">
+   <img src="slides/6.jpg" />
+    <div class="slide-desc">
+    <h2>Slider Title 6</h2>
+    <p>Demo description here. Demo description here. Demo description here. Demo description here. Demo description here. <a class="more" href="#">more</a></p>
+   </div>
+ </div>-->
+<!--<div class="timer_index">
+<div class="timer_index_in">
+    <span style="white-space:nowrap;">Keep Scrolling</span><br />
+<br />
+</div>
+</div>-->
+
+<!--We are free for this many more days: <div id="getting-started"></div>
+<script type="text/javascript">
+  $('#getting-started').countdown('2019/01/30', function(event) {
+    $(this).html(event.strftime('%w weeks %d days %H: %M: %S'));
+  });
+</script>-->
+</div>
+
+<div class="steps">
+<h3 id="moredetails" class="sectiontitle animateblock">How Planiversity Works</h3>
+
+<section class="step_1 animateblock">
+   <div class="cont_in">
+   <figure class="animateblock left">Step<br/><center>1</center></figure>
+   <h4 class="animateblock left">Select your means and create your route</h4>
+   <img class="animateblock" src="images/step1_img.png" width="100%" />
+   </div>
+</section>
+
+<section class="step_2 animateblock">
+   <div class="cont_in">
+   <figure class="animateblock left">Step<br/><center>2</center></figure>
+   <h4 class="animateblock left">Create a Trip Schedule and Add Trip Notes</h4>
+   </div>
+</section>
+
+<section class="step_3 animateblock">
+   <div class="cont_in">
+   <figure class="animateblock left">Step<br/><center>3</center></figure>
+   <h4 class="animateblock left">Choose your Filters</h4>
+   <img class="animateblock" src="images/step3_img.jpg" width="100%" />
+   </div>
+</section>
+
+<section class="step_4 animateblock">
+   <div class="cont_in">
+   <figure class="animateblock left">Step<br/><center>4</center></figure>
+   <h4 class="animateblock left">Add Travel Documents</h4>
+   <center><img class="animateblock" src="images/step4_img.png" /></center>
+   </div>
+</section>
+
+<section class="step_5 animateblock">
+   <div class="cont_in">
+   <figure class="animateblock left">Final<br/><center>Step</center></figure>
+   <h4 class="animateblock left">Export your Packet</h4>
+   <center><img class="animateblock super_width" src="images/step5_img.png" /><br />
+   <a href="#"><img class="animateblock" src="images/step5_link.png"></a>
+   </center>
+   <a href="#" class="down"><img src="images/section_arrow.png" /></a>   
+   </div>
+</section>
+</div>
+<footer class="footer">
+    <div class="cont_in">
+         <nav>
+           <ul>
+              <li><a href="contact-us">Contact Us</a></li>
+              <li><a target="_blank" href="http://erichrichardblog.wordpress.com">Blog</a></li>
+              <li><a href="pdf/example.pdf">What You'll Get Gallery</a></li>
+           </ul>
+        </nav>
+        <p>&copy; Copyright 2018 Planiversity LLC</p><br>
+  <ul class="social_icons">
+   <li><a href="https://www.facebook.com/Planiversity/" target="_blank"><img src="images/icon_fb.png" alt="" /></a></li>
+   <li><a href="https://www.instagram.com/planiversity/" target="_blank"><img src="images/icon_int.png" alt="" /></a></li>
+   <li><a href="https://twitter.com/planiversity" target="_blank"><img src="images/icon_tw.png" alt="" /></a></li>
+   <li><a href="https://www.linkedin.com/company/planiversity/" target="_blank"><img src="images/icon_in.png" alt="" /></a></li>
+   <!--<li><a href="https://plus.google.com/u/0/s/Planiversity/top" target="_blank"><img src="images/icon_g.png" alt="" /></a></li>-->
+</ul>    </div>
+</footer>
+
+</body>
+</html>
