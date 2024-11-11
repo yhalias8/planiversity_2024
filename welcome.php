@@ -431,7 +431,17 @@ if (isset($_POST['myprofile_submit'])) {
 
         .event_items_left h2 {
             text-transform: capitalize;
+        }  
+        
+        .segment-item {
+            display: grid;
         }
+        .card.trip_info {
+            margin-bottom: 0px !important;
+        }
+        .card.other_info {
+            margin-bottom: 0px !important;
+        }  
 
         .gradient-border, .gradient-border2 {
             position: relative;
@@ -1178,7 +1188,7 @@ $tmp_meeting = $stmt_meeting->execute();
                                 <img src="<?=SITE;?>/images/comming-2025.png" />
                             </div>
 
-                            <div class="card other_info">
+                            <div class="card mt-3 other_info">
                                 <div class="trip_heading document">
                                     <h5 style="color:#4a6875;font-weight: normal">Your Private Plan Notes</h5>
                                 </div>
