@@ -609,6 +609,7 @@ include('include_doctype.php');
         }
 
         div#info-content {
+            overflow-x: hidden;
             min-width: 200px;
             min-height: 80px;
             max-width: 300px;
@@ -673,6 +674,56 @@ include('include_doctype.php');
                 font-size: 18px;
             }
 
+        }
+
+        .gm-style-iw-chr {
+            position: absolute;
+            display: flex;
+            top: 0;
+            right: 0;
+        }
+
+        .gm-style-iw.gm-style-iw-c {
+            padding-top: 35px !important;
+        }
+
+        .photo-container {
+            width: 100%;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 10px;
+            /* border: 1px solid #ddd; */
+        }
+
+        .photo-container ul {
+            display: flex;
+            flex-wrap: nowrap;
+            margin: 0px !important;
+            margin-left: -20px !important;
+            padding: 0;
+        }
+
+        .photo-container li {
+            margin: 10px;
+            display: inline-block;
+        }
+
+        .photo-container img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .modal-backdrop {
+            display: none;
+        }
+
+        #enlarged-image {
+            width: 350px; /* contoh ukuran lebar */
+            height: 350px; /* contoh ukuran tinggi */
+            margin: 0 auto;
+            display: block;
         }
     </style>
 </head>
@@ -1296,6 +1347,21 @@ include('include_doctype.php');
         </div>
     </div>
 
+    <div class="modal fade" id="image-modal" tabindex="-1" role="dialog" aria-labelledby="image-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img id="enlarged-image" src="" alt="Enlarged image">
+            </div>
+            </div>
+        </div>
+    </div>
+
 
     <?PHP
     $user_scale = 'METRIC';
@@ -1364,6 +1430,14 @@ include('include_doctype.php');
                 });
             });
         });
+
+        function enlargeImage(img) {
+            // Set the source of the enlarged image
+            document.getElementById('enlarged-image').src = img.src;
+
+            // Show the modal
+            $('#image-modal').modal('show');
+        }
 
         <?php
         if ($trip->location_multi_waypoint_latlng) {
@@ -1540,7 +1614,7 @@ include('include_doctype.php');
             infowindow = new google.maps.InfoWindow()
 
 
-            populated_marker = new google.maps.Marker({
+            var marker_pupulated = new google.maps.Marker({
                 position: myLatlng,
                 icon: processIcon,
                 map: map_filters,
@@ -1550,12 +1624,11 @@ include('include_doctype.php');
             });
 
 
-            populated_marker.id = id;
-            displayedMarkers.push(populated_marker);
+            marker_pupulated.id = id;
+            displayedMarkers.push(marker_pupulated);
 
 
-            populated_marker.addListener('click', async function() {
-
+            marker_pupulated.addListener('click', async function() {
                 let service = new google.maps.places.PlacesService(map_filters);
                 let place = null;
 
@@ -1568,7 +1641,7 @@ include('include_doctype.php');
                 });
 
                 try {
-                    place = await getPlaceFromGeocoder(populated_marker);
+                    place = await getPlaceFromGeocoder(marker_pupulated);
                 } catch (e) {
                     console.log(e);
                 }
@@ -1580,8 +1653,9 @@ include('include_doctype.php');
                 content += '</div>';
 
                 infowindow.setContent(content);
+                // infowindow.setHeaderContent(title);
                 infowindow.open(map_filters, this);
-
+                // infowindow.setHeaderDisabled(true)
 
                 var infoContent = document.getElementById('info-content');
                 var spinner = infoContent ? infoContent.querySelector('.spinner') : null;
@@ -1591,7 +1665,7 @@ include('include_doctype.php');
 
                     service.getDetails({
                         placeId: place.place_id,
-                        fields: ['name', 'rating', 'formatted_phone_number', 'opening_hours', 'opening_hours.weekday_text', 'website']
+                        fields: ['name', 'rating', 'formatted_phone_number', 'opening_hours', 'opening_hours.weekday_text', 'website', 'photos']
                     }, function(placeDetails, status) {
 
                         spinner.style.display = 'none';
@@ -1629,8 +1703,24 @@ include('include_doctype.php');
                                 detailsContent += `<p><b>${distance} from your destination</b></p>`;
                             }
 
+                            if (placeDetails.photos) {
+                                // detailsContent += '<p><b>Photos:</b></p>';
+                                detailsContent += '<div class="photo-container" style="width: 100%; overflow-x: auto; white-space: nowrap;margin-top:10px;">';
+                                detailsContent += '<ul style="display: flex; flex-wrap: nowrap;">';
+                                for (var i = 0; i < placeDetails.photos.length; i++) {
+                                    detailsContent += '<li style="margin: 10px;"><img src="' + placeDetails.photos[i].getUrl() + '" width="100px" class="enlargeable" onclick="enlargeImage(this)"></li>';
+                                }
+                                detailsContent += '</ul>';
+                                detailsContent += '</div>';
+                            }
+
+
                             // Update the content of the info window with the details
                             document.getElementById('info-content').innerHTML = detailsContent;
+                            const importNode = $('#info-content').find('.btn-import-resource');
+                            if (importNode) {
+                                setOnImportClick(importNode);
+                            }
                         }
 
                     });
@@ -1638,6 +1728,24 @@ include('include_doctype.php');
                 }
             });
         }
+        // Add a click event listener to the images
+        // $('.enlargeable').on('click', function() {
+        //     console.log('image clicked')
+        //     // Get the source of the clicked image
+        //     var src = $(this).attr('src');
+            
+        //     // Create a modal or lightbox to display the enlarged image
+        //     var modal = '<div class="modal"><img src="' + src + '" style="width: 50%; height: auto;"></div>';
+            
+        //     // Add the modal to the page and show it
+        //     $('body').append(modal);
+        //     $('.modal').show();
+            
+        //     // Add a click event listener to the modal to close it when clicked
+        //     $('.modal').on('click', function() {
+        //         $(this).remove();
+        //     });
+        // });
 
         function offsetCenter(latlng, offsetx, offsety) {
 
@@ -2805,7 +2913,7 @@ include('include_doctype.php');
 
                     service.getDetails({
                         placeId: place.place_id,
-                        fields: ['name', 'rating', 'formatted_address', 'formatted_phone_number', 'opening_hours', 'opening_hours.weekday_text', 'website']
+                        fields: ['name', 'rating', 'formatted_address', 'formatted_phone_number', 'opening_hours', 'opening_hours.weekday_text', 'website', 'photos']
                     }, function(placeDetails, status) {
                         spinner.style.display = 'none';
 
@@ -2844,6 +2952,17 @@ include('include_doctype.php');
 
                             if (distance) {
                                 detailsContent += `<p><b>${distance} from your destination</b></p>`;
+                            }
+
+                            if (placeDetails.photos) {
+                                // detailsContent += '<p><b>Photos:</b></p>';
+                                detailsContent += '<div class="photo-container" style="width: 100%; overflow-x: auto; white-space: nowrap;margin-top:10px;">';
+                                detailsContent += '<ul style="display: flex; flex-wrap: nowrap;">';
+                                for (var i = 0; i < placeDetails.photos.length; i++) {
+                                    detailsContent += '<li style="margin: 10px;"><img src="' + placeDetails.photos[i].getUrl() + '" width="100px" class="enlargeable" onclick="enlargeImage(this)"></li>';
+                                }
+                                detailsContent += '</ul>';
+                                detailsContent += '</div>';
                             }
 
                             detailsContent += `<button type="button" class='btn btn-resource-add btn-resource-add_sm btn-import-resource' data-title="${itemTitle}" data-type="${marker.type ?? ''}" data-address="${itemAddress}" data-lat="${lat}" data-lng="${lng}">Add</button>`
