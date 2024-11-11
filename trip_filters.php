@@ -2573,6 +2573,8 @@ include('include_doctype.php');
                     }
                     marker_church.length = 0;
                 }
+
+                /*
                 if (filter == 'embassy' && (marker_embassy && marker_embassy.length)) {
                     for (i = 0; i < marker_embassy.length; i++) {
                         marker_embassy[i].setMap(null);
@@ -2582,6 +2584,8 @@ include('include_doctype.php');
                     $('#embassy_search').hide();
                     marker_embassy.length = 0;
                 }
+                */
+
                 if (filter == 'metro' && (marker_metro && marker_metro.length)) {
                     for (i = 0; i < marker_metro.length; i++) {
                         marker_metro[i].setMap(null);
@@ -2666,7 +2670,7 @@ include('include_doctype.php');
             } else {
                 bounds = new google.maps.LatLngBounds();
 
-                if (filter == 'embassy' || filter == 'bus_station') {
+                if (false) {
                     var request = {
                         location: myLocation,
                         radius: <?= $radius; ?>, // 10 miles in meters
@@ -2712,8 +2716,11 @@ include('include_doctype.php');
                 for (var i = 0; i < results.length; i++) {
                     createMarker(results[i], name, service);
                 }
+                /*
                 if (document.getElementById('filter_click').value == 'embassy')
                     $('#embassy_result').slideDown('slow');
+
+                 */
             }
         }
 
