@@ -19,6 +19,7 @@ jobs:
           cd /public_html
           git status
 
+
     #- name: Validate composer.json and composer.lock
     #  run: composer validate --strict
 
