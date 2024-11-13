@@ -4,8 +4,8 @@ on:
   push:
     branches: [ "main" ]
 
-permissions:
-  contents: read
+#permissions:
+#  contents: read
 
 jobs:
   build:
@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
       - name: Pull latest changes
         run: |
           pwd
