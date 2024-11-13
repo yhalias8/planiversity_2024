@@ -16,7 +16,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Pull latest changes
         run: |
-          cd /public_html
           git status
 
 
