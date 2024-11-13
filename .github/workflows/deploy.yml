@@ -13,11 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Pull latest changes
         working-directory: /home/planiv5/public_html
-        shell: cmd
         run: ${{ secrets.PULL }}
-
-
-
 
     #- name: Validate composer.json and composer.lock
     #  run: composer validate --strict
