@@ -13,8 +13,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Pull latest changes
         run: |
-          pwd
-          git log
           git pull origin main
 
 

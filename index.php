@@ -209,14 +209,14 @@ include_once("include_login_php.php");
         </header>
 
 
-        
+
             <div class="banner_header_heading container-800">
             <div class="container">
                 <div class="row">
                     <div class="col-xl-7 col-lg-7 col-md-7 col-sm-12">
 
                         <div class="create_your_toute_left_text mockup_section">
-                            <h2 class="common_heading"><span> Create and manage</span> every planning experience</h2>
+                            <h2 class="common_heading"><span> Create and manage</span> every planning experience.</h2>
                             <div class="pragraph">
                                 <p> Perfect for groups and individuals! </p>
                             </div>
@@ -236,19 +236,19 @@ include_once("include_login_php.php");
 
                                 <ul class="tag_nav">
                                     <li class="category-link"><button class="tag-class active" value="0">
-                                    <img class="check-icon" src="<?= SITE; ?>assets/images/home-page/check-icon.svg">    
+                                    <img class="check-icon" src="<?= SITE; ?>assets/images/home-page/check-icon.svg">
                                     Document Sharing</button></li>
                                     <li class="category-link"><button class="tag-class" value="1">
-                                    <img class="check-icon" src="<?= SITE; ?>assets/images/home-page/check-icon.svg">    
+                                    <img class="check-icon" src="<?= SITE; ?>assets/images/home-page/check-icon.svg">
                                     Check-Ins</button></li>
                                 </ul>
 
                                 <ul class="tag_nav">
                                     <li class="category-link"><button class="tag-class" value="3">
-                                    <img class="check-icon" src="<?= SITE; ?>assets/images/home-page/check-icon.svg">    
+                                    <img class="check-icon" src="<?= SITE; ?>assets/images/home-page/check-icon.svg">
                                     Group Communicating</button></li>
                                     <li class="category-link"><button class="tag-class" value="4">
-                                    <img class="check-icon" src="<?= SITE; ?>assets/images/home-page/check-icon.svg">    
+                                    <img class="check-icon" src="<?= SITE; ?>assets/images/home-page/check-icon.svg">
                                     Event & Travel Supporting Services</button></li>
                                 </ul>
 
@@ -266,7 +266,7 @@ include_once("include_login_php.php");
 
         </div>
 
-        
+
     </section>
 <!--
     <div id="discount-christmas" class="discount-christmas hide-for-mob">
@@ -367,7 +367,7 @@ include_once("include_login_php.php");
             </div>
         </div>
     </section>
-    
+
     <section class="add_what_you_get">
         <div class="curcle_img5 text-left"> <img src="<?= SITE; ?>assets/images/home-page/left_oval.png"> </div>
         <div class="container">
@@ -381,17 +381,17 @@ include_once("include_login_php.php");
                         <div class="content_inside">
                             <img src="<?= SITE; ?>assets/images/home-page/view_plan.png" class="file_download">
                         </div>
-                        
+
                         <div class="action_section">
                             <a href="https://www.planiversity.com/registration" class="action_button">Try Free Today!</a>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
         </div>
 
-    </section>    
+    </section>
 
 
     <section class="export_your_packet_sec">
@@ -412,11 +412,11 @@ include_once("include_login_php.php");
                     </div>
                 </div>
             </div>
-            
+
         </div>
-        
+
     </section>
-    
+
     <section class="add_marketplace_sec">
         <div class="curcle_img1 text-right marketplace-circle"> <img src="<?= SITE; ?>assets/images/home-page/top_right.png"> </div>
         <div class="container marketplace_section">
@@ -426,7 +426,7 @@ include_once("include_login_php.php");
                 </div>
             </div>
 
-            
+
             <div class="top_header_heading">
 
                 <div class="container">
@@ -464,7 +464,7 @@ include_once("include_login_php.php");
                                                 <option value="3"> Travel Services </option>
                                                 <option value="4"> Event Services </option>
                                                 <option value="10"> Adventure </option>
-                                                <option value="11"> Concierge Services </option>  
+                                                <option value="11"> Concierge Services </option>
                                                 </select>
 
                                             </div>
@@ -529,10 +529,10 @@ include_once("include_login_php.php");
 
                 </div>
 
-            </div>            
-            
+            </div>
+
         </div>
-    </section>    
+    </section>
 
 
     <section class="marketplace-content" id="marketplace-content">
@@ -556,7 +556,7 @@ include_once("include_login_php.php");
                                 <li class="category-link"><button class="button-class" value="3"> Travel Services </button></li>
                                 <li class="category-link"><button class="button-class" value="4">Event Services </button></li>
                                 <li class="category-link"><button class="button-class" value="10">Adventure </button></li>
-                                <li class="category-link"><button class="button-class" value="11">Concierge Services </button></li> 
+                                <li class="category-link"><button class="button-class" value="11">Concierge Services </button></li>
                             </ul>
                         </div>
 
@@ -743,8 +743,8 @@ include_once("include_login_php.php");
 
         </div>
     </section>
-    
-    
+
+
     <div class="app-section">
         <div class="container">
             <div class="call-to-action">
@@ -951,7 +951,7 @@ include_once("include_login_php.php");
     function hideElement(id){
         document.querySelectorAll(`#${id}`).forEach(box => { box.style.display = "none" })
     }
-    
+
     var owl = $('.owl-carousel');
         owl.owlCarousel({
             stagePadding: 10,
@@ -978,7 +978,7 @@ include_once("include_login_php.php");
                 }
             }
         });
-    
+
     $('.file_download').on('click', function() {
 
             var filePath = "Randy_s_Trip_to_Los_Angeles-1469-40.pdf";
@@ -1053,7 +1053,7 @@ include_once("include_login_php.php");
 
         }(document));
     </script>
-    
+
 
 <script type="text/javascript">
      "use strict";
@@ -1081,12 +1081,12 @@ include_once("include_login_php.php");
          }
      }();
      drift.SNIPPET_VERSION = '0.3.1';
-     drift.load('99c7am4huua5'); 
+     drift.load('99c7am4huua5');
  </script>
- 
+
     <script>
-        
-        
+
+
         function recaptchaCallbackOne() {
             var response = grecaptcha.getResponse();
             $("#grecaptcha_one").val(response);
