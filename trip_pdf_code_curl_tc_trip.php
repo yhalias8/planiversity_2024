@@ -16,6 +16,8 @@ $idtrip = $_GET['idtrip'];
 
 
 include_once("config.ini.curl.php");
+include("class/class.Googlecalendar.php");
+include("class/class.MicrosoftGraph.php");
 
 define("WEB_HOSTING_URL", "/home/planiv5/public_html/"); // live version
 // define("WEB_HOSTING_URL", "C:/OSPanel/domains/Planiversity2021/"); // dev version
@@ -49,11 +51,15 @@ echo "0,";
 
 
 
-$stmh = $dbh->prepare("SELECT sync_googlecalendar FROM users WHERE id=?");
+$stmh = $dbh->prepare("SELECT sync_googlecalendar, gcaltoken FROM users WHERE id=?");
 $stmh->bindValue(1, $userdata['id'], PDO::PARAM_INT);
 $tmp = $stmh->execute();
 $google_object = [];
 $google_object = $stmh->fetch(PDO::FETCH_OBJ);
+
+$googleCalendarAPI = new GoogleCalendar();
+$microsoftGraph = new MicrosoftGraph();
+
 
 // BEGIN --- add event to google calendar
 ///if ($userdata['sync_googlecalendar']) {
@@ -125,12 +131,38 @@ if ($google_object->sync_googlecalendar) {
 	$mail->isHTML(true);
 	$mail->Subject = 'Planiversity.com - Google Calendar Event';
 	$mail->Body = $event_text;
-	$mail->send();
+
+	if ($google_object->gcaltoken){
+		if($event['start_time'] && $event['end_time']){
+			$data = [
+				'summary' => $event['title'],
+				'dateTimeStart' => date('Y-m-d', strtotime($event['start_time'])),
+				'dateTimeEnd' => date('Y-m-d', strtotime($event['end_time'])),
+				'location' => '',
+				'description' => $event['description'],
+			];
+	
+			$response = $googleCalendarAPI->postData($data);
+			$response_data = json_decode($response, true);
+			$gcalendar_id = $response_data['id'];
+			
+			// Update event ID in database
+			if ($response_data['id']) {
+				$query = "UPDATE trips SET gcalendar_id = ? WHERE id_trip = ?";
+				$stmt = $dbh->prepare($query);
+				$stmt->execute([$response_data['id'],  $trip->trip_id]);
+			}
+		}else{
+			$mail->send();
+		}
+	}else{
+		$mail->send();
+	}
 }
 // END --- add event to google calendar
 
 
-$stmo = $dbh->prepare("SELECT sync_outlookcalendar FROM users WHERE id=?");
+$stmo = $dbh->prepare("SELECT sync_outlookcalendar, outlooktoken FROM users WHERE id=?");
 $stmo->bindValue(1, $userdata['id'], PDO::PARAM_INT);
 $tmp = $stmo->execute();
 $outlook_object = [];
@@ -209,7 +241,33 @@ if ($outlook_object->sync_outlookcalendar) {
 	$mail->isHTML(true);
 	$mail->Subject = 'Planiversity.com - Outlook Calendar Event';
 	$mail->Body = $event_text;
-	$mail->send();
+	// $mail->send();
+
+	if ($integration_data->outlooktoken){
+		if($event['start_time'] && $event['end_time']){
+			$data = [
+				'subject' => $event['title'],
+				'dateTimeStart' => date('Y-m-d', strtotime($event['start_time'])),
+				'dateTimeEnd' => date('Y-m-d', strtotime($event['end_time'])),
+				'location' => '',
+			];
+	
+			$respons = $microsoftGraph->postData($data);
+			$response_data = json_decode($respons);
+			$outlook_event_id = $response_data->id;
+			
+			// Update event ID in database
+			if ($response_data->id) {
+				$query = "UPDATE trips SET outlook_event_id = ? WHERE id_trip = ?";
+				$stmt = $dbh->prepare($query);
+				$stmt->execute([$response_data->id,  $trip->trip_id]);
+			}
+		}else{
+			$mail->send();
+		}
+	}else{
+		$mail->send();
+	}
 }
 
 

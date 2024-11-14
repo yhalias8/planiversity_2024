@@ -1,7 +1,14 @@
 <?php
+include_once(__DIR__ . "/../config.app.php");
+include_once(__DIR__ . "/../config.ini.php");
+include_once(__DIR__ . "/../config.ini.curl.php");
+include_once('config.app.php');
 
 $metric = '';
 $imperial = '';
+$googleChecked = $userdata['sync_googlecalendar'] == 1 ? true : false;
+$outlookChecked = $userdata['sync_outlookcalendar'] == 1 ? true : false;
+
 if (isset($_POST['scale'])) {
     $scale = $_POST['scale'];
     $query = "UPDATE `users` SET `scale` = '" . $scale . "' WHERE `users`.`id` = " . $userdata['id'] . ";";
@@ -19,43 +26,63 @@ if (isset($_POST['scale'])) {
 // Sync google calendar
 $gcalendar = '';
 $calendar_check = 1;
-if (isset($_POST['ggcaltmp'])) {
-    $check = ($_POST['ggcal']) ? 1 : 0;
-    $timezone_offset_minutes = $_POST['ggcaltimezone'];
-    $timezone_name = timezone_name_from_abbr("", $timezone_offset_minutes * 60, false);
-    $query = "UPDATE `users` SET `sync_googlecalendar` = '" . $check . "', `timezone` = '" . $timezone_name . "'  WHERE `users`.`id` = " . $userdata['id'] . ";";
+// if (isset($_POST['ggcaltmp'])) {
+
+//     $check = ($_POST['ggcal']) ? 1 : 0;
+//     $timezone_offset_minutes = $_POST['ggcaltimezone'];
+//     $timezone_name = timezone_name_from_abbr("", $timezone_offset_minutes * 60, false);
+//     $query = "UPDATE `users` SET `sync_googlecalendar` = '" . $check . "', `timezone` = '" . $timezone_name . "'  WHERE `users`.`id` = " . $userdata['id'] . ";";
+//     $stmtnew = $dbh->prepare($query);
+//     $stmtnew->execute();
+//     // if ($check) {
+//     //     $calendar_check = 2;
+//     //     $gcalendar = 'checked="checked"';
+//     // }
+// } else {
+//     if ($userdata['sync_googlecalendar']) {
+//         $calendar_check = 2;
+//         $gcalendar = 'checked="checked"';
+//     }
+// }
+
+if (isset($_POST['sync_gcal'])) {
+    $query = "UPDATE `users` SET `sync_googlecalendar` = '" . $_POST['sync_gcal'] . "'  WHERE `users`.`id` = " . $userdata['id'] . ";";
     $stmtnew = $dbh->prepare($query);
     $stmtnew->execute();
-    if ($check) {
-        $calendar_check = 2;
-        $gcalendar = 'checked="checked"';
-    }
-} else {
-    if ($userdata['sync_googlecalendar']) {
-        $calendar_check = 2;
-        $gcalendar = 'checked="checked"';
-    }
+    $calendar_check = 2;
+    $googleChecked = $_POST['sync_gcal'] == 1 ? true : false;
 }
 
-$ocalendar = '';
+// $ocalendar = '';
 $ocalendar_check = 1;
-if (isset($_POST['oocaltmp'])) {
-    $check = ($_POST['oocal']) ? 1 : 0;
-    $timezone_offset_minutes = $_POST['oocaltimezone'];
-    $timezone_name = timezone_name_from_abbr("", $timezone_offset_minutes * 60, false);
-    $query = "UPDATE `users` SET `sync_outlookcalendar` = '" . $check . "', `timezone` = '" . $timezone_name . "'  WHERE `users`.`id` = " . $userdata['id'] . ";";
+// if (isset($_POST['oocaltmp'])) {
+//     $check = ($_POST['oocal']) ? 1 : 0;
+//     $timezone_offset_minutes = $_POST['oocaltimezone'];
+//     $timezone_name = timezone_name_from_abbr("", $timezone_offset_minutes * 60, false);
+//     $query = "UPDATE `users` SET `sync_outlookcalendar` = '" . $check . "', `timezone` = '" . $timezone_name . "'  WHERE `users`.`id` = " . $userdata['id'] . ";";
+//     $stmtnew = $dbh->prepare($query);
+//     $stmtnew->execute();
+//     if ($check) {
+//         $ocalendar_check = 2;
+//         $ocalendar = 'checked="checked"';
+//     }
+// } else {
+//     if ($userdata['sync_outlookcalendar']) {
+//         $ocalendar_check = 2;
+//         $ocalendar = 'checked="checked"';
+//     }
+// }
+
+
+
+if (isset($_POST['sync_outlook'])) {
+    $query = "UPDATE `users` SET `sync_outlookcalendar` = '" . $_POST['sync_outlook'] . "'  WHERE `users`.`id` = " . $userdata['id'] . ";";
     $stmtnew = $dbh->prepare($query);
     $stmtnew->execute();
-    if ($check) {
-        $ocalendar_check = 2;
-        $ocalendar = 'checked="checked"';
-    }
-} else {
-    if ($userdata['sync_outlookcalendar']) {
-        $ocalendar_check = 2;
-        $ocalendar = 'checked="checked"';
-    }
+    $ocalendar_check = 2;
+    $outlookChecked = $_POST['sync_outlook'] == 1 ? true : false;
 }
+
 
 // if ($userdata['account_type'] == 'Individual') {
 //     $user_payment_status = $plan->individual_check_plan($userdata['id']);
@@ -191,11 +218,12 @@ $payment_status = 1;
                     <h6>Connections</h6>
                     <div class="menu_checkbox">
                         <span>Google Calendar</span>
-                        <input type="checkbox" id="google_calender" onClick="google_sync(<?= $calendar_check ?>,<?= $payment_status ?>)" <?= $gcalendar; ?> />
+                        <input type="checkbox" id="google_calender" onClick="google_sync(<?= $calendar_check ?>,<?= $payment_status ?>, this)" <?= $googleChecked == '1' ? 'checked' : ''; ?> />
+                        <div id="buttonDiv"></div>
                     </div>
                     <div class="menu_checkbox">
                         <span>Outlook Calendar</span>
-                        <input type="checkbox" id="outlook_calender" onClick="outlook_sync(<?= $ocalendar_check ?>,<?= $payment_status ?>)" <?= $ocalendar; ?> />
+                        <input type="checkbox" id="outlook_calender" onClick="outlook_sync(<?= $ocalendar_check ?>,<?= $payment_status ?>, this)" <?= $outlookChecked == '1' ? 'checked' : ''; ?> />
                     </div>
                 </li>
                 <li class="Measurements_items">
@@ -233,6 +261,10 @@ $payment_status = 1;
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://accounts.google.com/gsi/client"></script>
 
 <script>
     var timezone_offset_minutes = new Date().getTimezoneOffset();
@@ -243,28 +275,64 @@ $payment_status = 1;
         $('<form action="" method="POST"></form>').append('<input name="scale" value="' + scale + '" />').appendTo('body').submit();
     }
 
-    function google_sync(e, status) {
-        var gval = '';
-        if (e == 1) {
-            gval = 1;
-        } else {
-            gval = 0;
-        }
+    function google_sync(e, status, res) {
+        // Konfigurasi OAuth2
+        const clientId = `<?= GOOGLE_CLIENT_ID ?>`;
+        const redirectUri = `<?= GOOGLE_CLIENT_REDIRECT_URL ?>`;
+        const scope = 'https://www.googleapis.com/auth/calendar';
 
+        //   return;
         if (status == 0) {
             document.getElementById("google_calender").checked = false;
             $('#upgrade').modal('show');
-        } else {
+            return
+        }
 
+        if (res.checked) {
+            // Jika belum login, tampilkan tombol loginoauth2
+            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&scope=${scope}&redirect_uri=${redirectUri}&response_type=code&access_type=offline`;
+
+            // Buka jendela autentikasi
+            window.open(authUrl, '_blank', 'width=500,height=600'); 
+        }else{
             $('<form action="" method="POST"></form>')
-                .append('<input name="ggcal" value="' + gval + '" />')
-                .append('<input name="ggcaltmp" value="checked" />')
-                .append('<input name="ggcaltimezone" value="' + timezone_offset_minutes + '" />')
+                .append('<input name="sync_gcal" value="0" />')
                 .appendTo('body').submit();
         }
+
+
     }
 
-    function outlook_sync(e, status) {
+    function outlook_sync(e, status, res) {
+        const tenant = `<?= OUTLOOK_CLIENT_TENANT ?>`;
+        const clientId = `<?= OUTLOOK_CLIENT_ID ?>`;
+        const redirectUri = `<?= OUTLOOK_CLIENT_REDIRECT_URL ?>`;
+
+        
+        //   return;
+        if (status == 0) {
+            document.getElementById("outlook_calender").checked = false;
+            $('#upgrade').modal('show');
+            return
+        }
+
+        if (res.checked) {
+            // Jika belum login, tampilkan tombol loginoauth2
+            // const authUrl = `https://login.microsoftonline.com/outlook_tenant_id/oauth2/v2.0/authorize?client_id=outlook_client_id&response_type=code&redirect_uri=outlook_redirect_uri&scope=Calendars.ReadWrite%20offline_access&response_mode=query&state=12345`;
+
+            // const authUrl = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/authorize?&client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345`
+            const authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?&client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&response_mode=query&scope=https://graph.microsoft.com/.default&state=12345`
+
+            // Buka jendela autentikasi
+            window.open(authUrl, '_blank', 'width=500,height=600'); 
+        }else{
+            $('<form action="" method="POST"></form>')
+                .append('<input name="sync_outlook" value="0" />')
+                .appendTo('body').submit();
+        }
+
+
+    return;
 
         var oval = '';
         if (e == 1) {

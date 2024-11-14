@@ -4,6 +4,13 @@ include_once("config.ini.php");
 include("class/class.Plan.php");
 include_once("class/class.ToolsWelcome.php");
 include_once ("class/class.TripPlan.php");
+include_once("config.ini.curl.php");
+include("class/class.Googlecalendar.php");
+include("class/class.MicrosoftGraph.php");
+
+$googleCalendarAPI = new GoogleCalendar();
+$microsoftGraph = new MicrosoftGraph();
+
 
 $plan = new Plan();
 
@@ -42,6 +49,14 @@ if (isset($_FILES['fileUp'])) {
 }
 
 if (isset($_POST['group_del']) && !empty($_POST['group_del'])) {
+    $queryEvents = "SELECT gcalendar_id, outlook_event_id FROM trips WHERE id_trip = :id_trip";
+    $stmtEvents = $dbh->prepare($queryEvents);
+    $stmtEvents->bindParam(':id_trip', $_POST['group_del']);
+    $stmtEvents->execute();
+    
+    $events = $stmtEvents->fetchAll(PDO::FETCH_OBJ);
+    $gcalendar_id = $events[0]->gcalendar_id;
+    $outlook_event_id = $events[0]->outlook_event_id;
 
     if (!is_array($_POST['group_del'])) {
         $arr = [$_POST['group_del']];
@@ -56,6 +71,9 @@ if (isset($_POST['group_del']) && !empty($_POST['group_del'])) {
     $stmt = $dbh->prepare($query);
     $stmt->bindValue(1, $userdata['id'], PDO::PARAM_INT);
     $tmp = $stmt->execute();
+
+    $googleCalendarAPI->deleteData($gcalendar_id);
+    $microsoftGraph->deleteData($outlook_event_id);
 }
 
 
