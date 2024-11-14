@@ -5,7 +5,6 @@ error_reporting(E_ALL);
 // Configuration
 include '../config.ini.php';
 include '../config.ini.curl.php';
-include '../config.app.php';
 include '../class/class.Googlecalendar.php';
 
 // Get authentication code from URL

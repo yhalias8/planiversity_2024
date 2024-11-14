@@ -20,8 +20,6 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     $tmp1 = $integration_id->execute();
     $data_id = [];
     $data_id = $integration_id->fetch(PDO::FETCH_OBJ);
-    $data_id->gcalendar_id;
-    $data_id->outlook_event_id;
 
 
     $integration = $dbh->prepare("SELECT sync_googlecalendar, sync_outlookcalendar FROM users WHERE id=?");
@@ -29,8 +27,6 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
     $tmp2 = $integration->execute();
     $data = [];
     $data = $integration->fetch(PDO::FETCH_OBJ);
-    $data->sync_googlecalendar;
-    $data->sync_outlookcalendar;
 
     if ($data->sync_googlecalendar && $data_id->gcalendar_id) {
         $googleCalendarAPI = new GoogleCalendar();
