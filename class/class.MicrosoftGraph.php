@@ -1,5 +1,4 @@
 <?php
-include_once(__DIR__ . "/../config.app.php");
 include_once(__DIR__ . "/../config.ini.php");
 include_once(__DIR__ . "/../config.ini.curl.php");
 
