@@ -12,7 +12,7 @@ jobs:
 #        with:
 #          fetch-depth: '2''
       - name: FTP Deploy to server
-        run: echo ${{secrets.FTP_SERVER}}
+        run: echo ${{secrets.FTP_SERVER}} ${{env.FTP_SERVER}} ${{vars.FTP_SERVER}}
 #        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
 #        with:
 #          server: ${{env.FTP_SERVER}}
