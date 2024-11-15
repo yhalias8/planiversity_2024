@@ -13,10 +13,7 @@ jobs:
           fetch-depth: '2'
       - name: FTP Deploy to server
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        env:
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         with:
           server: 'ftp.planiversity.com'
-          username: ${{ env.FTP_USERNAME }}
-          password: ${{ env.FTP_PASSWORD }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
