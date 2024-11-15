@@ -10,9 +10,9 @@ jobs:
     steps:
 #      - uses: actions/checkout@v4
 #        with:
-#          fetch-depth: '2'
+#          fetch-depth: '2''
+      - name: FTP Deploy to server
         run: echo ${{secrets.FTP_SERVER}}
-#      - name: FTP Deploy to server
 #        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
 #        with:
 #          server: ${{env.FTP_SERVER}}
