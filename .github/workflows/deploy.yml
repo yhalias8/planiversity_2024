@@ -12,9 +12,9 @@ jobs:
         with:
           fetch-depth: '2'
         run: echo ${{env.FTP_SERVER}}
-      - name: FTP Deploy to server
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{env.FTP_SERVER}}
-          username: ${{env.FTP_USERNAME}}
-          password: ${{env.FTP_PASSWORD}}
+#      - name: FTP Deploy to server
+#        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+#        with:
+#          server: ${{env.FTP_SERVER}}
+#          username: ${{env.FTP_USERNAME}}
+#          password: ${{env.FTP_PASSWORD}}
