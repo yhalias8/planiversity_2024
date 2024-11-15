@@ -95,7 +95,7 @@ include('include_doctype.php');
 
     <script src="<?php echo SITE; ?>js/jquery-1.11.3.js"></script>
     <script>
-        var SITE = '<?= 'https://' . $_SERVER['HTTP_HOST'] . '/staging/'; ?>'
+        var SITE = '<?= SITE; ?>'
     </script>
     <script src="<?php echo SITE; ?>js/trip_notes.js"></script>
 

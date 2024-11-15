@@ -33,7 +33,7 @@ if ($trip->itinerary_type == "event") {
 
 echo "OK";
 
-$url = "https://" . $_SERVER['HTTP_HOST'] . "/" . $type . "?idtrip=" . $_POST['idtrip'] . "&uid=" . $userdata['id'];
+$url = SITE . $type . "?idtrip=" . $_POST['idtrip'] . "&uid=" . $userdata['id'];
 
 $curl = curl_init($url);
 curl_setopt($curl, CURLOPT_URL, $url);

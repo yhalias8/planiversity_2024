@@ -85,7 +85,7 @@ if (isset($_POST['myprofile_submit'])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.js"></script>
 
     <script>
-        var SITE = '<?= 'https://' . $_SERVER['HTTP_HOST'] . '/'; ?>'
+        var SITE = '<?= SITE ; ?>'
     </script>
 
     <!--Facebook Pixel Code-->
