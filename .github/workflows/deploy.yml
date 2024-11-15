@@ -8,9 +8,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: '2'
+#      - uses: actions/checkout@v4
+#        with:
+#          fetch-depth: '2'
         run: echo ${{secrets.FTP_SERVER}}
 #      - name: FTP Deploy to server
 #        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
