@@ -52,10 +52,6 @@ include_once("config.ini.curl.php");
 
 
 
-define("WEB_HOSTING_URL", "/home/planiv5/public_html/"); // live version
-
-
-
 // if (!$auth->isLogged()) {
 
 //     $_SESSION['redirect'] = 'trip/pdf/' . $idtrip;

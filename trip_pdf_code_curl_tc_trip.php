@@ -19,7 +19,6 @@ include_once("config.ini.curl.php");
 include("class/class.Googlecalendar.php");
 include("class/class.MicrosoftGraph.php");
 
-define("WEB_HOSTING_URL", "/home/planiv5/public_html/"); // live version
 // define("WEB_HOSTING_URL", "C:/OSPanel/domains/Planiversity2021/"); // dev version
 // if (!$auth->isLogged()) {
 //     $_SESSION['redirect'] = 'trip/pdf/' . $idtrip;

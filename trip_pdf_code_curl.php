@@ -13,9 +13,6 @@ $uid = $params['uid'];
 
 include_once("config.ini.curl.php");
 
-// define("WEB_HOSTING_URL", "/home/planiv5/public_html/"); // live version
-define("WEB_HOSTING_URL", "/home/planiv5/public_html/"); // dev version
-
 if (!$auth->isLogged()) {
     $_SESSION['redirect'] = 'trip/pdf/' . $idtrip;
     header("Location:" . WEB_HOSTING_URL . "login");
