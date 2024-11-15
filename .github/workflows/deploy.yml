@@ -12,8 +12,11 @@ jobs:
         with:
           fetch-depth: '2'
       - name: FTP Deploy to server
+        env:
+          FTP_USERNAME: ${{ secrets.GITHUB_TOKEN }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: 'ftp.planiversity.com'
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          username: ${{ FTP_USERNAME }}
+          password: ${{ FTP_PASSWORD }}
